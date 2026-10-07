@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "Byd.GtfsManagement": {
+      "path": "Byd.GtfsManagement.abpmdl"
+    }
+  }
+}
