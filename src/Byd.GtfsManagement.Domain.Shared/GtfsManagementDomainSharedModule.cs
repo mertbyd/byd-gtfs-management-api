@@ -10,6 +10,8 @@ using Volo.Abp.VirtualFileSystem;
 
 namespace Byd.GtfsManagement;
 
+// islevi: GTFS lokalizasyon kaynagini ve hata kodu ad alanini kaydeder.
+// sistemdeki gorevi: Modulun sabitlerini ve lokalizasyon dosyalarini tum katmanlara acar.
 [DependsOn(
     typeof(AbpValidationModule),
     typeof(AbpDddDomainSharedModule),
@@ -17,6 +19,7 @@ namespace Byd.GtfsManagement;
 )]
 public class GtfsManagementDomainSharedModule : AbpModule
 {
+    // Modulun servis ve secenek kayitlarini yapar.
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         Configure<AbpVirtualFileSystemOptions>(options =>
@@ -34,7 +37,7 @@ public class GtfsManagementDomainSharedModule : AbpModule
 
         Configure<AbpExceptionLocalizationOptions>(options =>
         {
-            options.MapCodeNamespace("GtfsManagement", typeof(GtfsManagementResource));
+            options.MapCodeNamespace(GtfsManagementErrorCodes.RootNamespace, typeof(GtfsManagementResource));
         });
     }
 }

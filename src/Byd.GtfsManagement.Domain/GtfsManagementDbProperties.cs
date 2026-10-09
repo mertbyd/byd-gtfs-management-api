@@ -1,4 +1,4 @@
-using Byd.GtfsManagement.Constants;
+using Byd.GtfsManagement.Consts;
 
 namespace Byd.GtfsManagement;
 
@@ -8,7 +8,7 @@ public static class GtfsManagementDbProperties
 {
     public static string DbTablePrefix { get; set; } = "GtfsManagement";
 
-    public static string? DbSchema { get; set; } = GtfsManagementDatabaseConstants.SchemaName;
+    public static string? DbSchema { get; set; } = DatabaseConsts.ModuleSchema;
 
     public const string ConnectionStringName = "Default";
 }
