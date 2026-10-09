@@ -32,5 +32,7 @@ public class EfCoreRouteRepository(IDbContextProvider<GtfsManagementDbContext> d
             .Include(route => route.Agency)
             .Include(route => route.RouteType)
             .Include(route => route.ContinuousPickup)
-            .Include(route => route.ContinuousDropOff);
+            .Include(route => route.ContinuousDropOff)
+            .Include(route => route.Network)
+            .Include(route => route.CemvSupport);
 }

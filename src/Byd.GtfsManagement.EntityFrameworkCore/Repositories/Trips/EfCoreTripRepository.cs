@@ -33,5 +33,6 @@ public class EfCoreTripRepository(IDbContextProvider<GtfsManagementDbContext> db
             .Include(trip => trip.Service)
             .Include(trip => trip.TripDirection)
             .Include(trip => trip.WheelchairAccessible)
-            .Include(trip => trip.BikesAllowed);
+            .Include(trip => trip.BikesAllowed)
+            .Include(trip => trip.CarsAllowed);
 }

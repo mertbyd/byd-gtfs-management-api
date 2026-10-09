@@ -32,6 +32,7 @@ public class EfCoreStopTimeRepository(IDbContextProvider<GtfsManagementDbContext
         => query
             .Include(value => value.Trip)
             .Include(value => value.Stop)
+            .Include(value => value.LocationGroup)
             .Include(value => value.PickupType)
             .Include(value => value.DropOffType)
             .Include(value => value.ContinuousPickup)

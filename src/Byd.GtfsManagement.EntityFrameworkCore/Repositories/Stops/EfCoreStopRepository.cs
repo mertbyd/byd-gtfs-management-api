@@ -31,5 +31,7 @@ public class EfCoreStopRepository(IDbContextProvider<GtfsManagementDbContext> db
         => query
             .Include(stop => stop.LocationType)
             .Include(stop => stop.WheelchairBoarding)
-            .Include(stop => stop.ParentStation);
+            .Include(stop => stop.ParentStation)
+            .Include(stop => stop.Level)
+            .Include(stop => stop.StopAccess);
 }
