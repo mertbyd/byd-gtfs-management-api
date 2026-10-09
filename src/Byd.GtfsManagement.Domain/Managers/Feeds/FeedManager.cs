@@ -36,6 +36,14 @@ public class FeedManager(
         return await EnsureExistsInScopeAsync(id, cancellationToken);
     }
 
+    // Istegin tenant'indaki aktif Feed'i getirir; aktif Feed yoksa null doner.
+    public virtual Task<Feed?> FindActiveAsync(CancellationToken cancellationToken = default)
+    {
+        EnsureScopeAvailable();
+        var tenantId = CurrentTenant.Id;
+        return Repository.FindAsync(feed => feed.TenantId == tenantId && feed.IsActive, cancellationToken: cancellationToken);
+    }
+
     // Tenant'siz host isteklerinin Feed verisine erisimini reddeder.
     private void EnsureScopeAvailable()
     {

@@ -103,4 +103,18 @@ public class TripController : GtfsManagementController
         await AppService.DeleteAsync(id, cancellationToken);
         return Result.NoContent();
     }
+
+    /// <summary>Seferi duraklari, sikliklari, sekli ve servisinin calisma gunleriyle birlikte getirir.</summary>
+    /// <param name="id">Detayi okunacak Trip kaydinin kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>
+    /// Response value Trip alaninda sefer kaydini; Stops alaninda durak sirasini ad, koordinat, varis ve kalkis saatleriyle;
+    /// Frequencies alaninda frequencies.txt araliklarini; Shape alaninda varsa sekil noktalarini; Calendar ve CalendarDates
+    /// alanlarinda servisin haftalik kuralini ve tarih istisnalarini tasir. Servis takvimi yoksa Calendar bos doner.
+    /// Bu endpoint kayit yazmaz.
+    /// </remarks>
+    [HttpGet(TripRoutes.Detail)]
+    [Authorize(GtfsManagementPermissions.Trips.View)]
+    public virtual async Task<Result<TripDetailDto>> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
+        => await AppService.GetDetailAsync(id, cancellationToken);
 }

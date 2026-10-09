@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Byd.CoreExtensions.Repositories;
 using Byd.GtfsManagement.Entities.Shapes;
 using Byd.GtfsManagement.Interfaces.Shapes;
@@ -14,4 +19,11 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 public class EfCoreShapeRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
     : EfExtendedRepository<GtfsManagementDbContext, Shape, Guid>(dbContextProvider), IShapeRepository
 {
+    // Feed'deki shape_id'nin noktalarini sira numarasina gore getirir.
+    public virtual async Task<List<Shape>> GetPointsAsync(
+        Guid feedId, string gtfsShapeId, CancellationToken cancellationToken = default)
+        => await (await GetQueryableAsync())
+            .Where(shape => shape.FeedId == feedId && shape.GtfsShapeId == gtfsShapeId)
+            .OrderBy(shape => shape.Sequence)
+            .ToListAsync(cancellationToken);
 }

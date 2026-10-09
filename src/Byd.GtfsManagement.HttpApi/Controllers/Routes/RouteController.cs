@@ -102,4 +102,17 @@ public class RouteController : GtfsManagementController
         await AppService.DeleteAsync(id, cancellationToken);
         return Result.NoContent();
     }
+
+    /// <summary>Guzergahi sefer kaliplari, kaliplarin duraklari ve sekilleriyle birlikte getirir.</summary>
+    /// <param name="id">Detayi okunacak Route kaydinin kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>
+    /// Response value Route alaninda guzergah kaydini, Patterns alaninda ayni yon ve tabelali seferleri sefer sayisina gore
+    /// azalan sirada tasir. Her kalip ornek seferi TripDto olarak, sefer sayisini, ornek seferin durak sirasini saat ve
+    /// koordinatlariyla, varsa shapes.txt noktalarini icerir. Seferlerin tek tek saatleri bu endpointte listelenmez.
+    /// </remarks>
+    [HttpGet(RouteRoutes.Detail)]
+    [Authorize(GtfsManagementPermissions.Routes.View)]
+    public virtual async Task<Result<RouteDetailDto>> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
+        => await AppService.GetDetailAsync(id, cancellationToken);
 }

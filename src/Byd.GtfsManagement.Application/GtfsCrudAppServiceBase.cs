@@ -15,8 +15,8 @@ using Volo.Abp.Domain.Entities;
 namespace Byd.GtfsManagement;
 
 // islevi: Feed kapsamli GTFS kayitlarinin olustur, oku, listele, guncelle ve sil akisini tek yerde yurutur.
-// sistemdeki gorevi: Ortak CRUD sozlesmesini uygular; tipli repository, Manager ve Mapperly baglarini da merkezde cozerek
-// yaprak servisleri bos tutar.
+// sistemdeki gorevi: Ortak CRUD sozlesmesini uygular; tipli repository, Manager ve Mapperly baglarini da merkezde cozer.
+// Yaprak servisler yalniz kendi okuma use case'lerini bu baglarla ekler.
 public abstract class GtfsCrudAppServiceBase<
     TEntity, TCreateDto, TUpdateDto, TDto, TFilter,
     TCreateModel, TUpdateModel, TManager, TRepository, TMapper>
@@ -27,9 +27,9 @@ public abstract class GtfsCrudAppServiceBase<
     where TRepository : IExtendedRepository<TEntity>
     where TMapper : IGtfsCrudMapper<TEntity, TCreateDto, TUpdateDto, TDto, TCreateModel, TUpdateModel>, new()
 {
-    private static readonly TMapper Mapper = new();
+    protected static readonly TMapper Mapper = new();
 
-    private TManager Manager => LazyGetRequiredService<TManager>();
+    protected TManager Manager => LazyGetRequiredService<TManager>();
 
     private IExtendedRepository<TEntity> Repository => LazyGetRequiredService<TRepository>();
 
@@ -77,5 +77,5 @@ public abstract class GtfsCrudAppServiceBase<
     }
 
     // Girdi tipinin FluentValidation dogrulayicisini kullanim aninda cozer.
-    private IValidator<TInput> Validator<TInput>() => LazyGetRequiredService<IValidator<TInput>>();
+    protected IValidator<TInput> Validator<TInput>() => LazyGetRequiredService<IValidator<TInput>>();
 }

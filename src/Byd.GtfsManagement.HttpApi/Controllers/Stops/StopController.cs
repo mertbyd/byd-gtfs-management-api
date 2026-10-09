@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
+using Byd.GtfsManagement.Dtos.StopTimes;
 using Byd.GtfsManagement.Dtos.Stops;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Stops;
@@ -105,4 +107,56 @@ public class StopController : GtfsManagementController
         await AppService.DeleteAsync(id, cancellationToken);
         return Result.NoContent();
     }
+
+    /// <summary>Verilen ya da tenant'in aktif GTFS Feed'indeki tum duraklari harita icin getirir.</summary>
+    /// <param name="feedId">Duraklari okunacak Feed; verilmezse tenant'in aktif Feed'i kullanilir.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>
+    /// Request {
+    ///   feedId (Guid?) → Okunacak Feed (query); bos ise aktif Feed
+    /// }
+    /// Response elemanlari filtreli liste ucundaki StopDto alanlarini tasir: konum turu, erisim, ust istasyon ve kat
+    /// kimlikleri ile adlari, koordinatlar. Liste sayfalanmaz; tenant'in aktif Feed'i yoksa bos liste doner. Bu endpoint
+    /// sefer saatlerini okumaz ve kayit yazmaz.
+    /// </remarks>
+    [HttpGet(StopRoutes.Map)]
+    [Authorize(GtfsManagementPermissions.Stops.View)]
+    public virtual async Task<Result<List<StopDto>>> GetMapAsync(
+        [FromQuery] Guid? feedId, CancellationToken cancellationToken = default)
+        => await AppService.GetMapAsync(feedId, cancellationToken);
+
+    /// <summary>Duragi alt peronlari, ugrayan guzergahlari, pathway ve transfer kayitlariyla birlikte getirir.</summary>
+    /// <param name="id">Detayi okunacak Stop kaydinin kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>
+    /// Response value Stop alaninda durak kaydini; Children alaninda istasyona bagli peron, giris ve dugumleri; Routes
+    /// alaninda duraga veya peronlarina ugrayan guzergahlari RouteDto olarak; Pathways ve Transfers alanlarinda bu
+    /// duraklara bagli istasyon ici yollari ve aktarma kurallarini durak adlariyla tasir. Sefer saatleri bu endpointte
+    /// okunmaz; kalkislar icin departures ucu kullanilir.
+    /// </remarks>
+    [HttpGet(StopRoutes.Detail)]
+    [Authorize(GtfsManagementPermissions.Stops.View)]
+    public virtual async Task<Result<StopDetailDto>> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
+        => await AppService.GetDetailAsync(id, cancellationToken);
+
+    /// <summary>Duraktan ve istasyonsa peronlarindan servis gununde verilen saatten sonra kalkan seferleri getirir.</summary>
+    /// <param name="id">Kalkislari okunacak Stop kaydinin kimligi.</param>
+    /// <param name="input">Servis gunu, baslangic saati ve kalkis siniri.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>
+    /// Request {
+    ///   Date     (DateOnly) → GTFS servis gunu (yyyy-MM-dd)
+    ///   FromTime (string?)  → Bu saatten sonraki kalkislar (HH:MM:SS); bos ise gun basi
+    ///   Limit    (int)      → En fazla kalkis sayisi; varsayilan 20, en fazla 200
+    /// }
+    /// Response elemanlari StopTimeDto alanlarina (sefer ve kalkilan peron kimlik-adlari, sira, saatler, durak tabelasi)
+    /// ek olarak guzergahin kimligini, adini, renklerini ve sefer tabelasini tasir; kalkis saatine gore siralidir.
+    /// Servis gunu GTFS anlamindadir: gece yarisini asan seferler kendi servis gununde 24:00 sonrasi saatle listelenir.
+    /// O gun calisan servis yoksa bos liste doner. Bu endpoint kayit yazmaz.
+    /// </remarks>
+    [HttpGet(StopRoutes.Departures)]
+    [Authorize(GtfsManagementPermissions.Stops.View)]
+    public virtual async Task<Result<List<StopDepartureDto>>> GetDeparturesAsync(
+        Guid id, [FromQuery] StopDepartureInputDto input, CancellationToken cancellationToken = default)
+        => await AppService.GetDeparturesAsync(id, input, cancellationToken);
 }

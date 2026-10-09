@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace Byd.GtfsManagement.Extensions.Gtfs;
 
@@ -7,6 +8,19 @@ namespace Byd.GtfsManagement.Extensions.Gtfs;
 // sistemdeki gorevi: Siklik araliklari ve talep penceresi gibi saat sirasi kurallari ayni karsilastirmayi kullanir.
 public static class GtfsTimeExtensions
 {
+    // GTFS saatini servis gunu baslangicindan itibaren gecen saniyeye cevirir.
+    public static int ToServiceSeconds(this string time)
+    {
+        var parts = time.Split(':');
+        return int.Parse(parts[0], CultureInfo.InvariantCulture) * 3600
+            + int.Parse(parts[1], CultureInfo.InvariantCulture) * 60
+            + int.Parse(parts[2], CultureInfo.InvariantCulture);
+    }
+
+    // Servis gunu saniyesini 24 saati asabilen GTFS HH:MM:SS bicimine cevirir.
+    public static string ToGtfsTime(this int seconds)
+        => string.Create(CultureInfo.InvariantCulture, $"{seconds / 3600:00}:{seconds / 60 % 60:00}:{seconds % 60:00}");
+
     // Iki GTFS saatini servis gunu saat degerine gore karsilastirir.
     public static int CompareGtfsTimes(this string first, string second)
     {

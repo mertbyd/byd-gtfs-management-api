@@ -39,4 +39,5 @@ public static class GtfsManagementErrorCodes
     public const string LocationGroupGroup = RootNamespace + ":31";
     public const string LocationGroupStopGroup = RootNamespace + ":32";
     public const string BookingRuleGroup = RootNamespace + ":33";
+    public const string JourneyGroup = RootNamespace + ":34";
 }

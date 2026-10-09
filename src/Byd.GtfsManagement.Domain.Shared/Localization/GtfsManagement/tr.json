@@ -98,6 +98,8 @@
     "Permission:BookingRules": "Rezervasyon kuralları",
     "Permission:BookingRules.View": "Rezervasyon kurallarını görüntüle",
     "Permission:BookingRules.Manage": "Rezervasyon kurallarını yönet",
+    "Permission:Journeys": "Yolculuk planlama",
+    "Permission:Journeys.View": "Yolculuk planla",
     "GtfsManagement:010001": "Tenant kapsamı gerekli.",
     "GtfsManagement:020001": "GTFS veri seti gerekli.",
     "GtfsManagement:020002": "Ajans kimliği çok uzun.",
@@ -135,6 +137,9 @@
     "GtfsManagement:030020": "Üst istasyon aynı GTFS veri setine ait olmalı.",
     "GtfsManagement:030021": "Kat aynı GTFS veri setine ait olmalı.",
     "GtfsManagement:030022": "Durak erişimi yalnız bir istasyona bağlı durak veya perona verilebilir.",
+    "GtfsManagement:030023": "Kalkışlar için servis tarihi zorunlu.",
+    "GtfsManagement:030024": "Kalkış saati SS:DD:SS biçiminde olmalı.",
+    "GtfsManagement:030025": "Kalkış sayısı sınırı izin verilen aralıkta değil.",
     "GtfsManagement:040001": "GTFS veri seti gerekli.",
     "GtfsManagement:040002": "Ulaşım türü gerekli.",
     "GtfsManagement:040003": "Güzergah kimliği gerekli.",
@@ -396,6 +401,13 @@
     "GtfsManagement:330012": "İniş mesajı çok uzun.",
     "GtfsManagement:330013": "Telefon numarası çok uzun.",
     "GtfsManagement:330014": "Bilgi web adresi çok uzun.",
-    "GtfsManagement:330015": "Rezervasyon web adresi çok uzun."
+    "GtfsManagement:330015": "Rezervasyon web adresi çok uzun.",
+    "GtfsManagement:340001": "Başlangıç durağı zorunlu.",
+    "GtfsManagement:340002": "Varış durağı zorunlu.",
+    "GtfsManagement:340003": "Başlangıç ve varış farklı duraklar olmalı.",
+    "GtfsManagement:340004": "Yolculuk tarihi zorunlu.",
+    "GtfsManagement:340005": "Kalkış saati SS:DD:SS biçiminde olmalı.",
+    "GtfsManagement:340006": "Aktarma sınırı izin verilen aralıkta değil.",
+    "GtfsManagement:340007": "Başlangıç ve varış aynı GTFS veri setine ait olmalı."
   }
 }

@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Byd.CoreExtensions.Querying;
 using Byd.CoreExtensions.Repositories;
 using Byd.GtfsManagement.Entities.Trips;
 using Byd.GtfsManagement.Interfaces.Trips;
+using Byd.GtfsManagement.Models.Routes;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -35,4 +38,21 @@ public class EfCoreTripRepository(IDbContextProvider<GtfsManagementDbContext> db
             .Include(trip => trip.WheelchairAccessible)
             .Include(trip => trip.BikesAllowed)
             .Include(trip => trip.CarsAllowed);
+
+    // Guzergahin seferlerini yon ve tabelaya gore gruplar; her kalibin ornegi en kucuk trip_id'li seferdir ve ayrintilariyla doner.
+    public virtual async Task<List<RoutePatternModel>> GetPatternsAsync(Guid routeId, CancellationToken cancellationToken = default)
+    {
+        var groups = await (await GetQueryableAsync())
+            .Where(trip => trip.RouteId == routeId)
+            .GroupBy(trip => new { trip.TripDirectionId, trip.Headsign })
+            .Select(group => new { Count = group.Count(), GtfsTripId = group.Min(trip => trip.GtfsTripId)! })
+            .ToListAsync(cancellationToken);
+        var gtfsTripIds = groups.Select(group => group.GtfsTripId).ToList();
+        var representatives = await (await WithDetailsAsync())
+            .Where(trip => trip.RouteId == routeId && gtfsTripIds.Contains(trip.GtfsTripId))
+            .ToDictionaryAsync(trip => trip.GtfsTripId, cancellationToken);
+        return groups.OrderByDescending(group => group.Count)
+            .Select(group => new RoutePatternModel { Trip = representatives[group.GtfsTripId], TripCount = group.Count })
+            .ToList();
+    }
 }

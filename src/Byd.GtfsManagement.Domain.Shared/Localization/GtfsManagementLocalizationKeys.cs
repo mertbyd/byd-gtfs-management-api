@@ -103,5 +103,7 @@ public static class GtfsManagementLocalizationKeys
         public const string BookingRules = "Permission:BookingRules";
         public const string BookingRulesView = "Permission:BookingRules.View";
         public const string BookingRulesManage = "Permission:BookingRules.Manage";
+        public const string Journeys = "Permission:Journeys";
+        public const string JourneysView = "Permission:Journeys.View";
     }
 }

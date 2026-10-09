@@ -46,6 +46,12 @@ public abstract class GtfsFeedScopedManager<TEntity, TCreateModel, TUpdateModel>
             throw new BusinessException(GeneralExceptionCodes.RelationalDataDelete);
     }
 
+    // Verilen Feed'i kapsamda, verilmezse tenant'in aktif Feed'ini getirir; aktif Feed yoksa null doner.
+    protected async Task<Feed?> ResolveReadFeedAsync(Guid? feedId, CancellationToken cancellationToken = default)
+        => feedId is null
+            ? await feedManager.FindActiveAsync(cancellationToken)
+            : await feedManager.EnsureExistsIncludingInactiveInScopeAsync(feedId.Value, cancellationToken);
+
     // Kaydin kapsamini devralacagi Feed'i getirir ve istegin kapsaminda oldugunu dogrular.
     protected Task<Feed> ResolveFeedAsync(Guid feedId, CancellationToken cancellationToken = default)
         => feedManager.EnsureExistsIncludingInactiveInScopeAsync(feedId, cancellationToken);

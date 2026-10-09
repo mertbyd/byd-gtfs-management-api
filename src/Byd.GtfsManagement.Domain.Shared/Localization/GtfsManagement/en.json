@@ -98,6 +98,8 @@
     "Permission:BookingRules": "Booking rules",
     "Permission:BookingRules.View": "View booking rules",
     "Permission:BookingRules.Manage": "Manage booking rules",
+    "Permission:Journeys": "Journey planning",
+    "Permission:Journeys.View": "Plan journeys",
     "GtfsManagement:010001": "A tenant context is required.",
     "GtfsManagement:020001": "A feed is required.",
     "GtfsManagement:020002": "Agency id is too long.",
@@ -135,6 +137,9 @@
     "GtfsManagement:030020": "The parent station must belong to the same feed.",
     "GtfsManagement:030021": "The level must belong to the same feed.",
     "GtfsManagement:030022": "Stop access can only be set on a stop or platform that belongs to a station.",
+    "GtfsManagement:030023": "A service date is required for departures.",
+    "GtfsManagement:030024": "The departure time must be in HH:MM:SS format.",
+    "GtfsManagement:030025": "The departure limit is out of range.",
     "GtfsManagement:040001": "A feed is required.",
     "GtfsManagement:040002": "A route type is required.",
     "GtfsManagement:040003": "Route id is required.",
@@ -396,6 +401,13 @@
     "GtfsManagement:330012": "Drop-off message is too long.",
     "GtfsManagement:330013": "Phone number is too long.",
     "GtfsManagement:330014": "Info URL is too long.",
-    "GtfsManagement:330015": "Booking URL is too long."
+    "GtfsManagement:330015": "Booking URL is too long.",
+    "GtfsManagement:340001": "An origin stop is required.",
+    "GtfsManagement:340002": "A destination stop is required.",
+    "GtfsManagement:340003": "Origin and destination must be different stops.",
+    "GtfsManagement:340004": "A travel date is required.",
+    "GtfsManagement:340005": "The departure time must be in HH:MM:SS format.",
+    "GtfsManagement:340006": "The transfer limit is out of range.",
+    "GtfsManagement:340007": "Origin and destination must belong to the same feed."
   }
 }

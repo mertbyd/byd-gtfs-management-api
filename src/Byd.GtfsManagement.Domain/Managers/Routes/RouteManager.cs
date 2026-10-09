@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
-using System.Threading;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Byd.CoreExtensions.ExceptionCodes;
 using Byd.GtfsManagement.Entities.Lookup.CemvSupports;
 using Byd.GtfsManagement.Entities.Lookup.ContinuousPickupDropOffs;
@@ -10,11 +10,14 @@ using Byd.GtfsManagement.ExceptionCodes;
 using Byd.GtfsManagement.Extensions.Lookups;
 using Byd.GtfsManagement.Interfaces.Agencies;
 using Byd.GtfsManagement.Interfaces.Routes;
+using Byd.GtfsManagement.Interfaces.Shapes;
+using Byd.GtfsManagement.Interfaces.StopTimes;
+using Byd.GtfsManagement.Interfaces.Trips;
 using Byd.GtfsManagement.Managers.Feeds;
 using Byd.GtfsManagement.Managers.Networks;
 using Byd.GtfsManagement.Models.Routes;
-using Volo.Abp.Domain.Repositories;
 using Volo.Abp;
+using Volo.Abp.Domain.Repositories;
 
 namespace Byd.GtfsManagement.Managers.Routes;
 
@@ -27,7 +30,10 @@ public class RouteManager(
     IRepository<RouteType, int> routeTypeRepository,
     IRepository<ContinuousPickupDropOff, int> continuousRepository,
     IRepository<CemvSupport, int> cemvSupportRepository,
-    NetworkManager networkManager)
+    NetworkManager networkManager,
+    ITripRepository tripRepository,
+    IStopTimeRepository stopTimeRepository,
+    IShapeRepository shapeRepository)
     : GtfsFeedScopedManager<Route, RouteCreateModel, RouteUpdateModel>(repository, feedManager)
 {
     // Hedef Feed'i kapsamda dogrulayip yeni guzergahi kurar.
@@ -49,6 +55,25 @@ public class RouteManager(
         ArgumentNullException.ThrowIfNull(entity);
         ArgumentNullException.ThrowIfNull(model);
         return ApplyAsync(entity, model, cancellationToken);
+    }
+
+    // Guzergahi, her sefer kalibinin ornek seferindeki duraklar ve sekil noktalariyla birlikte getirir.
+    public virtual async Task<RouteDetailModel> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        await EnsureExistsInScopeAsync(id, cancellationToken);
+        var route = await repository.GetAsync(value => value.Id == id, true, cancellationToken);
+        var patterns = await tripRepository.GetPatternsAsync(id, cancellationToken);
+        foreach (var pattern in patterns)
+            await DescribePatternAsync(route, pattern, cancellationToken);
+        return new RouteDetailModel { Route = route, Patterns = patterns };
+    }
+
+    // Kalibin ornek seferindeki duraklari ve varsa seklini doldurur.
+    private async Task DescribePatternAsync(Route route, RoutePatternModel pattern, CancellationToken cancellationToken = default)
+    {
+        pattern.Stops = await stopTimeRepository.GetTripStopsAsync(pattern.Trip.Id, cancellationToken);
+        if (pattern.Trip.GtfsShapeId is { } shapeId)
+            pattern.Shape = await shapeRepository.GetPointsAsync(route.FeedId, shapeId, cancellationToken);
     }
 
     // Duzenlenebilir alanlari normalize eder ve GTFS kurallarini dogrular.

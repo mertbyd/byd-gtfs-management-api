@@ -46,6 +46,7 @@ public partial class GtfsManagementPermissionDefinitionProvider : PermissionDefi
         AddLocationGroupPermissions(group);
         AddLocationGroupStopPermissions(group);
         AddBookingRulePermissions(group);
+        AddJourneyPermissions(group);
     }
 
     // Izin adini modulun lokalizasyon kaynagindan cozer.

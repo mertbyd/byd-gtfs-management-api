@@ -1,7 +1,7 @@
 using Byd.GtfsManagement.Dtos.Trips;
 using Byd.GtfsManagement.Entities.Trips;
-using Byd.GtfsManagement.Models.Trips;
 using Byd.GtfsManagement.Mappers;
+using Byd.GtfsManagement.Models.Trips;
 using Riok.Mapperly.Abstractions;
 
 namespace Byd.GtfsManagement.Mappers.Trips;
@@ -15,4 +15,5 @@ public partial class TripMapper
     public partial TripCreateModel Map(CreateTripDto input);
     public partial TripUpdateModel Map(UpdateTripDto input);
     public partial TripDto Map(Trip entity);
+    public partial TripDetailDto Map(TripDetailModel model);
 }

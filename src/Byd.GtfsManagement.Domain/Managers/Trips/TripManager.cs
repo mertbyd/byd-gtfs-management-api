@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
-using System.Threading;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Byd.CoreExtensions.ExceptionCodes;
 using Byd.GtfsManagement.Entities.Lookup.BikesAlloweds;
 using Byd.GtfsManagement.Entities.Lookup.CarsAlloweds;
@@ -9,13 +9,18 @@ using Byd.GtfsManagement.Entities.Lookup.WheelchairBoardings;
 using Byd.GtfsManagement.Entities.Trips;
 using Byd.GtfsManagement.ExceptionCodes;
 using Byd.GtfsManagement.Extensions.Lookups;
+using Byd.GtfsManagement.Interfaces.CalendarDates;
+using Byd.GtfsManagement.Interfaces.Calendars;
+using Byd.GtfsManagement.Interfaces.Frequencies;
 using Byd.GtfsManagement.Interfaces.Routes;
 using Byd.GtfsManagement.Interfaces.Services;
+using Byd.GtfsManagement.Interfaces.Shapes;
+using Byd.GtfsManagement.Interfaces.StopTimes;
 using Byd.GtfsManagement.Interfaces.Trips;
 using Byd.GtfsManagement.Managers.Feeds;
 using Byd.GtfsManagement.Models.Trips;
-using Volo.Abp.Domain.Repositories;
 using Volo.Abp;
+using Volo.Abp.Domain.Repositories;
 
 namespace Byd.GtfsManagement.Managers.Trips;
 
@@ -29,9 +34,33 @@ public class TripManager(
     IRepository<TripDirection, int> tripDirectionRepository,
     IRepository<WheelchairBoarding, int> wheelchairBoardingRepository,
     IRepository<BikesAllowed, int> bikesAllowedRepository,
-    IRepository<CarsAllowed, int> carsAllowedRepository)
+    IRepository<CarsAllowed, int> carsAllowedRepository,
+    IStopTimeRepository stopTimeRepository,
+    IShapeRepository shapeRepository,
+    IFrequencyRepository frequencyRepository,
+    ICalendarRepository calendarRepository,
+    ICalendarDateRepository calendarDateRepository)
     : GtfsFeedScopedManager<Trip, TripCreateModel, TripUpdateModel>(repository, feedManager)
 {
+    // Seferi duraklari, sikliklari, sekli ve servisinin calisma gunleriyle birlikte getirir.
+    public virtual async Task<TripDetailModel> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        await EnsureExistsInScopeAsync(id, cancellationToken);
+        var trip = await repository.GetAsync(value => value.Id == id, true, cancellationToken);
+        return new TripDetailModel
+        {
+            Trip = trip,
+            Stops = await stopTimeRepository.GetTripStopsAsync(id, cancellationToken),
+            Frequencies = await frequencyRepository.GetListAsync(frequency => frequency.TripId == id, true, cancellationToken),
+            Shape = trip.GtfsShapeId is { } shapeId
+                ? await shapeRepository.GetPointsAsync(trip.FeedId, shapeId, cancellationToken)
+                : [],
+            Calendar = await calendarRepository.FindAsync(calendar => calendar.ServiceId == trip.ServiceId, true, cancellationToken),
+            CalendarDates = await calendarDateRepository.GetListAsync(
+                calendarDate => calendarDate.ServiceId == trip.ServiceId, true, cancellationToken)
+        };
+    }
+
     // Hedef Feed'i kapsamda dogrulayip yeni seferi kurar.
     public override async Task<Trip> CreateAsync(
         TripCreateModel model, CancellationToken cancellationToken = default)

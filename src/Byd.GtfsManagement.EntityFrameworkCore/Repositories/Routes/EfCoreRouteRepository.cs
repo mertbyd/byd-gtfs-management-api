@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Byd.CoreExtensions.Querying;
 using Byd.CoreExtensions.Repositories;
 using Byd.GtfsManagement.Entities.Routes;
+using Byd.GtfsManagement.Entities.StopTimes;
 using Byd.GtfsManagement.Interfaces.Routes;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
@@ -35,4 +38,18 @@ public class EfCoreRouteRepository(IDbContextProvider<GtfsManagementDbContext> d
             .Include(route => route.ContinuousDropOff)
             .Include(route => route.Network)
             .Include(route => route.CemvSupport);
+
+    // Duraklara ugrayan guzergahlari ajans ve lookup adlariyla, siralama alanina gore getirir.
+    public virtual async Task<List<Route>> GetAtStopsAsync(
+        IReadOnlyCollection<Guid> stopIds, CancellationToken cancellationToken = default)
+    {
+        var dbContext = await GetDbContextAsync();
+        var routeIds = dbContext.Set<StopTime>()
+            .Where(stopTime => stopTime.StopId != null && stopIds.Contains(stopTime.StopId.Value))
+            .Select(stopTime => stopTime.Trip.RouteId);
+        return await (await WithDetailsAsync())
+            .Where(route => routeIds.Contains(route.Id))
+            .OrderBy(route => route.SortOrder).ThenBy(route => route.ShortName).ThenBy(route => route.LongName)
+            .ToListAsync(cancellationToken);
+    }
 }

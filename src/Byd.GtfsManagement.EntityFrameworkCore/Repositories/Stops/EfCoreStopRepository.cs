@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Byd.CoreExtensions.Querying;
 using Byd.CoreExtensions.Repositories;
+using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Entities.Stops;
 using Byd.GtfsManagement.Interfaces.Stops;
+using Byd.GtfsManagement.Models.Stops;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -34,4 +38,18 @@ public class EfCoreStopRepository(IDbContextProvider<GtfsManagementDbContext> db
             .Include(stop => stop.ParentStation)
             .Include(stop => stop.Level)
             .Include(stop => stop.StopAccess);
+
+    // Feed'in tum duraklarini ust istasyon bagi, konum turu kodu ve koordinatlariyla planlayici modeline yansitir.
+    public virtual async Task<List<StopPlaceModel>> GetPlacesAsync(Guid feedId, CancellationToken cancellationToken = default)
+        => await (await GetQueryableAsync())
+            .Where(stop => stop.FeedId == feedId)
+            .Select(stop => new StopPlaceModel
+            {
+                Id = stop.Id,
+                ParentStationId = stop.ParentStationId,
+                LocationTypeCode = stop.LocationType == null ? LocationTypeConsts.StopOrPlatformCode : stop.LocationType.Code,
+                Latitude = stop.Latitude,
+                Longitude = stop.Longitude
+            })
+            .ToListAsync(cancellationToken);
 }

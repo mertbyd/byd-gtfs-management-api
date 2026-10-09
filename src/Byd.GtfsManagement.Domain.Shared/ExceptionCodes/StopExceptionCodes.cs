@@ -26,4 +26,7 @@ public static class StopExceptionCodes
     public const string ParentStationOutOfFeed = GtfsManagementErrorCodes.StopGroup + "0020";
     public const string LevelOutOfFeed = GtfsManagementErrorCodes.StopGroup + "0021";
     public const string StopAccessNotAllowed = GtfsManagementErrorCodes.StopGroup + "0022";
+    public const string DepartureDateRequired = GtfsManagementErrorCodes.StopGroup + "0023";
+    public const string DepartureTimeInvalid = GtfsManagementErrorCodes.StopGroup + "0024";
+    public const string DepartureLimitInvalid = GtfsManagementErrorCodes.StopGroup + "0025";
 }

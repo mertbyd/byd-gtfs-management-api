@@ -7,4 +7,5 @@ public static class TripRoutes
     public const string Root = "api/gtfs-management/trips";
     public const string ById = "{id:guid}";
     public const string FilteredList = "filtered-list";
+    public const string Detail = "{id:guid}/detail";
 }

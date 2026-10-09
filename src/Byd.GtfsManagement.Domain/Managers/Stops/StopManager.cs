@@ -1,20 +1,28 @@
-using System.Threading.Tasks;
-using System.Threading;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Entities.Lookup.LocationTypes;
 using Byd.GtfsManagement.Entities.Lookup.StopAccesses;
 using Byd.GtfsManagement.Entities.Lookup.WheelchairBoardings;
+using Byd.GtfsManagement.Entities.StopTimes;
 using Byd.GtfsManagement.Entities.Stops;
 using Byd.GtfsManagement.ExceptionCodes;
 using Byd.GtfsManagement.Extensions.Gtfs;
 using Byd.GtfsManagement.Extensions.Lookups;
+using Byd.GtfsManagement.Interfaces.Pathways;
+using Byd.GtfsManagement.Interfaces.Routes;
+using Byd.GtfsManagement.Interfaces.Services;
+using Byd.GtfsManagement.Interfaces.StopTimes;
 using Byd.GtfsManagement.Interfaces.Stops;
+using Byd.GtfsManagement.Interfaces.Transfers;
 using Byd.GtfsManagement.Managers.Feeds;
 using Byd.GtfsManagement.Managers.Levels;
 using Byd.GtfsManagement.Models.Stops;
-using Volo.Abp.Domain.Repositories;
 using Volo.Abp;
+using Volo.Abp.Domain.Repositories;
 
 namespace Byd.GtfsManagement.Managers.Stops;
 
@@ -26,7 +34,12 @@ public class StopManager(
     IRepository<LocationType, int> locationTypeRepository,
     IRepository<WheelchairBoarding, int> wheelchairBoardingRepository,
     IRepository<StopAccess, int> stopAccessRepository,
-    LevelManager levelManager)
+    LevelManager levelManager,
+    IServiceRepository serviceRepository,
+    IStopTimeRepository stopTimeRepository,
+    IPathwayRepository pathwayRepository,
+    IRouteRepository routeRepository,
+    ITransferRepository transferRepository)
     : GtfsFeedScopedManager<Stop, StopCreateModel, StopUpdateModel>(repository, feedManager)
 {
     // Hedef Feed'i kapsamda dogrulayip yeni duragi kurar.
@@ -48,6 +61,46 @@ public class StopManager(
         ArgumentNullException.ThrowIfNull(entity);
         ArgumentNullException.ThrowIfNull(model);
         return ApplyAsync(entity, model, cancellationToken);
+    }
+
+    // Verilen ya da aktif Feed'in tum duraklarini harita icin ayrintilariyla getirir; aktif Feed yoksa bos liste doner.
+    public virtual async Task<List<Stop>> GetMapAsync(Guid? feedId, CancellationToken cancellationToken = default)
+        => await ResolveReadFeedAsync(feedId, cancellationToken) is { } feed
+            ? await repository.GetListAsync(stop => stop.FeedId == feed.Id, true, cancellationToken)
+            : [];
+
+    // Duragi alt peronlari, ugrayan guzergahlari, pathway ve transfer kayitlariyla birlikte getirir.
+    public virtual async Task<StopDetailModel> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var stop = await EnsureExistsInScopeAsync(id, cancellationToken);
+        var children = await repository.GetListAsync(child => child.ParentStationId == id, true, cancellationToken);
+        var stopIds = children.Select(child => child.Id).Append(id).ToList();
+        return new StopDetailModel
+        {
+            Stop = await repository.GetAsync(value => value.Id == stop.Id, true, cancellationToken),
+            Children = children,
+            Routes = await routeRepository.GetAtStopsAsync(stopIds, cancellationToken),
+            Pathways = await pathwayRepository.GetListAsync(
+                pathway => stopIds.Contains(pathway.FromStopId) || stopIds.Contains(pathway.ToStopId), true, cancellationToken),
+            Transfers = await transferRepository.GetListAsync(
+                transfer => transfer.FromStopId != null && stopIds.Contains(transfer.FromStopId.Value)
+                    || transfer.ToStopId != null && stopIds.Contains(transfer.ToStopId.Value), true, cancellationToken)
+        };
+    }
+
+    // Duraktan ve istasyonsa alt peronlarindan servis gununde verilen saatten sonra kalkan seferleri getirir.
+    public virtual async Task<List<StopTime>> GetDeparturesAsync(
+        Guid id, StopDepartureQueryModel query, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        var stop = await EnsureExistsInScopeAsync(id, cancellationToken);
+        var stopIds = (await repository.GetListAsync(child => child.ParentStationId == id, false, cancellationToken))
+            .Select(child => child.Id).Append(id).ToList();
+        var serviceIds = await serviceRepository.GetActiveIdsAsync(stop.FeedId, query.Date, cancellationToken);
+        return serviceIds.Count == 0
+            ? []
+            : await stopTimeRepository.GetDeparturesAsync(stopIds, serviceIds, query.FromTime ?? GtfsTimeConsts.DayStart,
+                query.Limit, cancellationToken);
     }
 
     // Duzenlenebilir alanlari normalize eder ve GTFS kurallarini dogrular.
