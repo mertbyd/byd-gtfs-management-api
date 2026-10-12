@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Byd.GtfsManagement</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Byd.LogManagement.Application" Version="0.1.1" />
+    <PackageReference Include="Volo.Abp.Mapperly" Version="10.3.0" />
+    <PackageReference Include="Volo.Abp.Ddd.Application" Version="10.3.0" />
+    <ProjectReference Include="..\Byd.GtfsManagement.Application.Contracts\Byd.GtfsManagement.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Byd.GtfsManagement.Domain\Byd.GtfsManagement.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

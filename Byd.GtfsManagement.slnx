@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/host/">
+    <Project Path="host/Byd.GtfsManagement.Host.Shared/Byd.GtfsManagement.Host.Shared.csproj" />
+    <Project Path="host/Byd.GtfsManagement.HttpApi.Host/Byd.GtfsManagement.HttpApi.Host.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Byd.GtfsManagement.Application.Contracts/Byd.GtfsManagement.Application.Contracts.csproj" />
+    <Project Path="src/Byd.GtfsManagement.Application/Byd.GtfsManagement.Application.csproj" />
+    <Project Path="src/Byd.GtfsManagement.Domain.Shared/Byd.GtfsManagement.Domain.Shared.csproj" />
+    <Project Path="src/Byd.GtfsManagement.Domain/Byd.GtfsManagement.Domain.csproj" />
+    <Project Path="src/Byd.GtfsManagement.EntityFrameworkCore/Byd.GtfsManagement.EntityFrameworkCore.csproj" />
+    <Project Path="src/Byd.GtfsManagement.HttpApi.Client/Byd.GtfsManagement.HttpApi.Client.csproj" />
+    <Project Path="src/Byd.GtfsManagement.HttpApi/Byd.GtfsManagement.HttpApi.csproj" />
+  </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/Byd.GtfsManagement.Application.Tests/Byd.GtfsManagement.Application.Tests.csproj" />
+    <Project Path="test/Byd.GtfsManagement.Domain.Tests/Byd.GtfsManagement.Domain.Tests.csproj" />
+    <Project Path="test/Byd.GtfsManagement.EntityFrameworkCore.Tests/Byd.GtfsManagement.EntityFrameworkCore.Tests.csproj" />
+    <Project Path="test/Byd.GtfsManagement.TestBase/Byd.GtfsManagement.TestBase.csproj" />
+  </Folder>
+</Solution>

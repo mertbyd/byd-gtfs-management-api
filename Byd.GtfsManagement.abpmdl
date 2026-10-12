@@ -1,0 +1,63 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {},
+      "host": {}
+    }
+  },
+  "packages": {
+    "Byd.GtfsManagement.Domain.Shared": {
+      "path": "src/Byd.GtfsManagement.Domain.Shared/Byd.GtfsManagement.Domain.Shared.abppkg",
+      "folder": "src"
+    },
+    "Byd.GtfsManagement.Domain": {
+      "path": "src/Byd.GtfsManagement.Domain/Byd.GtfsManagement.Domain.abppkg",
+      "folder": "src"
+    },
+    "Byd.GtfsManagement.Application.Contracts": {
+      "path": "src/Byd.GtfsManagement.Application.Contracts/Byd.GtfsManagement.Application.Contracts.abppkg",
+      "folder": "src"
+    },
+    "Byd.GtfsManagement.Application": {
+      "path": "src/Byd.GtfsManagement.Application/Byd.GtfsManagement.Application.abppkg",
+      "folder": "src"
+    },
+    "Byd.GtfsManagement.EntityFrameworkCore": {
+      "path": "src/Byd.GtfsManagement.EntityFrameworkCore/Byd.GtfsManagement.EntityFrameworkCore.abppkg",
+      "folder": "src"
+    },
+    "Byd.GtfsManagement.HttpApi": {
+      "path": "src/Byd.GtfsManagement.HttpApi/Byd.GtfsManagement.HttpApi.abppkg",
+      "folder": "src"
+    },
+    "Byd.GtfsManagement.HttpApi.Client": {
+      "path": "src/Byd.GtfsManagement.HttpApi.Client/Byd.GtfsManagement.HttpApi.Client.abppkg",
+      "folder": "src"
+    },
+    "Byd.GtfsManagement.TestBase": {
+      "path": "test/Byd.GtfsManagement.TestBase/Byd.GtfsManagement.TestBase.abppkg",
+      "folder": "test"
+    },
+    "Byd.GtfsManagement.EntityFrameworkCore.Tests": {
+      "path": "test/Byd.GtfsManagement.EntityFrameworkCore.Tests/Byd.GtfsManagement.EntityFrameworkCore.Tests.abppkg",
+      "folder": "test"
+    },
+    "Byd.GtfsManagement.Domain.Tests": {
+      "path": "test/Byd.GtfsManagement.Domain.Tests/Byd.GtfsManagement.Domain.Tests.abppkg",
+      "folder": "test"
+    },
+    "Byd.GtfsManagement.Application.Tests": {
+      "path": "test/Byd.GtfsManagement.Application.Tests/Byd.GtfsManagement.Application.Tests.abppkg",
+      "folder": "test"
+    },
+    "Byd.GtfsManagement.HttpApi.Host": {
+      "path": "host/Byd.GtfsManagement.HttpApi.Host/Byd.GtfsManagement.HttpApi.Host.abppkg",
+      "folder": "host"
+    },
+    "Byd.GtfsManagement.Host.Shared": {
+      "path": "host/Byd.GtfsManagement.Host.Shared/Byd.GtfsManagement.Host.Shared.abppkg",
+      "folder": "host"
+    }
+  }
+}

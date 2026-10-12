@@ -1,0 +1,8 @@
+﻿{
+  "culture": "tr",
+  "texts": {
+    "MyAccount": "Hesabım",
+    "SamplePageMessage": "GtfsManagement modülü için örnek bir sayfa",
+    "Permission:GtfsManagement": "GTFS Yönetimi"
+  }
+}
