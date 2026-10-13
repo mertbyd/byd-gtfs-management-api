@@ -8,12 +8,15 @@ using Byd.CoreExtensions;
 
 namespace Byd.GtfsManagement;
 
+// islevi: GTFS HTTP katmaninin controller'larini ve lokalizasyon tabanini kaydeder.
+// sistemdeki gorevi: Modulun uclarini core modulunun HTTP katmaniyla birlikte yayinlar.
 [DependsOn(
     typeof(GtfsManagementApplicationContractsModule),
     typeof(CoreExtensionsHttpApiModule),
     typeof(AbpAspNetCoreMvcModule))]
 public class GtfsManagementHttpApiModule : AbpModule
 {
+    // Diger moduller yapilandirilmadan once MVC uygulama parcasini ekler.
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
         PreConfigure<IMvcBuilder>(mvcBuilder =>
@@ -22,6 +25,7 @@ public class GtfsManagementHttpApiModule : AbpModule
         });
     }
 
+    // Modulun servis ve secenek kayitlarini yapar.
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
         Configure<AbpLocalizationOptions>(options =>

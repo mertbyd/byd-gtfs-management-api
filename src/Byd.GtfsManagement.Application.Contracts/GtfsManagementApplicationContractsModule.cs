@@ -5,6 +5,8 @@ using Volo.Abp.Authorization;
 
 namespace Byd.GtfsManagement;
 
+// islevi: GTFS sozlesme katmaninin bagimliliklarini tanimlar.
+// sistemdeki gorevi: DTO, servis arayuzu, dogrulayici ve izin tanimlarini tasiyan katmanin modul sinifidir.
 [DependsOn(
     typeof(GtfsManagementDomainSharedModule),
     typeof(AbpDddApplicationContractsModule),
