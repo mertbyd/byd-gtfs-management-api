@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.FeedInfos;
 // islevi: FeedInfo liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Yayimci sorgusunun izinli alanlarini belirler.
 /// <summary>GTFS yayimci bilgisi filtrelerini tasir.</summary>
-public class FeedInfoFilter
+public class FeedInfoFilter : IFeedFilter
 {
     [DataTable(FeedInfoFilterFields.FeedId, FeedInfoFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

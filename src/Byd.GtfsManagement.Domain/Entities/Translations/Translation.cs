@@ -10,35 +10,32 @@ namespace Byd.GtfsManagement.Entities.Translations;
 /// <summary>GTFS ceviri kaydini temsil eder.</summary>
 public class Translation : AuditedAggregateRoot<Guid>, IGtfsEntity
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // Kayit bazli ceviride hedeflenen GTFS dis kayit kimligi.
-    public string? RecordId { get; internal set; }
+    public string? RecordId { get; protected internal set; }
 
     // Bilesik anahtarlar icin alt kayit kimligi.
-    public string? RecordSubId { get; internal set; }
+    public string? RecordSubId { get; protected internal set; }
 
     // Cevrilen GTFS tablosunun adi (orn: stops, routes).
-    public string TableName { get; internal set; } = default!;
+    public string TableName { get; protected internal set; } = default!;
 
     // Cevrilen alanin adi (orn: stop_name).
-    public string FieldName { get; internal set; } = default!;
+    public string FieldName { get; protected internal set; } = default!;
 
     // IETF BCP 47 dil kodu (orn: en, tr).
-    public string Language { get; internal set; } = default!;
+    public string Language { get; protected internal set; } = default!;
 
     // Cevrilmis metin degeri.
-    public string TranslationText { get; internal set; } = default!;
+    public string TranslationText { get; protected internal set; } = default!;
 
     // Deger bazli ceviride kaynak metin.
-    public string? FieldValue { get; internal set; }
+    public string? FieldValue { get; protected internal set; }
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
 
     // EF materialization icin bos kabuk kurar.
     protected Translation()
@@ -46,9 +43,8 @@ public class Translation : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam bilgilerini kurar.
-    public Translation(Guid id, Guid? tenantId, Guid feedId, string tableName, string fieldName, string language, string translationText) : base(id)
+    public Translation(Guid id, Guid feedId, string tableName, string fieldName, string language, string translationText) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
         TableName = tableName;
         FieldName = fieldName;

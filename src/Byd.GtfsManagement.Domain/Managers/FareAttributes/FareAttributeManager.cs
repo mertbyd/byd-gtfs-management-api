@@ -28,8 +28,7 @@ public class FareAttributeManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new FareAttribute(
-            GuidGenerator.Create(), feed.TenantId,
-            feed.Id, NormalizeRequiredText(model.GtfsFareId));
+            GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsFareId));
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }

@@ -10,10 +10,16 @@ namespace Byd.GtfsManagement.Mappers.Timeframes;
 /// <summary>GTFS zaman araligi DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class TimeframeMapper
-    : IGtfsCrudMapper<Timeframe, CreateTimeframeDto, UpdateTimeframeDto, TimeframeDto,
+    : IGtfsArchiveMapper<TimeframeImportDto, Timeframe>, IGtfsCrudMapper<Timeframe, CreateTimeframeDto, UpdateTimeframeDto, TimeframeDto,
         TimeframeCreateModel, TimeframeUpdateModel>
 {
     public partial TimeframeCreateModel Map(CreateTimeframeDto input);
     public partial TimeframeUpdateModel Map(UpdateTimeframeDto input);
     public partial TimeframeDto Map(Timeframe entity);
+
+    // CSV satirini entity'ye esler.
+    public partial Timeframe Map(TimeframeImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial TimeframeImportDto MapToImport(Timeframe entity);
 }

@@ -23,7 +23,7 @@ public class LocationGroupManager(
     {
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
-        var entity = new LocationGroup(GuidGenerator.Create(), feed.TenantId, feed.Id, NormalizeRequiredText(model.GtfsLocationGroupId));
+        var entity = new LocationGroup(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsLocationGroupId));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

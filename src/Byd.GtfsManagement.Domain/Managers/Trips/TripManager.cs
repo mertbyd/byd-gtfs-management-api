@@ -68,7 +68,7 @@ public class TripManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Trip(
-            GuidGenerator.Create(), feed.TenantId, feed.Id);
+            GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }

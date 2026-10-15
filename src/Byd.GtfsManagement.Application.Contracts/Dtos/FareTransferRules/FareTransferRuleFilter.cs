@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.FareTransferRules;
 // islevi: FareTransferRule liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Sorgunun izinli alanlarini belirler.
 /// <summary>GTFS ucret aktarma kurali filtrelerini tasir.</summary>
-public class FareTransferRuleFilter
+public class FareTransferRuleFilter : IFeedFilter
 {
     [DataTable(FareTransferRuleFilterFields.FeedId, FareTransferRuleFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

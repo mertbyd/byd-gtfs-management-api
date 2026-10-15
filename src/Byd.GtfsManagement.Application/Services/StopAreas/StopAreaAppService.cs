@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.StopAreas;
 
 namespace Byd.GtfsManagement.Services.StopAreas;
 
-// islevi: StopArea CRUD akisini ortak tabana baglar.
+// islevi: StopArea CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS durak bolge iliskisi CRUD servisini ortak tabana baglar.</summary>
 public class StopAreaAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         StopArea, CreateStopAreaDto, UpdateStopAreaDto, StopAreaDto, StopAreaFilter,
-        StopAreaCreateModel, StopAreaUpdateModel, StopAreaManager, IStopAreaRepository, StopAreaMapper>,
+        StopAreaCreateModel, StopAreaUpdateModel, StopAreaManager, IStopAreaRepository, StopAreaMapper, StopAreaImportDto>,
         IStopAreaAppService
 {
 }

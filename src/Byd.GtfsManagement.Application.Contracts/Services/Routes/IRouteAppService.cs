@@ -12,4 +12,6 @@ public interface IRouteAppService
     : IGtfsCrudAppService<CreateRouteDto, UpdateRouteDto, RouteDto, RouteFilter>
 {
     Task<RouteDetailDto> GetDetailAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<RouteDetailDto> GetDetailForFeedAsync(
+        Guid feedId, Guid id, CancellationToken cancellationToken = default);
 }

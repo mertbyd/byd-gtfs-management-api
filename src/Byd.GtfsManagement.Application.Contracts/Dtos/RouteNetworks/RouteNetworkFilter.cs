@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.RouteNetworks;
 // islevi: RouteNetwork liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Sorgunun izinli alanlarini belirler.
 /// <summary>GTFS hat ag iliskisi filtrelerini tasir.</summary>
-public class RouteNetworkFilter
+public class RouteNetworkFilter : IFeedFilter
 {
     [DataTable(RouteNetworkFilterFields.FeedId, RouteNetworkFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

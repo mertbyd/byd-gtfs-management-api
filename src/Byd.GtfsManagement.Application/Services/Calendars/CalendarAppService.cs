@@ -7,11 +7,11 @@ using Byd.GtfsManagement.Models.Calendars;
 
 namespace Byd.GtfsManagement.Services.Calendars;
 
-// islevi: Calendar kayitlarinin CRUD akisini ortak tabana baglar.
+// islevi: Calendar kayitlarinin CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli baglari bildirir; dogrulama, Manager, Mapperly ve kalici yazma tabanda kalir.
 public class CalendarAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         Calendar, CreateCalendarDto, UpdateCalendarDto, CalendarDto, CalendarFilter,
-        CalendarCreateModel, CalendarUpdateModel, CalendarManager, ICalendarRepository, CalendarMapper>, ICalendarAppService
+        CalendarCreateModel, CalendarUpdateModel, CalendarManager, ICalendarRepository, CalendarMapper, CalendarImportDto>, ICalendarAppService
 {
 }

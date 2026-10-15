@@ -5,7 +5,7 @@ namespace Byd.GtfsManagement.Consts;
 public static class TripConsts
 {
     public const string TableName = "Trips";
-    public const string GtfsTripIdIndex = "IX_Trips_Tenant_Feed_GtfsTripId";
+    public const string GtfsTripIdIndex = "IX_Trips_Feed_GtfsTripId";
     public const string RouteIndex = "IX_Trips_RouteId";
     public const string ServiceIndex = "IX_Trips_ServiceId";
 

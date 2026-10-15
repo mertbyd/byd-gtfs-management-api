@@ -8,8 +8,14 @@ namespace Byd.GtfsManagement.Dtos.Levels;
 /// <summary>GTFS kat cevap alanlarini tasir.</summary>
 public class LevelDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
     public string GtfsLevelId { get; set; } = default!;
     public double LevelIndex { get; set; }
     public string? Name { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace Byd.GtfsManagement.Dtos.FeedInfos;
+namespace Byd.GtfsManagement.Dtos.FeedInfos;
 
 // islevi: FeedInfo ekleme ve guncelleme istekleri icin ortak GTFS alanlarini tasir.
 // sistemdeki gorevi: HTTP girdi sozlesmesini tanimlar.

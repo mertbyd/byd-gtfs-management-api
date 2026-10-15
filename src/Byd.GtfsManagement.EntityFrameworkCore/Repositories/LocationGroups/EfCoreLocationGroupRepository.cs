@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS konum grubu EF sorgularini uygular.</summary>
 [ExposeServices(typeof(ILocationGroupRepository))]
 public class EfCoreLocationGroupRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, LocationGroup, Guid>(dbContextProvider), ILocationGroupRepository
+    : EfGtfsRepository<LocationGroup>(dbContextProvider), ILocationGroupRepository
 {
 }

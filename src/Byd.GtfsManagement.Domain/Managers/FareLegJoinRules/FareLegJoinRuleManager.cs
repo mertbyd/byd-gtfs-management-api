@@ -23,7 +23,7 @@ public class FareLegJoinRuleManager(
     {
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
-        var entity = new FareLegJoinRule(GuidGenerator.Create(), feed.TenantId, feed.Id);
+        var entity = new FareLegJoinRule(GuidGenerator.Create(), feed.Id);
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

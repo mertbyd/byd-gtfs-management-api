@@ -10,7 +10,7 @@ namespace Byd.GtfsManagement.Mappers.Pathways;
 /// <summary>GTFS yuruyus yolu DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class PathwayMapper
-    : IGtfsCrudMapper<Pathway, CreatePathwayDto, UpdatePathwayDto, PathwayDto,
+    : IGtfsArchiveMapper<PathwayImportDto, Pathway>, IGtfsCrudMapper<Pathway, CreatePathwayDto, UpdatePathwayDto, PathwayDto,
         PathwayCreateModel, PathwayUpdateModel>
 {
     // Olusturma istegini domain modeline donusturur.
@@ -21,4 +21,10 @@ public partial class PathwayMapper
 
     // Kaydi public cevap sozlesmesine donusturur.
     public partial PathwayDto Map(Pathway entity);
+
+    // CSV satirini entity'ye esler.
+    public partial Pathway Map(PathwayImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial PathwayImportDto MapToImport(Pathway entity);
 }

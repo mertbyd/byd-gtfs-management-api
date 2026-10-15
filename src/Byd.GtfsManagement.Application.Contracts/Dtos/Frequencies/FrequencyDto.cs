@@ -7,9 +7,15 @@ namespace Byd.GtfsManagement.Dtos.Frequencies;
 // FeedId kapsam anahtaridir; Feed adi Feed yonetiminden okunur.
 public class FrequencyDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
     public Guid TripId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
     public string TripName { get; set; } = default!;
     public string StartTime { get; set; } = default!;
     public string EndTime { get; set; } = default!;

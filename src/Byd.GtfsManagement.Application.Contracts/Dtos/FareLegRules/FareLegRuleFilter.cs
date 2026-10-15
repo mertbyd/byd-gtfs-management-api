@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.FareLegRules;
 // islevi: FareLegRule liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Sorgunun izinli alanlarini belirler.
 /// <summary>GTFS ucret etap kurali filtrelerini tasir.</summary>
-public class FareLegRuleFilter
+public class FareLegRuleFilter : IFeedFilter
 {
     [DataTable(FareLegRuleFilterFields.FeedId, FareLegRuleFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

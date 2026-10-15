@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.FareLegJoinRules;
 
 namespace Byd.GtfsManagement.Services.FareLegJoinRules;
 
-// islevi: FareLegJoinRule CRUD akisini ortak tabana baglar.
+// islevi: FareLegJoinRule CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS ucret etap birlestirme kurali CRUD servisini ortak tabana baglar.</summary>
 public class FareLegJoinRuleAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         FareLegJoinRule, CreateFareLegJoinRuleDto, UpdateFareLegJoinRuleDto, FareLegJoinRuleDto, FareLegJoinRuleFilter,
-        FareLegJoinRuleCreateModel, FareLegJoinRuleUpdateModel, FareLegJoinRuleManager, IFareLegJoinRuleRepository, FareLegJoinRuleMapper>,
+        FareLegJoinRuleCreateModel, FareLegJoinRuleUpdateModel, FareLegJoinRuleManager, IFareLegJoinRuleRepository, FareLegJoinRuleMapper, FareLegJoinRuleImportDto>,
         IFareLegJoinRuleAppService
 {
 }

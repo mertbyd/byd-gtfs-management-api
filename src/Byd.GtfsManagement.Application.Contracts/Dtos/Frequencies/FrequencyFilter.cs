@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.Frequencies;
 // islevi: Frequency liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Siklik sorgusunun izinli alanlarini belirler.
 /// <summary>Sefer sikligi filtrelerini tasir.</summary>
-public class FrequencyFilter
+public class FrequencyFilter : IFeedFilter
 {
     [DataTable(FrequencyFilterFields.FeedId, FrequencyFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

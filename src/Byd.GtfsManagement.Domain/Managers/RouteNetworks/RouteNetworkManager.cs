@@ -24,7 +24,7 @@ public class RouteNetworkManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new RouteNetwork(
-            GuidGenerator.Create(), feed.TenantId, feed.Id,
+            GuidGenerator.Create(), feed.Id,
             NormalizeRequiredText(model.GtfsNetworkId), NormalizeRequiredText(model.GtfsRouteId));
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

@@ -10,7 +10,7 @@ namespace Byd.GtfsManagement.Mappers.Translations;
 /// <summary>GTFS ceviri DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class TranslationMapper
-    : IGtfsCrudMapper<Translation, CreateTranslationDto, UpdateTranslationDto, TranslationDto,
+    : IGtfsArchiveMapper<TranslationImportDto, Translation>, IGtfsCrudMapper<Translation, CreateTranslationDto, UpdateTranslationDto, TranslationDto,
         TranslationCreateModel, TranslationUpdateModel>
 {
     // Olusturma istegini domain modeline donusturur.
@@ -21,4 +21,10 @@ public partial class TranslationMapper
 
     // Kaydi public cevap sozlesmesine donusturur.
     public partial TranslationDto Map(Translation entity);
+
+    // CSV satirini entity'ye esler.
+    public partial Translation Map(TranslationImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial TranslationImportDto MapToImport(Translation entity);
 }

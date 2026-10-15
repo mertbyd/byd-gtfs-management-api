@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Byd.CoreExtensions.Repositories;
 using Byd.GtfsManagement.Entities.FeedInfos;
 using Byd.GtfsManagement.Interfaces.FeedInfos;
@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS yayimci bilgisi EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IFeedInfoRepository))]
 public class EfCoreFeedInfoRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, FeedInfo, Guid>(dbContextProvider), IFeedInfoRepository
+    : EfGtfsRepository<FeedInfo>(dbContextProvider), IFeedInfoRepository
 {
 }

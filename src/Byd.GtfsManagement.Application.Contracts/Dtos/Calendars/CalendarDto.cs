@@ -7,9 +7,15 @@ namespace Byd.GtfsManagement.Dtos.Calendars;
 // FeedId kapsam anahtaridir; Feed adi Feed yonetiminden okunur.
 public class CalendarDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
     public Guid ServiceId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
     public string ServiceName { get; set; } = default!;
     public bool Monday { get; set; }
     public bool Tuesday { get; set; }

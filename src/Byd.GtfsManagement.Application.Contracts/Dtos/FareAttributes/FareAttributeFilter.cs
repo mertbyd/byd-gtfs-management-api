@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.FareAttributes;
 // islevi: FareAttribute liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Ucret ozelligi sorgusunun izinli alanlarini belirler.
 /// <summary>GTFS ucret ozelligi filtrelerini tasir.</summary>
-public class FareAttributeFilter
+public class FareAttributeFilter : IFeedFilter
 {
     [DataTable(FareAttributeFilterFields.FeedId, FareAttributeFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

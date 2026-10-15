@@ -30,8 +30,7 @@ public class FareRuleManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new FareRule(
-            GuidGenerator.Create(), feed.TenantId,
-            feed.Id, model.FareAttributeId);
+            GuidGenerator.Create(), feed.Id, model.FareAttributeId);
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }

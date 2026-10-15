@@ -10,7 +10,7 @@ namespace Byd.GtfsManagement.Mappers.FareRules;
 /// <summary>GTFS ucret kurali DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class FareRuleMapper
-    : IGtfsCrudMapper<FareRule, CreateFareRuleDto, UpdateFareRuleDto, FareRuleDto,
+    : IGtfsArchiveMapper<FareRuleImportDto, FareRule>, IGtfsCrudMapper<FareRule, CreateFareRuleDto, UpdateFareRuleDto, FareRuleDto,
         FareRuleCreateModel, FareRuleUpdateModel>
 {
     // Olusturma istegini domain modeline donusturur.
@@ -21,4 +21,10 @@ public partial class FareRuleMapper
 
     // Kaydi public cevap sozlesmesine donusturur.
     public partial FareRuleDto Map(FareRule entity);
+
+    // CSV satirini entity'ye esler.
+    public partial FareRule Map(FareRuleImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial FareRuleImportDto MapToImport(FareRule entity);
 }

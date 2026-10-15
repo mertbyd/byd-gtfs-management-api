@@ -7,11 +7,11 @@ using Byd.GtfsManagement.Models.CalendarDates;
 
 namespace Byd.GtfsManagement.Services.CalendarDates;
 
-// islevi: CalendarDate kayitlarinin CRUD akisini ortak tabana baglar.
+// islevi: CalendarDate kayitlarinin CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli baglari bildirir; dogrulama, Manager, Mapperly ve kalici yazma tabanda kalir.
 public class CalendarDateAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         CalendarDate, CreateCalendarDateDto, UpdateCalendarDateDto, CalendarDateDto, CalendarDateFilter,
-        CalendarDateCreateModel, CalendarDateUpdateModel, CalendarDateManager, ICalendarDateRepository, CalendarDateMapper>, ICalendarDateAppService
+        CalendarDateCreateModel, CalendarDateUpdateModel, CalendarDateManager, ICalendarDateRepository, CalendarDateMapper, CalendarDateImportDto>, ICalendarDateAppService
 {
 }

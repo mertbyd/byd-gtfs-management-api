@@ -24,12 +24,14 @@ public sealed class PathwayConfiguration : IEntityTypeConfiguration<Pathway>
 
         builder.HasOne(value => value.FromStop)
             .WithMany()
-            .HasForeignKey(value => value.FromStopId)
+            .HasForeignKey(value => new { value.FeedId, value.FromStopId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(value => value.ToStop)
             .WithMany()
-            .HasForeignKey(value => value.ToStopId)
+            .HasForeignKey(value => new { value.FeedId, value.ToStopId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasIndex(value => new { value.FeedId, value.GtfsPathwayId })

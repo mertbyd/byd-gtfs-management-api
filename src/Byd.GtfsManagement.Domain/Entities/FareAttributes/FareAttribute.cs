@@ -9,43 +9,39 @@ namespace Byd.GtfsManagement.Entities.FareAttributes;
 // islevi: fare_attributes.txt ucret sinifini, fiyat, para birimi ve transfer kurallarini saklar.
 // sistemdeki gorevi: GTFS bilet ve ucret yapilandirmalarini Feed kapsaminda tutar.
 /// <summary>GTFS ucret ozelligini temsil eder.</summary>
-public class FareAttribute : AuditedAggregateRoot<Guid>, IGtfsEntity
+public class FareAttribute : AuditedAggregateRoot<Guid>, IGtfsEntity, IHasGtfsId
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
-
-    // GTFS fare_id; ucret sinifini tanimlayan dis kimlik.
-    public string GtfsFareId { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // Istege bagli bagli ajans kimligi.
-    public Guid? AgencyId { get; internal set; }
+    public Guid? AgencyId { get; protected internal set; }
 
-    // Bagli ajans kaydi.
-    public Agency? Agency { get; internal set; }
+    // GTFS fare_id; ucret sinifini tanimlayan dis kimlik.
+    public string GtfsFareId { get; protected internal set; } = default!;
 
     // Ucret tutari.
-    public decimal Price { get; internal set; }
+    public decimal Price { get; protected internal set; }
 
     // ISO 4217 para birimi kodu (orn: TRY, USD).
-    public string CurrencyType { get; internal set; } = default!;
+    public string CurrencyType { get; protected internal set; } = default!;
 
     // GTFS payment_method; odemenin yapilacagi an (0: arac ici, 1: binis oncesi).
-    public int PaymentMethod { get; internal set; }
+    public int PaymentMethod { get; protected internal set; }
 
     // GTFS transfers; izin verilen aktarma adedi (0, 1, 2 veya sinirsiz icin null).
-    public int? Transfers { get; internal set; }
+    public int? Transfers { get; protected internal set; }
 
     // Aktarmanin gecerlilik suresi (saniye).
-    public int? TransferDuration { get; internal set; }
+    public int? TransferDuration { get; protected internal set; }
 
     // Baglanan kayitlarin cevabinda gosterilen ad; GTFS ucret sinifina ayri ad vermedigi icin fare_id'dir. Kolon degildir.
     public string Name => GtfsFareId;
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
+    // Bagli ajans kaydi.
+    public Agency? Agency { get; protected internal set; }
 
     // EF materialization icin bos kabuk kurar.
     protected FareAttribute()
@@ -53,10 +49,12 @@ public class FareAttribute : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam bilgilerini kurar.
-    public FareAttribute(Guid id, Guid? tenantId, Guid feedId, string gtfsFareId) : base(id)
+    public FareAttribute(Guid id, Guid feedId, string gtfsFareId) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
         GtfsFareId = gtfsFareId;
     }
+
+    // Disa aktarimin bu kayda bakan yabanci anahtarlari cevirdigi GTFS kimligini public setter acmadan verir.
+    string? IHasGtfsId.GtfsId => GtfsFareId;
 }

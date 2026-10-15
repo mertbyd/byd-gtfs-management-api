@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.FareRules;
 
 namespace Byd.GtfsManagement.Services.FareRules;
 
-// islevi: FareRule CRUD akisini ortak tabana baglar.
+// islevi: FareRule CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS ucret kurali CRUD servisini ortak tabana baglar.</summary>
 public class FareRuleAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         FareRule, CreateFareRuleDto, UpdateFareRuleDto, FareRuleDto, FareRuleFilter,
-        FareRuleCreateModel, FareRuleUpdateModel, FareRuleManager, IFareRuleRepository, FareRuleMapper>,
+        FareRuleCreateModel, FareRuleUpdateModel, FareRuleManager, IFareRuleRepository, FareRuleMapper, FareRuleImportDto>,
         IFareRuleAppService
 {
 }

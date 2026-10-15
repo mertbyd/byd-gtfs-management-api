@@ -7,9 +7,15 @@ namespace Byd.GtfsManagement.Dtos.FareAttributes;
 // FeedId kapsam anahtaridir; Feed adi Feed yonetiminden okunur.
 public class FareAttributeDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
     public Guid? AgencyId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
     public string? AgencyName { get; set; }
     public string GtfsFareId { get; set; } = default!;
     public decimal Price { get; set; }

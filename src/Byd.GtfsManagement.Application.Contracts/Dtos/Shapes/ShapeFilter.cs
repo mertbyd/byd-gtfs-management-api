@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.Shapes;
 // islevi: Shape liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Sekil sorgusunun izinli alanlarini belirler.
 /// <summary>GTFS sekil filtrelerini tasir.</summary>
-public class ShapeFilter
+public class ShapeFilter : IFeedFilter
 {
     [DataTable(ShapeFilterFields.FeedId, ShapeFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

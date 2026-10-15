@@ -19,7 +19,8 @@ public sealed class CalendarConfiguration : IEntityTypeConfiguration<Calendar>
             .HasForeignKey(calendar => calendar.FeedId)
             .OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(calendar => calendar.Service).WithMany()
-            .HasForeignKey(calendar => calendar.ServiceId)
+            .HasForeignKey(calendar => new { calendar.FeedId, calendar.ServiceId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .OnDelete(DeleteBehavior.Restrict);
         builder.HasIndex(calendar => calendar.ServiceId)
             .IsUnique().HasDatabaseName(CalendarConsts.ServiceIndex);

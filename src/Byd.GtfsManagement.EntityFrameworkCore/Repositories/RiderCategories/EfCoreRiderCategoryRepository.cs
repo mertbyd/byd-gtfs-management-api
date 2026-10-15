@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS yolcu kategorisi EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IRiderCategoryRepository))]
 public class EfCoreRiderCategoryRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, RiderCategory, Guid>(dbContextProvider), IRiderCategoryRepository
+    : EfGtfsRepository<RiderCategory>(dbContextProvider), IRiderCategoryRepository
 {
 }

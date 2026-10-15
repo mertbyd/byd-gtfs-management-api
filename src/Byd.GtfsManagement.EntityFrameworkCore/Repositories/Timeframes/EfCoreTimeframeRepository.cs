@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS zaman araligi EF sorgularini uygular.</summary>
 [ExposeServices(typeof(ITimeframeRepository))]
 public class EfCoreTimeframeRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Timeframe, Guid>(dbContextProvider), ITimeframeRepository
+    : EfGtfsRepository<Timeframe>(dbContextProvider), ITimeframeRepository
 {
 }

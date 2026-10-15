@@ -20,10 +20,10 @@ public sealed class AgencyConfiguration : IEntityTypeConfiguration<Agency>
             .HasForeignKey(agency => agency.FeedId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(agency => new { agency.TenantId, agency.FeedId, agency.GtfsAgencyId })
+        builder.HasIndex(agency => new { agency.FeedId, agency.GtfsAgencyId })
             .IsUnique().HasFilter(AgencyConsts.GtfsAgencyIdIndexFilter)
             .HasDatabaseName(AgencyConsts.GtfsAgencyIdIndex);
-        builder.HasIndex(agency => new { agency.TenantId, agency.FeedId })
+        builder.HasIndex(agency => new { agency.FeedId })
             .IsUnique().HasFilter(AgencyConsts.MissingGtfsAgencyIdIndexFilter)
             .HasDatabaseName(AgencyConsts.MissingGtfsAgencyIdIndex);
     }

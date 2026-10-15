@@ -5,8 +5,11 @@ namespace Byd.GtfsManagement.Dtos.BookingRules;
 /// <summary>GTFS rezervasyon kurali ortak istek alanlarini tasir.</summary>
 public abstract class BookingRuleInputDto
 {
-    public string GtfsBookingRuleId { get; set; } = default!;
+    // Foreign Keys
     public string? PriorNoticeServiceId { get; set; }
+
+    // Table Columns / Data
+    public string GtfsBookingRuleId { get; set; } = default!;
     public int BookingType { get; set; }
     public int? PriorNoticeDurationMin { get; set; }
     public int? PriorNoticeDurationMax { get; set; }

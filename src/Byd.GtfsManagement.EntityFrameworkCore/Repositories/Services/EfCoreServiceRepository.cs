@@ -20,17 +20,17 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 // sistemdeki gorevi: Core'un tenant ve aktiflik filtrelerini kullanir.
 [ExposeServices(typeof(IServiceRepository))]
 public class EfCoreServiceRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Service, Guid>(dbContextProvider), IServiceRepository
+    : EfGtfsRepository<Service>(dbContextProvider), IServiceRepository
 {
     // Verilen gunde calisan servisleri calendar haftalik kurali ve calendar_dates istisnalariyla bulur.
-    public virtual async Task<List<Guid>> GetActiveIdsAsync(Guid feedId, DateOnly date, CancellationToken cancellationToken = default)
+    public virtual async Task<List<Guid>> GetActiveIdsAsync(Guid? feedId, DateOnly date, CancellationToken cancellationToken = default)
     {
         var dbContext = await GetDbContextAsync();
         var weekly = dbContext.Set<Calendar>()
-            .Where(calendar => calendar.FeedId == feedId && calendar.StartDate <= date && calendar.EndDate >= date)
+            .Where(calendar => (feedId == null || calendar.FeedId == feedId) && calendar.StartDate <= date && calendar.EndDate >= date)
             .Where(RunsOn(date.DayOfWeek))
             .Select(calendar => calendar.ServiceId);
-        var exceptions = dbContext.Set<CalendarDate>().Where(exception => exception.FeedId == feedId && exception.Date == date);
+        var exceptions = dbContext.Set<CalendarDate>().Where(exception => (feedId == null || exception.FeedId == feedId) && exception.Date == date);
         var added = exceptions.Where(exception => exception.ExceptionType.Code == ExceptionTypeConsts.ServiceAddedCode)
             .Select(exception => exception.ServiceId);
         var removed = exceptions.Where(exception => exception.ExceptionType.Code == ExceptionTypeConsts.ServiceRemovedCode)

@@ -24,8 +24,7 @@ public class LevelManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Level(
-            GuidGenerator.Create(), feed.TenantId,
-            feed.Id, NormalizeRequiredText(model.GtfsLevelId));
+            GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsLevelId));
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }

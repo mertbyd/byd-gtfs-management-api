@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.RouteNetworks;
 
 namespace Byd.GtfsManagement.Services.RouteNetworks;
 
-// islevi: RouteNetwork CRUD akisini ortak tabana baglar.
+// islevi: RouteNetwork CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS hat ag iliskisi CRUD servisini ortak tabana baglar.</summary>
 public class RouteNetworkAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         RouteNetwork, CreateRouteNetworkDto, UpdateRouteNetworkDto, RouteNetworkDto, RouteNetworkFilter,
-        RouteNetworkCreateModel, RouteNetworkUpdateModel, RouteNetworkManager, IRouteNetworkRepository, RouteNetworkMapper>,
+        RouteNetworkCreateModel, RouteNetworkUpdateModel, RouteNetworkManager, IRouteNetworkRepository, RouteNetworkMapper, RouteNetworkImportDto>,
         IRouteNetworkAppService
 {
 }

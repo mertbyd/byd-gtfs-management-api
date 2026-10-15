@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.BookingRules;
 
 namespace Byd.GtfsManagement.Services.BookingRules;
 
-// islevi: BookingRule CRUD akisini ortak tabana baglar.
+// islevi: BookingRule CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS rezervasyon kurali CRUD servisini ortak tabana baglar.</summary>
 public class BookingRuleAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         BookingRule, CreateBookingRuleDto, UpdateBookingRuleDto, BookingRuleDto, BookingRuleFilter,
-        BookingRuleCreateModel, BookingRuleUpdateModel, BookingRuleManager, IBookingRuleRepository, BookingRuleMapper>,
+        BookingRuleCreateModel, BookingRuleUpdateModel, BookingRuleManager, IBookingRuleRepository, BookingRuleMapper, BookingRuleImportDto>,
         IBookingRuleAppService
 {
 }

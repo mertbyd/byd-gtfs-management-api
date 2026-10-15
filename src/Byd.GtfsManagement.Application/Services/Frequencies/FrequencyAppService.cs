@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.Frequencies;
 
 namespace Byd.GtfsManagement.Services.Frequencies;
 
-// islevi: Frequency CRUD akisini ortak tabana baglar.
+// islevi: Frequency CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>Sefer sikligi CRUD servisini ortak tabana baglar.</summary>
 public class FrequencyAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         Frequency, CreateFrequencyDto, UpdateFrequencyDto, FrequencyDto, FrequencyFilter,
-        FrequencyCreateModel, FrequencyUpdateModel, FrequencyManager, IFrequencyRepository, FrequencyMapper>,
+        FrequencyCreateModel, FrequencyUpdateModel, FrequencyManager, IFrequencyRepository, FrequencyMapper, FrequencyImportDto>,
         IFrequencyAppService
 {
 }

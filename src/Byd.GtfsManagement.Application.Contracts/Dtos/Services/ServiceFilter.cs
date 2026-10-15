@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -6,7 +7,7 @@ namespace Byd.GtfsManagement.Dtos.Services;
 
 // islevi: Service liste ucunun filtre alanlarini kararli tel adi ve property yoluyla tanitir.
 // sistemdeki gorevi: DataTable motorunun kabul ettigi tipli filtre izin listesidir.
-public class ServiceFilter
+public class ServiceFilter : IFeedFilter
 {
     [DataTable(ServiceFilterFields.FeedId, ServiceFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

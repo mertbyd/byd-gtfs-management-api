@@ -10,10 +10,16 @@ namespace Byd.GtfsManagement.Mappers.FareLegRules;
 /// <summary>GTFS ucret etap kurali DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class FareLegRuleMapper
-    : IGtfsCrudMapper<FareLegRule, CreateFareLegRuleDto, UpdateFareLegRuleDto, FareLegRuleDto,
+    : IGtfsArchiveMapper<FareLegRuleImportDto, FareLegRule>, IGtfsCrudMapper<FareLegRule, CreateFareLegRuleDto, UpdateFareLegRuleDto, FareLegRuleDto,
         FareLegRuleCreateModel, FareLegRuleUpdateModel>
 {
     public partial FareLegRuleCreateModel Map(CreateFareLegRuleDto input);
     public partial FareLegRuleUpdateModel Map(UpdateFareLegRuleDto input);
     public partial FareLegRuleDto Map(FareLegRule entity);
+
+    // CSV satirini entity'ye esler.
+    public partial FareLegRule Map(FareLegRuleImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial FareLegRuleImportDto MapToImport(FareLegRule entity);
 }

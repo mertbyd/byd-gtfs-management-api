@@ -17,4 +17,9 @@ public interface IStopAppService
     Task<StopDetailDto> GetDetailAsync(Guid id, CancellationToken cancellationToken = default);
     Task<List<StopDepartureDto>> GetDeparturesAsync(
         Guid id, StopDepartureInputDto input, CancellationToken cancellationToken = default);
+    Task<StopDetailDto> GetDetailForFeedAsync(
+        Guid feedId, Guid id, CancellationToken cancellationToken = default);
+    Task<List<StopDto>> GetMapForFeedAsync(Guid feedId, CancellationToken cancellationToken = default);
+    Task<List<StopDepartureDto>> GetDeparturesForFeedAsync(
+        Guid feedId, Guid id, StopDepartureInputDto input, CancellationToken cancellationToken = default);
 }

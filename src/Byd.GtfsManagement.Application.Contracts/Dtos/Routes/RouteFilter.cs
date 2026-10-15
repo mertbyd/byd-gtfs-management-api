@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -6,7 +7,7 @@ namespace Byd.GtfsManagement.Dtos.Routes;
 
 // islevi: Route liste ucunun filtre alanlarini kararli tel adi ve property yoluyla tanitir.
 // sistemdeki gorevi: DataTable motorunun kabul ettigi tipli filtre izin listesidir.
-public class RouteFilter
+public class RouteFilter : IFeedFilter
 {
     [DataTable(RouteFilterFields.FeedId, RouteFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

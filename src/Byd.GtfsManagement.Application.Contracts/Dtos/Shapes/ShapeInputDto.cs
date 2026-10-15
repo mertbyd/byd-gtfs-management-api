@@ -1,4 +1,4 @@
-﻿namespace Byd.GtfsManagement.Dtos.Shapes;
+namespace Byd.GtfsManagement.Dtos.Shapes;
 
 // islevi: Shape ekleme ve guncelleme istekleri icin ortak GTFS alanlarini tasir.
 // sistemdeki gorevi: HTTP girdi sozlesmesini tanimlar.

@@ -10,10 +10,16 @@ namespace Byd.GtfsManagement.Mappers.FareTransferRules;
 /// <summary>GTFS ucret aktarma kurali DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class FareTransferRuleMapper
-    : IGtfsCrudMapper<FareTransferRule, CreateFareTransferRuleDto, UpdateFareTransferRuleDto, FareTransferRuleDto,
+    : IGtfsArchiveMapper<FareTransferRuleImportDto, FareTransferRule>, IGtfsCrudMapper<FareTransferRule, CreateFareTransferRuleDto, UpdateFareTransferRuleDto, FareTransferRuleDto,
         FareTransferRuleCreateModel, FareTransferRuleUpdateModel>
 {
     public partial FareTransferRuleCreateModel Map(CreateFareTransferRuleDto input);
     public partial FareTransferRuleUpdateModel Map(UpdateFareTransferRuleDto input);
     public partial FareTransferRuleDto Map(FareTransferRule entity);
+
+    // CSV satirini entity'ye esler.
+    public partial FareTransferRule Map(FareTransferRuleImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial FareTransferRuleImportDto MapToImport(FareTransferRule entity);
 }

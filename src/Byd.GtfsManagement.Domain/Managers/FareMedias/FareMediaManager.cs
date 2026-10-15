@@ -23,7 +23,7 @@ public class FareMediaManager(
     {
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
-        var entity = new FareMedia(GuidGenerator.Create(), feed.TenantId, feed.Id, NormalizeRequiredText(model.GtfsFareMediaId), model.FareMediaType);
+        var entity = new FareMedia(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsFareMediaId), model.FareMediaType);
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

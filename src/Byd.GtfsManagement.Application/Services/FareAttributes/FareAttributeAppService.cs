@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.FareAttributes;
 
 namespace Byd.GtfsManagement.Services.FareAttributes;
 
-// islevi: FareAttribute CRUD akisini ortak tabana baglar.
+// islevi: FareAttribute CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS ucret ozelligi CRUD servisini ortak tabana baglar.</summary>
 public class FareAttributeAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         FareAttribute, CreateFareAttributeDto, UpdateFareAttributeDto, FareAttributeDto, FareAttributeFilter,
-        FareAttributeCreateModel, FareAttributeUpdateModel, FareAttributeManager, IFareAttributeRepository, FareAttributeMapper>,
+        FareAttributeCreateModel, FareAttributeUpdateModel, FareAttributeManager, IFareAttributeRepository, FareAttributeMapper, FareAttributeImportDto>,
         IFareAttributeAppService
 {
 }

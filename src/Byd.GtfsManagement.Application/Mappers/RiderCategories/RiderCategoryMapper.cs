@@ -10,10 +10,16 @@ namespace Byd.GtfsManagement.Mappers.RiderCategories;
 /// <summary>GTFS yolcu kategorisi DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class RiderCategoryMapper
-    : IGtfsCrudMapper<RiderCategory, CreateRiderCategoryDto, UpdateRiderCategoryDto, RiderCategoryDto,
+    : IGtfsArchiveMapper<RiderCategoryImportDto, RiderCategory>, IGtfsCrudMapper<RiderCategory, CreateRiderCategoryDto, UpdateRiderCategoryDto, RiderCategoryDto,
         RiderCategoryCreateModel, RiderCategoryUpdateModel>
 {
     public partial RiderCategoryCreateModel Map(CreateRiderCategoryDto input);
     public partial RiderCategoryUpdateModel Map(UpdateRiderCategoryDto input);
     public partial RiderCategoryDto Map(RiderCategory entity);
+
+    // CSV satirini entity'ye esler.
+    public partial RiderCategory Map(RiderCategoryImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial RiderCategoryImportDto MapToImport(RiderCategory entity);
 }

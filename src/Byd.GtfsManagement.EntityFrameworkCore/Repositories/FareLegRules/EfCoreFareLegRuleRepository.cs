@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS ucret etap kurali EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IFareLegRuleRepository))]
 public class EfCoreFareLegRuleRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, FareLegRule, Guid>(dbContextProvider), IFareLegRuleRepository
+    : EfGtfsRepository<FareLegRule>(dbContextProvider), IFareLegRuleRepository
 {
 }

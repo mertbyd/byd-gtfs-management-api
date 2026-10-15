@@ -26,17 +26,23 @@ public sealed class TransferConfiguration : IEntityTypeConfiguration<Transfer>
         builder.HasOne(value => value.Feed).WithMany()
             .HasForeignKey(value => value.FeedId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(value => value.FromStop).WithMany()
-            .HasForeignKey(value => value.FromStopId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(value => new { value.FeedId, value.FromStopId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id }).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(value => value.ToStop).WithMany()
-            .HasForeignKey(value => value.ToStopId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(value => new { value.FeedId, value.ToStopId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id }).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(value => value.FromRoute).WithMany()
-            .HasForeignKey(value => value.FromRouteId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(value => new { value.FeedId, value.FromRouteId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id }).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(value => value.ToRoute).WithMany()
-            .HasForeignKey(value => value.ToRouteId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(value => new { value.FeedId, value.ToRouteId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id }).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(value => value.FromTrip).WithMany()
-            .HasForeignKey(value => value.FromTripId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(value => new { value.FeedId, value.FromTripId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id }).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(value => value.ToTrip).WithMany()
-            .HasForeignKey(value => value.ToTripId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(value => new { value.FeedId, value.ToTripId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id }).OnDelete(DeleteBehavior.Restrict);
     }
 
     // Bos GTFS anahtar parcaciklarini esit sayarak satir tekilligini korur.

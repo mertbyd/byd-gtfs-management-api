@@ -24,8 +24,7 @@ public class TranslationManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Translation(
-            GuidGenerator.Create(), feed.TenantId,
-            feed.Id, NormalizeRequiredText(model.TableName), NormalizeRequiredText(model.FieldName),
+            GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.TableName), NormalizeRequiredText(model.FieldName),
             NormalizeRequiredText(model.Language), NormalizeRequiredText(model.TranslationText));
         ApplyTargets(entity, model);
         await CheckTranslationUniqueAsync(entity, cancellationToken);

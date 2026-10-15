@@ -7,13 +7,19 @@ namespace Byd.GtfsManagement.Dtos.Attributions;
 // FeedId kapsam anahtaridir; Feed adi Feed yonetiminden okunur.
 public class AttributionDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
     public Guid? AgencyId { get; set; }
-    public string? AgencyName { get; set; }
     public Guid? RouteId { get; set; }
-    public string? RouteName { get; set; }
     public Guid? TripId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
+    public string? AgencyName { get; set; }
+    public string? RouteName { get; set; }
     public string? TripName { get; set; }
     public string? GtfsAttributionId { get; set; }
     public string OrganizationName { get; set; } = default!;

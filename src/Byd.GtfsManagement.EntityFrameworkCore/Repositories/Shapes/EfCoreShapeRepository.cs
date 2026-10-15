@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -17,7 +17,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS sekil EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IShapeRepository))]
 public class EfCoreShapeRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Shape, Guid>(dbContextProvider), IShapeRepository
+    : EfGtfsRepository<Shape>(dbContextProvider), IShapeRepository
 {
     // Feed'deki shape_id'nin noktalarini sira numarasina gore getirir.
     public virtual async Task<List<Shape>> GetPointsAsync(

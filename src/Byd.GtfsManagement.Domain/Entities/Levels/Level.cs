@@ -8,25 +8,22 @@ namespace Byd.GtfsManagement.Entities.Levels;
 // islevi: levels.txt istasyon kat bilgilerini saklar.
 // sistemdeki gorevi: Durak ve yuruyus yolu baglantilarinin dikey konumunu belirleyen katlari tutar.
 /// <summary>GTFS istasyon katini temsil eder.</summary>
-public class Level : AuditedAggregateRoot<Guid>, IGtfsEntity
+public class Level : AuditedAggregateRoot<Guid>, IGtfsEntity, IHasGtfsId
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // GTFS level_id; kati tanimlayan dis kimlik.
-    public string GtfsLevelId { get; internal set; } = default!;
+    public string GtfsLevelId { get; protected internal set; } = default!;
 
     // Katin sayisal yukseklik dizini (or: 0 zemin, -1 bodrum, 1 birinci kat).
-    public double LevelIndex { get; internal set; }
+    public double LevelIndex { get; protected internal set; }
 
     // Katin yolculara gosterilen istege bagli adi.
-    public string? Name { get; internal set; }
+    public string? Name { get; protected internal set; }
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
 
     // EF materialization icin bos kabuk kurar.
     protected Level()
@@ -34,10 +31,11 @@ public class Level : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam bilgilerini kurar.
-    public Level(Guid id, Guid? tenantId, Guid feedId, string gtfsLevelId) : base(id)
+    public Level(Guid id, Guid feedId, string gtfsLevelId) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
         GtfsLevelId = gtfsLevelId;
     }
+    // Dis anahtarlar disa aktarimda orijinal GTFS kimligine cozulur.
+    string? IHasGtfsId.GtfsId => GtfsLevelId;
 }

@@ -10,10 +10,16 @@ namespace Byd.GtfsManagement.Mappers.FareMedias;
 /// <summary>GTFS ucret medyasi DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class FareMediaMapper
-    : IGtfsCrudMapper<FareMedia, CreateFareMediaDto, UpdateFareMediaDto, FareMediaDto,
+    : IGtfsArchiveMapper<FareMediaImportDto, FareMedia>, IGtfsCrudMapper<FareMedia, CreateFareMediaDto, UpdateFareMediaDto, FareMediaDto,
         FareMediaCreateModel, FareMediaUpdateModel>
 {
     public partial FareMediaCreateModel Map(CreateFareMediaDto input);
     public partial FareMediaUpdateModel Map(UpdateFareMediaDto input);
     public partial FareMediaDto Map(FareMedia entity);
+
+    // CSV satirini entity'ye esler.
+    public partial FareMedia Map(FareMediaImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial FareMediaImportDto MapToImport(FareMedia entity);
 }

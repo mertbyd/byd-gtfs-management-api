@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.Pathways;
 
 namespace Byd.GtfsManagement.Services.Pathways;
 
-// islevi: Pathway CRUD akisini ortak tabana baglar.
+// islevi: Pathway CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS yuruyus yolu CRUD servisini ortak tabana baglar.</summary>
 public class PathwayAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         Pathway, CreatePathwayDto, UpdatePathwayDto, PathwayDto, PathwayFilter,
-        PathwayCreateModel, PathwayUpdateModel, PathwayManager, IPathwayRepository, PathwayMapper>,
+        PathwayCreateModel, PathwayUpdateModel, PathwayManager, IPathwayRepository, PathwayMapper, PathwayImportDto>,
         IPathwayAppService
 {
 }

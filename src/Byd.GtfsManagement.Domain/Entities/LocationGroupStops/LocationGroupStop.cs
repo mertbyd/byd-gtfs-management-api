@@ -10,20 +10,17 @@ namespace Byd.GtfsManagement.Entities.LocationGroupStops;
 /// <summary>GTFS konum grubu durak iliskisi kaydini temsil eder.</summary>
 public class LocationGroupStop : AuditedAggregateRoot<Guid>, IGtfsEntity
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // GTFS location_group_id dis kimligi.
-    public string GtfsLocationGroupId { get; internal set; } = default!;
+    public string GtfsLocationGroupId { get; protected internal set; } = default!;
 
     // GTFS stop_id dis kimligi.
-    public string GtfsStopId { get; internal set; } = default!;
+    public string GtfsStopId { get; protected internal set; } = default!;
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
 
     // EF materialization icin bos kabuk kurar.
     protected LocationGroupStop()
@@ -31,9 +28,8 @@ public class LocationGroupStop : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam bilgilerini kurar.
-    public LocationGroupStop(Guid id, Guid? tenantId, Guid feedId, string gtfsLocationGroupId, string gtfsStopId) : base(id)
+    public LocationGroupStop(Guid id, Guid feedId, string gtfsLocationGroupId, string gtfsStopId) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
         GtfsLocationGroupId = gtfsLocationGroupId;
         GtfsStopId = gtfsStopId;

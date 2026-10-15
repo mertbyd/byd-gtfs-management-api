@@ -19,7 +19,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 // sistemdeki gorevi: Cevap DTO'sunun lookup ve istasyon adlarini tasiyabilmesi icin Include'u tek yerde tutar.
 [ExposeServices(typeof(IStopRepository))]
 public class EfCoreStopRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Stop, Guid>(dbContextProvider), IStopRepository
+    : EfGtfsRepository<Stop>(dbContextProvider), IStopRepository
 {
     // Tekil okumalarda konum turu, erisim durumu ve ust istasyon adlarinin dolu gelmesini saglar.
     public override async Task<IQueryable<Stop>> WithDetailsAsync()
@@ -40,9 +40,9 @@ public class EfCoreStopRepository(IDbContextProvider<GtfsManagementDbContext> db
             .Include(stop => stop.StopAccess);
 
     // Feed'in tum duraklarini ust istasyon bagi, konum turu kodu ve koordinatlariyla planlayici modeline yansitir.
-    public virtual async Task<List<StopPlaceModel>> GetPlacesAsync(Guid feedId, CancellationToken cancellationToken = default)
+    public virtual async Task<List<StopPlaceModel>> GetPlacesAsync(Guid? feedId, CancellationToken cancellationToken = default)
         => await (await GetQueryableAsync())
-            .Where(stop => stop.FeedId == feedId)
+            .Where(stop => (feedId == null || stop.FeedId == feedId))
             .Select(stop => new StopPlaceModel
             {
                 Id = stop.Id,

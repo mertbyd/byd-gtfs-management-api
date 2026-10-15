@@ -1,4 +1,9 @@
+using System;
+using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Byd.CoreExtensions.EntityFrameworkCore;
 using Byd.CoreExtensions.Extensions;
 using Byd.GtfsManagement.Entities.Agencies;
@@ -45,7 +50,10 @@ using Byd.GtfsManagement.Entities.Timeframes;
 using Byd.GtfsManagement.Entities.Transfers;
 using Byd.GtfsManagement.Entities.Translations;
 using Byd.GtfsManagement.Entities.Trips;
+using Byd.GtfsManagement.Interfaces;
 using Volo.Abp.Data;
+using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.MultiTenancy;
 
 namespace Byd.GtfsManagement.EntityFrameworkCore;
 
@@ -102,6 +110,46 @@ public class GtfsManagementDbContext : BydDbContext<GtfsManagementDbContext>, IG
     public GtfsManagementDbContext(DbContextOptions<GtfsManagementDbContext> options)
         : base(options)
     {
+    }
+
+    // Yayin filtresinin durumu, sorgu calistigi anda ABP kapsamindan okunur.
+    protected virtual bool IsActiveFeedFilterEnabled => DataFilter?.IsEnabled<ActiveFeedFilter>() ?? false;
+
+    // GTFS satirlarinin tenant kapsami yalniz bagli Feed'den okunur.
+    protected virtual Guid? FilterTenantId => LazyServiceProvider?.LazyGetRequiredService<ICurrentTenant>().Id;
+
+    // Feed and GTFS rows share the active-feed publication boundary.
+    protected override bool ShouldFilterEntity<TEntity>(IMutableEntityType entityType)
+        => typeof(TEntity) == typeof(Feed)
+           || typeof(IGtfsEntity).IsAssignableFrom(typeof(TEntity))
+           || base.ShouldFilterEntity<TEntity>(entityType);
+
+    // Yayin kisiti kapatilsa bile tenant ve organizasyon sinirlari ayri ifade olarak kalir.
+    protected override Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>(
+        ModelBuilder modelBuilder, EntityTypeBuilder<TEntity> entityTypeBuilder)
+    {
+        var expression = base.CreateFilterExpression(modelBuilder, entityTypeBuilder);
+        if (typeof(TEntity) == typeof(Feed))
+        {
+            Expression<Func<TEntity, bool>> published = entity => !IsActiveFeedFilterEnabled ||
+                EF.Property<bool>(entity, nameof(Feed.IsActive));
+            expression = expression is null ? published : QueryFilterExpressionHelper.CombineExpressions(expression, published);
+        }
+        if (typeof(IGtfsEntity).IsAssignableFrom(typeof(TEntity)))
+            expression = AddFeedFilters(expression);
+        return expression;
+    }
+
+    // Tenant ve organizasyon kapsamı daima Feed'den gelir; yalniz aktiflik taslak okumalarda kapatilabilir.
+    private Expression<Func<TEntity, bool>> AddFeedFilters<TEntity>(Expression<Func<TEntity, bool>>? expression)
+        where TEntity : class
+    {
+        Expression<Func<TEntity, bool>> scoped = entity => Feeds.Any(feed =>
+            feed.Id == EF.Property<Guid>(entity, nameof(IGtfsEntity.FeedId))
+            && feed.TenantId == FilterTenantId
+            && feed.OrganizationId == CurrentOrganizationId
+            && (!IsActiveFeedFilterEnabled || feed.IsActive));
+        return expression is null ? scoped : QueryFilterExpressionHelper.CombineExpressions(expression, scoped);
     }
 
     // Taban filtrelerini kurar, konfigurasyon siniflarini uygular ve kolon adlarini snake_case yapar.

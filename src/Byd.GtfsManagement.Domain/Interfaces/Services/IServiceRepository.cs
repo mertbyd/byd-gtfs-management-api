@@ -12,5 +12,5 @@ namespace Byd.GtfsManagement.Interfaces.Services;
 public interface IServiceRepository : IExtendedRepository<Service>
 {
     // Verilen gunde calisan servislerin kimliklerini calendar ve calendar_dates kurallariyla getirir.
-    Task<List<Guid>> GetActiveIdsAsync(Guid feedId, DateOnly date, CancellationToken cancellationToken = default);
+    Task<List<Guid>> GetActiveIdsAsync(Guid? feedId, DateOnly date, CancellationToken cancellationToken = default);
 }

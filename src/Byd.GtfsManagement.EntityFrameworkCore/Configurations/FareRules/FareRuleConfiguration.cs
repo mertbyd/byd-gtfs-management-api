@@ -24,12 +24,14 @@ public sealed class FareRuleConfiguration : IEntityTypeConfiguration<FareRule>
 
         builder.HasOne(value => value.FareAttribute)
             .WithMany()
-            .HasForeignKey(value => value.FareAttributeId)
+            .HasForeignKey(value => new { value.FeedId, value.FareAttributeId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(value => value.Route)
             .WithMany()
-            .HasForeignKey(value => value.RouteId)
+            .HasForeignKey(value => new { value.FeedId, value.RouteId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 

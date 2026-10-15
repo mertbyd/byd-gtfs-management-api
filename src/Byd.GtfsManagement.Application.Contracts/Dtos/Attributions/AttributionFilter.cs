@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.Attributions;
 // islevi: Attribution liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Atif sorgusunun izinli alanlarini belirler.
 /// <summary>GTFS atif filtrelerini tasir.</summary>
-public class AttributionFilter
+public class AttributionFilter : IFeedFilter
 {
     [DataTable(AttributionFilterFields.FeedId, AttributionFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

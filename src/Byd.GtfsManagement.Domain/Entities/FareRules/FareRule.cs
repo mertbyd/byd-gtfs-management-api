@@ -12,35 +12,30 @@ namespace Byd.GtfsManagement.Entities.FareRules;
 /// <summary>GTFS ucret kuralini temsil eder.</summary>
 public class FareRule : AuditedAggregateRoot<Guid>, IGtfsEntity
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // Bagli ucret taniminin sistem kimligi.
-    public Guid FareAttributeId { get; internal set; }
-
-    // Bagli ucret tanimi kaydi.
-    public FareAttribute FareAttribute { get; internal set; } = default!;
+    public Guid FareAttributeId { get; protected internal set; }
 
     // Istege bagli guzergah sistem kimligi.
-    public Guid? RouteId { get; internal set; }
-
-    // Bagli guzergah kaydi.
-    public Route? Route { get; internal set; }
+    public Guid? RouteId { get; protected internal set; }
 
     // Baslangic bolgesi GTFS zone_id dis kimligi.
-    public string? OriginId { get; internal set; }
+    public string? OriginId { get; protected internal set; }
 
     // Varis bolgesi GTFS zone_id dis kimligi.
-    public string? DestinationId { get; internal set; }
+    public string? DestinationId { get; protected internal set; }
 
     // Gecis bolgesi GTFS zone_id dis kimligi.
-    public string? ContainsId { get; internal set; }
+    public string? ContainsId { get; protected internal set; }
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
+    // Bagli ucret tanimi kaydi.
+    public FareAttribute FareAttribute { get; protected internal set; } = default!;
+    // Bagli guzergah kaydi.
+    public Route? Route { get; protected internal set; }
 
     // EF materialization icin bos kabuk kurar.
     protected FareRule()
@@ -48,9 +43,8 @@ public class FareRule : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam bilgilerini kurar.
-    public FareRule(Guid id, Guid? tenantId, Guid feedId, Guid fareAttributeId) : base(id)
+    public FareRule(Guid id, Guid feedId, Guid fareAttributeId) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
         FareAttributeId = fareAttributeId;
     }

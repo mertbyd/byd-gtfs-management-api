@@ -99,4 +99,27 @@ public class FareLegJoinRuleController : GtfsManagementController
         await AppService.DeleteAsync(id, cancellationToken);
         return Result.NoContent();
     }
+
+    /// <summary>Belirli surumun taslak veya gecmis kaydini getirir.</summary>
+    /// <param name="feedId">Kapsamda okunacak surum kimligi.</param>
+    /// <param name="id">Okunacak kaydin kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Cevap yalniz istenen surumun kaydini tasir; tenant ve organizasyon sinirlari korunur.</remarks>
+    [HttpGet(GtfsRecordRoutes.ForFeed)]
+    [Authorize(GtfsManagementPermissions.FareLegJoinRules.Manage)]
+    public virtual async Task<Result<FareLegJoinRuleDto>> GetForFeedAsync(
+        Guid feedId, Guid id, CancellationToken cancellationToken = default)
+        => await AppService.GetForFeedAsync(feedId, id, cancellationToken);
+
+    /// <summary>Belirli surumun taslak veya gecmis kayitlarini filtreleyip sayfalar.</summary>
+    /// <param name="feedId">Kapsamda listelenecek surum kimligi.</param>
+    /// <param name="input">Kayit filtreleri, siralama ve sayfalama.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Cevap toplam sayiyi ve hedef surumun sayfasini tasir; farkli surum veya kapsam acilmaz.</remarks>
+    [HttpGet(GtfsRecordRoutes.ListForFeed)]
+    [Authorize(GtfsManagementPermissions.FareLegJoinRules.Manage)]
+    public virtual async Task<Result<PagedResultDto<FareLegJoinRuleDto>>> GetFilteredListForFeedAsync(
+        Guid feedId, [FromQuery] DataTableListInput<FareLegJoinRuleFilter> input,
+        CancellationToken cancellationToken = default)
+        => await AppService.GetFilteredListForFeedAsync(feedId, input, cancellationToken);
 }

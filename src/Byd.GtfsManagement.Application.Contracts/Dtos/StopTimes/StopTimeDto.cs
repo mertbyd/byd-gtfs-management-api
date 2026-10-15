@@ -8,24 +8,30 @@ namespace Byd.GtfsManagement.Dtos.StopTimes;
 // degerleridir.
 public class StopTimeDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
     public Guid TripId { get; set; }
-    public string TripName { get; set; } = default!;
     public Guid? StopId { get; set; }
-    public string? StopName { get; set; }
     public Guid? LocationGroupId { get; set; }
-    public string? LocationGroupName { get; set; }
     public int? PickupTypeId { get; set; }
-    public string? PickupTypeName { get; set; }
     public int? DropOffTypeId { get; set; }
-    public string? DropOffTypeName { get; set; }
     public int? ContinuousPickupId { get; set; }
-    public string? ContinuousPickupName { get; set; }
     public int? ContinuousDropOffId { get; set; }
-    public string? ContinuousDropOffName { get; set; }
     public string? PickupBookingRuleId { get; set; }
     public string? DropOffBookingRuleId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
+    public string TripName { get; set; } = default!;
+    public string? StopName { get; set; }
+    public string? LocationGroupName { get; set; }
+    public string? PickupTypeName { get; set; }
+    public string? DropOffTypeName { get; set; }
+    public string? ContinuousPickupName { get; set; }
+    public string? ContinuousDropOffName { get; set; }
     public int StopSequence { get; set; }
     public string? ArrivalTime { get; set; }
     public string? DepartureTime { get; set; }

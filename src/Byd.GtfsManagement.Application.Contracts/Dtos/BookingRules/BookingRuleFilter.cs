@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.BookingRules;
 // islevi: BookingRule liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Sorgunun izinli alanlarini belirler.
 /// <summary>GTFS rezervasyon kurali filtrelerini tasir.</summary>
-public class BookingRuleFilter
+public class BookingRuleFilter : IFeedFilter
 {
     [DataTable(BookingRuleFilterFields.FeedId, BookingRuleFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

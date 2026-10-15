@@ -23,7 +23,7 @@ public class RiderCategoryManager(
     {
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
-        var entity = new RiderCategory(GuidGenerator.Create(), feed.TenantId, feed.Id, NormalizeRequiredText(model.GtfsRiderCategoryId));
+        var entity = new RiderCategory(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsRiderCategoryId));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

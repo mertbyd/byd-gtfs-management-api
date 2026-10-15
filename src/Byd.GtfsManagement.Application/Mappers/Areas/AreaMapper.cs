@@ -10,7 +10,7 @@ namespace Byd.GtfsManagement.Mappers.Areas;
 /// <summary>GTFS bolge DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class AreaMapper
-    : IGtfsCrudMapper<Area, CreateAreaDto, UpdateAreaDto, AreaDto,
+    : IGtfsArchiveMapper<AreaImportDto, Area>, IGtfsCrudMapper<Area, CreateAreaDto, UpdateAreaDto, AreaDto,
         AreaCreateModel, AreaUpdateModel>
 {
     // Olusturma istegini domain modeline donusturur.
@@ -21,4 +21,10 @@ public partial class AreaMapper
 
     // Kaydi public cevap sozlesmesine donusturur.
     public partial AreaDto Map(Area entity);
+
+    // CSV satirini entity'ye esler.
+    public partial Area Map(AreaImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial AreaImportDto MapToImport(Area entity);
 }

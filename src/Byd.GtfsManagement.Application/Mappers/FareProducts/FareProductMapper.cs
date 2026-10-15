@@ -10,10 +10,16 @@ namespace Byd.GtfsManagement.Mappers.FareProducts;
 /// <summary>GTFS ucret urunu DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class FareProductMapper
-    : IGtfsCrudMapper<FareProduct, CreateFareProductDto, UpdateFareProductDto, FareProductDto,
+    : IGtfsArchiveMapper<FareProductImportDto, FareProduct>, IGtfsCrudMapper<FareProduct, CreateFareProductDto, UpdateFareProductDto, FareProductDto,
         FareProductCreateModel, FareProductUpdateModel>
 {
     public partial FareProductCreateModel Map(CreateFareProductDto input);
     public partial FareProductUpdateModel Map(UpdateFareProductDto input);
     public partial FareProductDto Map(FareProduct entity);
+
+    // CSV satirini entity'ye esler.
+    public partial FareProduct Map(FareProductImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial FareProductImportDto MapToImport(FareProduct entity);
 }

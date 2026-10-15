@@ -11,32 +11,28 @@ namespace Byd.GtfsManagement.Entities.Frequencies;
 /// <summary>Bir seferin GTFS siklik araligini temsil eder.</summary>
 public class Frequency : AuditedAggregateRoot<Guid>, IGtfsEntity
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // frequencies.txt trip_id alaninin sistem kimligi.
-    public Guid TripId { get; internal set; }
-
-    // Siklik araliginin ait oldugu sefer.
-    public Trip Trip { get; internal set; } = default!;
+    public Guid TripId { get; protected internal set; }
 
     // Ilk aracin ilk duraktan kalkis saati.
-    public string StartTime { get; internal set; } = default!;
+    public string StartTime { get; protected internal set; } = default!;
 
     // Siklik araliginin bittigi servis gunu saati.
-    public string EndTime { get; internal set; } = default!;
+    public string EndTime { get; protected internal set; } = default!;
 
     // Ayni duraktan kalkislar arasindaki saniye.
-    public int HeadwaySecs { get; internal set; }
+    public int HeadwaySecs { get; protected internal set; }
 
     // Hizmetin siklik veya kesin tarifeli olma kodu.
-    public int? ExactTimes { get; internal set; }
+    public int? ExactTimes { get; protected internal set; }
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
+    // Siklik araliginin ait oldugu sefer.
+    public Trip Trip { get; protected internal set; } = default!;
 
     // EF materialization icin bos kabuk kurar.
     protected Frequency()
@@ -44,9 +40,8 @@ public class Frequency : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam alanlarini kurar.
-    public Frequency(Guid id, Guid? tenantId, Guid feedId) : base(id)
+    public Frequency(Guid id, Guid feedId) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
     }
 }

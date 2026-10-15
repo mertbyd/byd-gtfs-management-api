@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.Areas;
 // islevi: Area liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Bolge sorgusunun izinli alanlarini belirler.
 /// <summary>GTFS bolge filtrelerini tasir.</summary>
-public class AreaFilter
+public class AreaFilter : IFeedFilter
 {
     [DataTable(AreaFilterFields.FeedId, AreaFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

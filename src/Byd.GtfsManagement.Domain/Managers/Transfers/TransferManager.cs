@@ -40,7 +40,7 @@ public class TransferManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Transfer(
-            GuidGenerator.Create(), feed.TenantId, feed.Id);
+            GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }
@@ -104,7 +104,7 @@ public class TransferManager(
     private static async Task<T?> ResolveReferenceAsync<T>(
         Guid? id, Func<Guid, CancellationToken, Task<T>> get, Guid feedId,
         CancellationToken cancellationToken = default)
-        where T : class, IHasFeed
+        where T : class, IGtfsEntity
     {
         if (id is null) return null;
         var value = await get(id.Value, cancellationToken);

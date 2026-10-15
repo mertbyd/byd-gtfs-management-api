@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.Areas;
 
 namespace Byd.GtfsManagement.Services.Areas;
 
-// islevi: Area CRUD akisini ortak tabana baglar.
+// islevi: Area CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS bolge CRUD servisini ortak tabana baglar.</summary>
 public class AreaAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         Area, CreateAreaDto, UpdateAreaDto, AreaDto, AreaFilter,
-        AreaCreateModel, AreaUpdateModel, AreaManager, IAreaRepository, AreaMapper>,
+        AreaCreateModel, AreaUpdateModel, AreaManager, IAreaRepository, AreaMapper, AreaImportDto>,
         IAreaAppService
 {
 }

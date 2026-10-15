@@ -8,15 +8,21 @@ namespace Byd.GtfsManagement.Dtos.FareRules;
 // degerleridir; GTFS'te ayri bir bolge tablosu olmadigi icin adlari yoktur.
 public class FareRuleDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
     public Guid FareAttributeId { get; set; }
-    public string FareAttributeName { get; set; } = default!;
     public Guid? RouteId { get; set; }
-    public string? RouteName { get; set; }
     public string? OriginId { get; set; }
     public string? DestinationId { get; set; }
     public string? ContainsId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
+    public string FareAttributeName { get; set; } = default!;
+    public string? RouteName { get; set; }
     public DateTime CreationTime { get; set; }
     public DateTime? LastModificationTime { get; set; }
 }

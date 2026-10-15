@@ -10,7 +10,7 @@ namespace Byd.GtfsManagement.Mappers.StopTimes;
 /// <summary>StopTime DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class StopTimeMapper
-    : IGtfsCrudMapper<StopTime, CreateStopTimeDto, UpdateStopTimeDto, StopTimeDto, StopTimeCreateModel, StopTimeUpdateModel>
+    : IGtfsArchiveMapper<StopTimeImportDto, StopTime>, IGtfsCrudMapper<StopTime, CreateStopTimeDto, UpdateStopTimeDto, StopTimeDto, StopTimeCreateModel, StopTimeUpdateModel>
 {
     // Olusturma istegini domain modeline donusturur.
     public partial StopTimeCreateModel Map(CreateStopTimeDto input);
@@ -20,4 +20,10 @@ public partial class StopTimeMapper
 
     // Durak zamani kaydini public cevaba donusturur.
     public partial StopTimeDto Map(StopTime entity);
+
+    // CSV satirini entity'ye esler.
+    public partial StopTime Map(StopTimeImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial StopTimeImportDto MapToImport(StopTime entity);
 }

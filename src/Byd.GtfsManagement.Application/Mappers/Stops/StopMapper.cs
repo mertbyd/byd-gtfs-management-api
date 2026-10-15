@@ -3,7 +3,6 @@ using Byd.GtfsManagement.Dtos.StopTimes;
 using Byd.GtfsManagement.Dtos.Stops;
 using Byd.GtfsManagement.Entities.StopTimes;
 using Byd.GtfsManagement.Entities.Stops;
-using Byd.GtfsManagement.Mappers;
 using Byd.GtfsManagement.Models.Stops;
 using Riok.Mapperly.Abstractions;
 
@@ -13,7 +12,7 @@ namespace Byd.GtfsManagement.Mappers.Stops;
 // sistemdeki gorevi: Application sinirinda manuel alan kopyalamayi onler.
 [Mapper]
 public partial class StopMapper
-    : IGtfsCrudMapper<Stop, CreateStopDto, UpdateStopDto, StopDto, StopCreateModel, StopUpdateModel>
+    : IGtfsArchiveMapper<StopImportDto, Stop>, IGtfsCrudMapper<Stop, CreateStopDto, UpdateStopDto, StopDto, StopCreateModel, StopUpdateModel>
 {
     public partial StopCreateModel Map(CreateStopDto input);
     public partial StopUpdateModel Map(UpdateStopDto input);
@@ -22,4 +21,10 @@ public partial class StopMapper
     public partial StopDetailDto Map(StopDetailModel model);
     public partial StopDepartureQueryModel Map(StopDepartureInputDto input);
     public partial List<StopDepartureDto> Map(List<StopTime> stopTimes);
+
+    // CSV satirini entity'ye esler.
+    public partial Stop Map(StopImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial StopImportDto MapToImport(Stop entity);
 }

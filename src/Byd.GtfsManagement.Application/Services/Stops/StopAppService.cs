@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Byd.GtfsManagement.Interfaces;
 using FluentValidation;
 using Byd.GtfsManagement.Dtos.StopTimes;
 using Byd.GtfsManagement.Dtos.Stops;
@@ -13,12 +14,12 @@ using Byd.GtfsManagement.Models.Stops;
 
 namespace Byd.GtfsManagement.Services.Stops;
 
-// islevi: Stop kayitlarinin CRUD akisini ortak tabana baglar; harita, detay ve kalkis okumalarini sunar.
-// sistemdeki gorevi: Tipli baglari bildirir; CRUD tabanda kalir, okuma kurallari StopManager'dadir.
+// islevi: Stop kayitlarinin CRUD ve GTFS arsiv akisini ortak tabana baglar; harita, detay ve kalkis okumalarini sunar.
+// sistemdeki gorevi: Tipli baglari bildirir; CRUD ve arsiv akisi tabanda kalir, okuma kurallari StopManager'dadir.
 public class StopAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         Stop, CreateStopDto, UpdateStopDto, StopDto, StopFilter,
-        StopCreateModel, StopUpdateModel, StopManager, IStopRepository, StopMapper>, IStopAppService
+        StopCreateModel, StopUpdateModel, StopManager, IStopRepository, StopMapper, StopImportDto>, IStopAppService
 {
     // Verilen ya da aktif Feed'in duraklarini harita icin getirir.
     public virtual async Task<List<StopDto>> GetMapAsync(Guid? feedId, CancellationToken cancellationToken = default)
@@ -34,5 +35,33 @@ public class StopAppService
     {
         await Validator<StopDepartureInputDto>().ValidateAndThrowAsync(input, cancellationToken);
         return Mapper.Map(await Manager.GetDeparturesAsync(id, Mapper.Map(input), cancellationToken));
+    }
+    // Taslak veya gecmis detayini yetkili surum kapsaminda okur.
+    public virtual async Task<StopDetailDto> GetDetailForFeedAsync(
+        Guid feedId, Guid id, CancellationToken cancellationToken = default)
+    {
+        using var draftRead = DataFilter.Disable<ActiveFeedFilter>();
+        await FeedManager.EnsureExistsInScopeAsync(feedId, cancellationToken);
+        Manager.EnsureInFeed(await Manager.EnsureExistsInScopeAsync(id, cancellationToken), feedId);
+        return await GetDetailAsync(id, cancellationToken);
+    }
+
+    // Taslagin duraklarini yayin secimini degistirmeden haritada onizler.
+    public virtual async Task<List<StopDto>> GetMapForFeedAsync(
+        Guid feedId, CancellationToken cancellationToken = default)
+    {
+        using var draftRead = DataFilter.Disable<ActiveFeedFilter>();
+        await FeedManager.EnsureExistsInScopeAsync(feedId, cancellationToken);
+        return await GetMapAsync(feedId, cancellationToken);
+    }
+
+    // Taslagin sefer saatlerini yalniz secilen surumden getirir.
+    public virtual async Task<List<StopDepartureDto>> GetDeparturesForFeedAsync(
+        Guid feedId, Guid id, StopDepartureInputDto input, CancellationToken cancellationToken = default)
+    {
+        using var draftRead = DataFilter.Disable<ActiveFeedFilter>();
+        await FeedManager.EnsureExistsInScopeAsync(feedId, cancellationToken);
+        Manager.EnsureInFeed(await Manager.EnsureExistsInScopeAsync(id, cancellationToken), feedId);
+        return await GetDeparturesAsync(id, input, cancellationToken);
     }
 }

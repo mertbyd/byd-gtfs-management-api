@@ -19,7 +19,8 @@ public sealed class CalendarDateConfiguration : IEntityTypeConfiguration<Calenda
             .HasForeignKey(calendarDate => calendarDate.FeedId)
             .OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(calendarDate => calendarDate.Service).WithMany()
-            .HasForeignKey(calendarDate => calendarDate.ServiceId)
+            .HasForeignKey(calendarDate => new { calendarDate.FeedId, calendarDate.ServiceId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(calendarDate => calendarDate.ExceptionType).WithMany()
             .HasForeignKey(calendarDate => calendarDate.ExceptionTypeId)

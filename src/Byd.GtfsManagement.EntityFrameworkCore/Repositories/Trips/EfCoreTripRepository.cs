@@ -18,7 +18,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 // sistemdeki gorevi: Cevap DTO'sunun guzergah, servis ve lookup adlarini tasiyabilmesi icin Include'u tek yerde tutar.
 [ExposeServices(typeof(ITripRepository))]
 public class EfCoreTripRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Trip, Guid>(dbContextProvider), ITripRepository
+    : EfGtfsRepository<Trip>(dbContextProvider), ITripRepository
 {
     // Tekil okumalarda guzergah, servis ve lookup adlarinin dolu gelmesini saglar.
     public override async Task<IQueryable<Trip>> WithDetailsAsync()

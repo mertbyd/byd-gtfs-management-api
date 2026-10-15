@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS ucret medyasi EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IFareMediaRepository))]
 public class EfCoreFareMediaRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, FareMedia, Guid>(dbContextProvider), IFareMediaRepository
+    : EfGtfsRepository<FareMedia>(dbContextProvider), IFareMediaRepository
 {
 }

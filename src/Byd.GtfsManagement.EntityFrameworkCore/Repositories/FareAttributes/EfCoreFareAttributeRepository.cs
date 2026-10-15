@@ -16,7 +16,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS ucret ozelligi EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IFareAttributeRepository))]
 public class EfCoreFareAttributeRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, FareAttribute, Guid>(dbContextProvider), IFareAttributeRepository
+    : EfGtfsRepository<FareAttribute>(dbContextProvider), IFareAttributeRepository
 {
     // Tek kayit okumalarinda ajans bagini yukler.
     public override async Task<IQueryable<FareAttribute>> WithDetailsAsync()

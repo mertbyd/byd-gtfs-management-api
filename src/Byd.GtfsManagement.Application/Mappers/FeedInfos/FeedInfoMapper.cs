@@ -1,4 +1,4 @@
-﻿using Byd.GtfsManagement.Dtos.FeedInfos;
+using Byd.GtfsManagement.Dtos.FeedInfos;
 using Byd.GtfsManagement.Entities.FeedInfos;
 using Byd.GtfsManagement.Models.FeedInfos;
 using Riok.Mapperly.Abstractions;
@@ -10,7 +10,7 @@ namespace Byd.GtfsManagement.Mappers.FeedInfos;
 /// <summary>GTFS yayimci bilgisi DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class FeedInfoMapper
-    : IGtfsCrudMapper<FeedInfo, CreateFeedInfoDto, UpdateFeedInfoDto, FeedInfoDto,
+    : IGtfsArchiveMapper<FeedInfoImportDto, FeedInfo>, IGtfsCrudMapper<FeedInfo, CreateFeedInfoDto, UpdateFeedInfoDto, FeedInfoDto,
         FeedInfoCreateModel, FeedInfoUpdateModel>
 {
     // Olusturma istegini domain modeline donusturur.
@@ -21,4 +21,10 @@ public partial class FeedInfoMapper
 
     // Kaydi public cevap sozlesmesine donusturur.
     public partial FeedInfoDto Map(FeedInfo entity);
+
+    // CSV satirini entity'ye esler.
+    public partial FeedInfo Map(FeedInfoImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial FeedInfoImportDto MapToImport(FeedInfo entity);
 }

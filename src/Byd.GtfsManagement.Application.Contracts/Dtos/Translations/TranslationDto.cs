@@ -8,10 +8,16 @@ namespace Byd.GtfsManagement.Dtos.Translations;
 /// <summary>GTFS ceviri cevap alanlarini tasir.</summary>
 public class TranslationDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
     public string? RecordId { get; set; }
     public string? RecordSubId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
     public string TableName { get; set; } = default!;
     public string FieldName { get; set; } = default!;
     public string Language { get; set; } = default!;

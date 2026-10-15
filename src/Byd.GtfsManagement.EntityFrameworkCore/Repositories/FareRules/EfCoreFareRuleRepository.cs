@@ -16,7 +16,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS ucret kurali EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IFareRuleRepository))]
 public class EfCoreFareRuleRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, FareRule, Guid>(dbContextProvider), IFareRuleRepository
+    : EfGtfsRepository<FareRule>(dbContextProvider), IFareRuleRepository
 {
     // Tek kayit okumalarinda ucret ve guzergah baglarini yukler.
     public override async Task<IQueryable<FareRule>> WithDetailsAsync()

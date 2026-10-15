@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Byd.CoreExtensions.Repositories;
 using Byd.GtfsManagement.Entities.Levels;
 using Byd.GtfsManagement.Interfaces.Levels;
@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS kat EF sorgularini uygular.</summary>
 [ExposeServices(typeof(ILevelRepository))]
 public class EfCoreLevelRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Level, Guid>(dbContextProvider), ILevelRepository
+    : EfGtfsRepository<Level>(dbContextProvider), ILevelRepository
 {
 }

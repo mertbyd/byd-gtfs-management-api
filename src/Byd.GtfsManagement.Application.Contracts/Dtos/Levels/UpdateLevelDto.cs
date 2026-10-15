@@ -1,4 +1,4 @@
-﻿namespace Byd.GtfsManagement.Dtos.Levels;
+namespace Byd.GtfsManagement.Dtos.Levels;
 
 // islevi: Kat guncelleme HTTP istegini tasir.
 // sistemdeki gorevi: Degistirilebilir alanlari girdi sozlesmesinde sunar.
