@@ -66,6 +66,16 @@ public class FeedAppService : GtfsManagementAppService, IFeedAppService
         return await UploadArchiveAsync(Mapper.Map(input, fileName, archive), sourceUrl, cancellationToken);
     }
 
+    // Aktif Feed'in guncel tablolarini yeni adli pasif Feed olarak dogrulama ve entegrasyon akisina verir.
+    public virtual async Task<FeedDetailDto> CreateDraftAsync(
+        Guid id, CreateDraftFeedDto input, CancellationToken cancellationToken = default)
+    {
+        await DraftValidator.ValidateAndThrowAsync(input, cancellationToken);
+        await Manager.EnsureDraftSourceAsync(id, cancellationToken);
+        var archive = await GtfsValidator.ExportArchiveAsync(id, cancellationToken);
+        return await UploadAsync(Mapper.Map(input, archive.FileName, archive.Data), cancellationToken);
+    }
+
     // Aktif Feed'i kapsam kuralindan gecirerek okur.
     public virtual async Task<FeedDetailDto> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => Mapper.MapToDetail(await Manager.EnsureExistsInScopeAsync(id, cancellationToken));
@@ -103,6 +113,22 @@ public class FeedAppService : GtfsManagementAppService, IFeedAppService
     // Kayitli Feed'in verisini yeniden dogrulayip raporunu gunceller.
     public virtual Task<FeedValidationReportDto> ValidateAsync(Guid id, CancellationToken cancellationToken = default)
         => GtfsValidator.ValidateAsync(() => Task.FromResult(id), feedId => feedId, cancellationToken);
+
+    // Pasifler dahil Feed'in temel tablo sayilarini ve servis tarih araligini getirir.
+    public virtual async Task<FeedSummaryDto> GetSummaryAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var feed = await Manager.EnsureExistsIncludingInactiveInScopeAsync(id, cancellationToken);
+        return Mapper.Map(await Repository.GetSummaryAsync(feed, cancellationToken));
+    }
+
+    // Kayitli GTFS dogrulama raporunu JSON dosyasi olarak verir.
+    public virtual Task<FeedFileDto> ExportValidationReportAsync(
+        Guid id, CancellationToken cancellationToken = default)
+        => GtfsValidator.ExportReportAsync(id, cancellationToken);
+
+    // Entegre Feed'in guncel GTFS ZIP'ini indirir.
+    public virtual Task<FeedFileDto> ExportGtfsAsync(Guid id, CancellationToken cancellationToken = default)
+        => GtfsValidator.ExportArchiveAsync(id, cancellationToken);
 
     // Ortak arsiv akisi once dosyayi kalici saklar; dogrulayici erisilemese bile yukleme gecmisi kaybolmaz.
     private async Task<FeedDetailDto> UploadArchiveAsync(

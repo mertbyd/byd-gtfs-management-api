@@ -56,6 +56,17 @@ public class FeedController : GtfsManagementController
         [FromBody] ImportFeedDto input, CancellationToken cancellationToken = default)
         => await AppService.ImportFromSourceAsync(input, cancellationToken);
 
+    /// <summary>Aktif Feed'in guncel verilerinden pasif bir taslak olusturur.</summary>
+    /// <param name="id">Kopyalanacak aktif Feed kimligi.</param>
+    /// <param name="input">Yeni taslagin opsiyonel adi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Response value yeni Feed kimligini, durumunu ve dogrulama raporunu tasir. Taslak arka planda entegre edilir ve ayrica aktifleştirilir.</remarks>
+    [HttpPost(FeedRoutes.Draft)]
+    [Authorize(GtfsManagementPermissions.Feeds.Manage)]
+    public virtual async Task<Result<FeedDetailDto>> CreateDraftAsync(
+        Guid id, [FromBody] CreateDraftFeedDto input, CancellationToken cancellationToken = default)
+        => await AppService.CreateDraftAsync(id, input, cancellationToken);
+
     /// <summary>Aktif Feed'i istegin kapsaminda getirir.</summary>
     /// <param name="id">Okunacak Feed kimligi.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
@@ -120,4 +131,35 @@ public class FeedController : GtfsManagementController
     public virtual async Task<Result<FeedValidationReportDto>> ValidateAsync(
         Guid id, CancellationToken cancellationToken = default)
         => await AppService.ValidateAsync(id, cancellationToken);
+
+    /// <summary>Feed'in kayitli dogrulama raporunu JSON dosyasi olarak verir.</summary>
+    /// <param name="id">Raporu indirilecek Feed kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Response value dosya adini, JSON icerik turunu ve dosya baytlarini tasir; GTFS ZIP'i tasimaz.</remarks>
+    [HttpGet(FeedRoutes.ValidationReport)]
+    [Authorize(GtfsManagementPermissions.Feeds.Export)]
+    public virtual async Task<Result<FeedFileDto>> ExportValidationReportAsync(
+        Guid id, CancellationToken cancellationToken = default)
+        => await AppService.ExportValidationReportAsync(id, cancellationToken);
+
+    /// <summary>Feed'in temel GTFS tablolarindaki kayit sayilarini ve servis tarih araligini getirir.</summary>
+    /// <param name="id">Ozeti okunacak Feed kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>
+    /// Response value Feed alaninda Feed satirini; ajans, durak, guzergah, sefer, durak zamani, servis ve shape sayilarini; takvim ve
+    /// tarih istisnalarinin kapsadigi ilk ve son servis gununu tasir. Pasif Feed de okunur. Dogrulama raporu bu cevapta yoktur.
+    /// </remarks>
+    [HttpGet(FeedRoutes.Summary)]
+    [Authorize(GtfsManagementPermissions.Feeds.View)]
+    public virtual async Task<Result<FeedSummaryDto>> GetSummaryAsync(Guid id, CancellationToken cancellationToken = default)
+        => await AppService.GetSummaryAsync(id, cancellationToken);
+    /// <summary>Entegre Feed'in guncel GTFS dosyalarini ZIP olarak verir.</summary>
+    /// <param name="id">Disa aktarilacak Feed kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Response value ZIP dosya adini, icerik turunu ve baytlarini tasir. Kayitli orijinal ZIP yerine guncel tablolar kullanilir.</remarks>
+    [HttpGet(FeedRoutes.ExportGtfs)]
+    [Authorize(GtfsManagementPermissions.Feeds.Export)]
+    public virtual async Task<Result<FeedFileDto>> ExportGtfsAsync(
+        Guid id, CancellationToken cancellationToken = default)
+        => await AppService.ExportGtfsAsync(id, cancellationToken);
 }

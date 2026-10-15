@@ -14,10 +14,14 @@ public interface IFeedAppService : IApplicationService
 {
     Task<FeedDetailDto> UploadAsync(UploadFeedDto input, CancellationToken cancellationToken = default);
     Task<FeedDetailDto> ImportFromSourceAsync(ImportFeedDto input, CancellationToken cancellationToken = default);
+    Task<FeedDetailDto> CreateDraftAsync(Guid id, CreateDraftFeedDto input, CancellationToken cancellationToken = default);
     Task<FeedDetailDto> GetAsync(Guid id, CancellationToken cancellationToken = default);
     Task<FeedDetailDto> GetIncludingInactiveAsync(Guid id, CancellationToken cancellationToken = default);
     Task<PagedResultDto<FeedDto>> GetFilteredListAsync(
         DataTableListInput<FeedFilter> input, CancellationToken cancellationToken = default);
     Task<FeedDto> ActivateAsync(Guid id, CancellationToken cancellationToken = default);
     Task<FeedValidationReportDto> ValidateAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<FeedFileDto> ExportValidationReportAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<FeedSummaryDto> GetSummaryAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<FeedFileDto> ExportGtfsAsync(Guid id, CancellationToken cancellationToken = default);
 }
