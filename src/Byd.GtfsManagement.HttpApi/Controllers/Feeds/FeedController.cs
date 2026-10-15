@@ -22,6 +22,40 @@ public class FeedController : GtfsManagementController
 {
     private IFeedAppService AppService => LazyGetRequiredService<IFeedAppService>();
 
+    /// <summary>GTFS ZIP'ini yukler, dogrular ve dogrulamayi gecerse veritabanina aktarilmak uzere kuyruga birakir.</summary>
+    /// <param name="input">Opsiyonel Feed adi, ZIP dosya adi ve dosya icerigi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>
+    /// Request {
+    ///   Name     (string?) → Ad verilmezse dosya adi, zaman ve organizasyon kimliginden uretilir
+    ///   FileName (string) → .zip uzantili GTFS dosyasinin adi
+    ///   Data     (byte[]) → ZIP icerigi; JSON'da base64
+    /// }
+    /// ZIP dogrulamadan once file modulune kaydedilir ve Feed pasif olarak acilir; dogrulayiciya ulasilamazsa Feed Uploaded
+    /// durumunda kalir. Response value Feed kimligini, dosyasini, durumunu (ValidationFailed veya Validated), hata ve uyari
+    /// sayilarini ve dogrulama raporunu tasir. Validated Feed'in GTFS tablolari arka planda yazilir; bu endpoint tablolara
+    /// yazmaz ve Feed'i aktiflestirmez.
+    /// </remarks>
+    [HttpPost]
+    [Authorize(GtfsManagementPermissions.Feeds.Manage)]
+    public virtual async Task<Result<FeedDetailDto>> UploadAsync(
+        [FromBody] UploadFeedDto input, CancellationToken cancellationToken = default)
+        => await AppService.UploadAsync(input, cancellationToken);
+
+    /// <summary>URL'den ZIP'i ceker ve yeni pasif Feed olarak kaydeder.</summary>
+    /// <param name="input">HTTP(S) kaynak URL'si ve opsiyonel Feed adi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>
+    /// Request { Url (string), Name (string?) }. Kaynak adresi yeni Feed'in SourceUrl alaninda saklanir.
+    /// Yerel veya ozel ag hedefi reddedilir; cagri dis servis loguna yazilir.
+    /// Response value yukleme ucuyla aynidir; yeni Feed yayin secimini degistirmez.
+    /// </remarks>
+    [HttpPost(FeedRoutes.ImportFromSource)]
+    [Authorize(GtfsManagementPermissions.Feeds.Manage)]
+    public virtual async Task<Result<FeedDetailDto>> ImportFromSourceAsync(
+        [FromBody] ImportFeedDto input, CancellationToken cancellationToken = default)
+        => await AppService.ImportFromSourceAsync(input, cancellationToken);
+
     /// <summary>Aktif Feed'i istegin kapsaminda getirir.</summary>
     /// <param name="id">Okunacak Feed kimligi.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
@@ -77,4 +111,13 @@ public class FeedController : GtfsManagementController
     public virtual async Task<Result<FeedDto>> ActivateAsync(Guid id, CancellationToken cancellationToken = default)
         => await AppService.ActivateAsync(id, cancellationToken);
 
+    /// <summary>Feed'in guncel GTFS verisini yeniden dogrular.</summary>
+    /// <param name="id">Dogrulanacak Feed kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Response value dosya, alan ve satir ayrintilarini iceren rapordur. Bu endpoint Feed'i aktifleştirmez.</remarks>
+    [HttpPost(FeedRoutes.Validate)]
+    [Authorize(GtfsManagementPermissions.Feeds.Manage)]
+    public virtual async Task<Result<FeedValidationReportDto>> ValidateAsync(
+        Guid id, CancellationToken cancellationToken = default)
+        => await AppService.ValidateAsync(id, cancellationToken);
 }
