@@ -4,12 +4,17 @@ namespace Byd.GtfsManagement.Dtos.FeedInfos;
 
 // islevi: feed_info.txt satirini ve yayimci alanlarini public cevapta tasir.
 // sistemdeki gorevi: Persistence entity'sini HTTP sozlesmesinden ayirir.
-// FeedId, GTFS kaydinin kapsam anahtaridir; Feed adi Feed yonetiminden okunur.
 /// <summary>GTFS yayimci bilgisi cevap alanlarini tasir.</summary>
 public class FeedInfoDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
     public string PublisherName { get; set; } = default!;
     public string PublisherUrl { get; set; } = default!;
     public string Language { get; set; } = default!;

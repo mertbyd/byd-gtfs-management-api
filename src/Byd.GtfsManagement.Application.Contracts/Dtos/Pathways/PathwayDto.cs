@@ -7,11 +7,17 @@ namespace Byd.GtfsManagement.Dtos.Pathways;
 // FeedId kapsam anahtaridir; Feed adi Feed yonetiminden okunur.
 public class PathwayDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
     public Guid FromStopId { get; set; }
-    public string? FromStopName { get; set; }
     public Guid ToStopId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
+    public string? FromStopName { get; set; }
     public string? ToStopName { get; set; }
     public string GtfsPathwayId { get; set; } = default!;
     public int PathwayMode { get; set; }

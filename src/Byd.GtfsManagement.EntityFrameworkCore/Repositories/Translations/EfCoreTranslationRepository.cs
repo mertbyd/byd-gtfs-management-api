@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS ceviri EF sorgularini uygular.</summary>
 [ExposeServices(typeof(ITranslationRepository))]
 public class EfCoreTranslationRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Translation, Guid>(dbContextProvider), ITranslationRepository
+    : EfGtfsRepository<Translation>(dbContextProvider), ITranslationRepository
 {
 }

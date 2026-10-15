@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.FareMedias;
 
 namespace Byd.GtfsManagement.Services.FareMedias;
 
-// islevi: FareMedia CRUD akisini ortak tabana baglar.
+// islevi: FareMedia CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS ucret medyasi CRUD servisini ortak tabana baglar.</summary>
 public class FareMediaAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         FareMedia, CreateFareMediaDto, UpdateFareMediaDto, FareMediaDto, FareMediaFilter,
-        FareMediaCreateModel, FareMediaUpdateModel, FareMediaManager, IFareMediaRepository, FareMediaMapper>,
+        FareMediaCreateModel, FareMediaUpdateModel, FareMediaManager, IFareMediaRepository, FareMediaMapper, FareMediaImportDto>,
         IFareMediaAppService
 {
 }

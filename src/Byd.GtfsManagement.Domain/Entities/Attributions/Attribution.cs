@@ -13,56 +13,50 @@ namespace Byd.GtfsManagement.Entities.Attributions;
 /// <summary>GTFS atif kaydini temsil eder.</summary>
 public class Attribution : AuditedAggregateRoot<Guid>, IGtfsEntity
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // Bagli ajans kimligi.
-    public Guid? AgencyId { get; internal set; }
-
-    // Bagli ajans kaydi.
-    public Agency? Agency { get; internal set; }
+    public Guid? AgencyId { get; protected internal set; }
 
     // Bagli guzergah kimligi.
-    public Guid? RouteId { get; internal set; }
-
-    // Bagli guzergah kaydi.
-    public Route? Route { get; internal set; }
+    public Guid? RouteId { get; protected internal set; }
 
     // Bagli sefer kimligi.
-    public Guid? TripId { get; internal set; }
-
-    // Bagli sefer kaydi.
-    public Trip? Trip { get; internal set; }
+    public Guid? TripId { get; protected internal set; }
 
     // GTFS attribution_id; atfi tanimlayan dis kimlik.
-    public string? GtfsAttributionId { get; internal set; }
+    public string? GtfsAttributionId { get; protected internal set; }
 
     // Kurumun tam adi.
-    public string OrganizationName { get; internal set; } = default!;
+    public string OrganizationName { get; protected internal set; } = default!;
 
     // GTFS is_producer; veri setini ureten kurum mu (0/1).
-    public int? IsProducer { get; internal set; }
+    public int? IsProducer { get; protected internal set; }
 
     // GTFS is_operator; ulasim operatoru mu (0/1).
-    public int? IsOperator { get; internal set; }
+    public int? IsOperator { get; protected internal set; }
 
     // GTFS is_authority; transit otoritesi mi (0/1).
-    public int? IsAuthority { get; internal set; }
+    public int? IsAuthority { get; protected internal set; }
 
     // Atif web sitesi adresi.
-    public string? AttributionUrl { get; internal set; }
+    public string? AttributionUrl { get; protected internal set; }
 
     // Atif e-posta adresi.
-    public string? AttributionEmail { get; internal set; }
+    public string? AttributionEmail { get; protected internal set; }
 
     // Atif telefon numarasi.
-    public string? AttributionPhone { get; internal set; }
+    public string? AttributionPhone { get; protected internal set; }
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
+    // Bagli ajans kaydi.
+    public Agency? Agency { get; protected internal set; }
+    // Bagli guzergah kaydi.
+    public Route? Route { get; protected internal set; }
+    // Bagli sefer kaydi.
+    public Trip? Trip { get; protected internal set; }
 
     // EF materialization icin bos kabuk kurar.
     protected Attribution()
@@ -70,9 +64,8 @@ public class Attribution : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam bilgilerini kurar.
-    public Attribution(Guid id, Guid? tenantId, Guid feedId, string organizationName) : base(id)
+    public Attribution(Guid id, Guid feedId, string organizationName) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
         OrganizationName = organizationName;
     }

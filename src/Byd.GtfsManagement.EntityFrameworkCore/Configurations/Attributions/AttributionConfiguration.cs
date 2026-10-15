@@ -24,19 +24,22 @@ public sealed class AttributionConfiguration : IEntityTypeConfiguration<Attribut
 
         builder.HasOne(value => value.Agency)
             .WithMany()
-            .HasForeignKey(value => value.AgencyId)
+            .HasForeignKey(value => new { value.FeedId, value.AgencyId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(value => value.Route)
             .WithMany()
-            .HasForeignKey(value => value.RouteId)
+            .HasForeignKey(value => new { value.FeedId, value.RouteId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(value => value.Trip)
             .WithMany()
-            .HasForeignKey(value => value.TripId)
+            .HasForeignKey(value => new { value.FeedId, value.TripId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 

@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.RiderCategories;
 // islevi: RiderCategory liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Sorgunun izinli alanlarini belirler.
 /// <summary>GTFS yolcu kategorisi filtrelerini tasir.</summary>
-public class RiderCategoryFilter
+public class RiderCategoryFilter : IFeedFilter
 {
     [DataTable(RiderCategoryFilterFields.FeedId, RiderCategoryFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

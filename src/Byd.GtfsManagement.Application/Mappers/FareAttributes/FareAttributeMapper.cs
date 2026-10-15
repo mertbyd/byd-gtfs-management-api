@@ -10,7 +10,7 @@ namespace Byd.GtfsManagement.Mappers.FareAttributes;
 /// <summary>GTFS ucret ozelligi DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class FareAttributeMapper
-    : IGtfsCrudMapper<FareAttribute, CreateFareAttributeDto, UpdateFareAttributeDto, FareAttributeDto,
+    : IGtfsArchiveMapper<FareAttributeImportDto, FareAttribute>, IGtfsCrudMapper<FareAttribute, CreateFareAttributeDto, UpdateFareAttributeDto, FareAttributeDto,
         FareAttributeCreateModel, FareAttributeUpdateModel>
 {
     // Olusturma istegini domain modeline donusturur.
@@ -21,4 +21,10 @@ public partial class FareAttributeMapper
 
     // Kaydi public cevap sozlesmesine donusturur.
     public partial FareAttributeDto Map(FareAttribute entity);
+
+    // CSV satirini entity'ye esler.
+    public partial FareAttribute Map(FareAttributeImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial FareAttributeImportDto MapToImport(FareAttribute entity);
 }

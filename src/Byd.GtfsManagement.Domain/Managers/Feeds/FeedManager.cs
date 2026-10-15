@@ -1,53 +1,185 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Byd.CoreExtensions.Interfaces;
 using Byd.CoreExtensions.Managers;
+using Byd.FileManagement.Entities.FileCategories;
+using Byd.FileManagement.Managers.FileCategories;
+using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Entities.Feeds;
 using Byd.GtfsManagement.ExceptionCodes;
+using Byd.GtfsManagement.Extensions.Feeds;
+using Byd.GtfsManagement.Feeds;
+using Byd.GtfsManagement.Interfaces;
 using Byd.GtfsManagement.Interfaces.Feeds;
+using Byd.GtfsManagement.Models.Feeds;
 using Volo.Abp;
 using Volo.Abp.Data;
+using Volo.Abp.MultiTenancy;
+using Volo.Abp.Users;
 
 namespace Byd.GtfsManagement.Managers.Feeds;
 
-// islevi: Feed kapsam kuralini yonetir.
-// sistemdeki gorevi: GTFS kayitlarinin bagli oldugu Feed'in istegin tenant'inda olmasini garanti eder.
+// Owns organization scoping, the one-active-feed rule, and import state transitions.
 public class FeedManager(
     IFeedRepository repository,
-    IDataFilter dataFilter)
+    IDataFilter dataFilter,
+    FileCategoryManager fileCategoryManager,
+    ICurrentOrganization currentOrganization,
+    ICurrentUser currentUser)
     : BaseManager<Feed, Guid>(repository)
 {
-    // Yalnizca istegin tenant'indaki Feed'i getirir.
+    public virtual async Task<Feed> CreateAsync(FeedCreateModel model, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+        EnsureScopeAvailable();
+        var name = string.IsNullOrWhiteSpace(model.Name)
+            ? model.CreateDefaultName(currentOrganization.Id!.Value, Clock.Now)
+            : NormalizeRequiredText(model.Name);
+        using var inactiveIncluded = dataFilter.Disable<ActiveFeedFilter>();
+        await CheckAlreadyExistsAsync(feed => feed.OrganizationId == currentOrganization.Id && feed.Name == name,
+            cancellationToken);
+        return new Feed(GuidGenerator.Create(), CurrentTenant.Id!.Value, currentOrganization.Id!.Value,
+            name, model.SourceType, NormalizeOptionalText(model.SourceUrl), currentUser.Id);
+    }
+
     public virtual async Task<Feed> EnsureExistsInScopeAsync(Guid id, CancellationToken cancellationToken = default)
     {
         EnsureScopeAvailable();
         var tenantId = CurrentTenant.Id;
+        var organizationId = currentOrganization.Id;
         return (await TryGetByAsync(
-            feed => feed.Id == id && feed.TenantId == tenantId,
+            feed => feed.Id == id && feed.TenantId == tenantId && feed.OrganizationId == organizationId,
             cancellationToken: cancellationToken))!;
     }
 
-    // Pasif Feed'e bagli GTFS kayitlari da duzenlenebildigi icin aktiflik filtresini kapatir.
     public virtual async Task<Feed> EnsureExistsIncludingInactiveInScopeAsync(
         Guid id, CancellationToken cancellationToken = default)
     {
-        using var inactiveIncluded = dataFilter.Disable<IHasIsActive>();
+        using var inactiveIncluded = dataFilter.Disable<ActiveFeedFilter>();
         return await EnsureExistsInScopeAsync(id, cancellationToken);
     }
 
-    // Istegin tenant'indaki aktif Feed'i getirir; aktif Feed yoksa null doner.
-    public virtual Task<Feed?> FindActiveAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<Feed?> FindActiveAsync(Guid feedId, CancellationToken cancellationToken = default)
     {
-        EnsureScopeAvailable();
-        var tenantId = CurrentTenant.Id;
-        return Repository.FindAsync(feed => feed.TenantId == tenantId && feed.IsActive, cancellationToken: cancellationToken);
+        var feed = await EnsureExistsIncludingInactiveInScopeAsync(feedId, cancellationToken);
+        return feed.IsActive ? feed : null;
     }
 
-    // Tenant'siz host isteklerinin Feed verisine erisimini reddeder.
-    private void EnsureScopeAvailable()
+    public virtual async Task<Feed> EnsureEditableAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        if (CurrentTenant.Id is null)
+        var feed = await EnsureExistsIncludingInactiveInScopeAsync(id, cancellationToken);
+        if (feed.IsActive)
+            throw new BusinessException(FeedExceptionCodes.ActiveFeedRequiresDraft);
+        if (feed.Status != FeedStatus.Integrated)
+            throw new BusinessException(FeedExceptionCodes.NotIntegrated);
+        return feed;
+    }
+
+    public virtual async Task<Feed> EnsureDraftSourceAsync(Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var feed = await EnsureExistsIncludingInactiveInScopeAsync(id, cancellationToken);
+        if (!feed.IsActive || feed.Status != FeedStatus.Integrated)
+            throw new BusinessException(FeedExceptionCodes.StatusTransitionInvalid);
+        return feed;
+    }
+
+    public virtual async Task<string> GetSourceUrlAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var feed = await EnsureExistsIncludingInactiveInScopeAsync(id, cancellationToken);
+        return feed.SourceUrl ?? throw new BusinessException(FeedExceptionCodes.SourceNotConfigured);
+    }
+
+    public virtual async Task<Feed> ActivateAsync(Feed feed, CancellationToken cancellationToken = default)
+    {
+        EnsureScopeAvailable();
+        if (feed.Status != FeedStatus.Integrated || feed.ValidationReport?.Errors.Count > 0)
+            throw new BusinessException(FeedExceptionCodes.NotIntegrated);
+        using var inactiveIncluded = dataFilter.Disable<ActiveFeedFilter>();
+        var active = await Repository.GetListAsync(candidate =>
+            candidate.OrganizationId == currentOrganization.Id && candidate.TenantId == CurrentTenant.Id
+            && candidate.IsActive && candidate.Id != feed.Id, cancellationToken: cancellationToken);
+        foreach (var previous in active)
+        {
+            previous.IsActive = false;
+            await Repository.UpdateAsync(previous, autoSave: true, cancellationToken: cancellationToken);
+        }
+        feed.IsActive = true;
+        await Repository.UpdateAsync(feed, cancellationToken: cancellationToken);
+        return feed;
+    }
+
+    public virtual async Task<FileCategory> GetArchiveCategoryAsync(CancellationToken cancellationToken = default)
+        => (await fileCategoryManager.TryGetByAsync(
+            category => category.Name == FeedConsts.ArchiveFileCategoryName,
+            cancellationToken: cancellationToken))!;
+
+    public virtual void AttachStoredFile(Feed feed, Guid storedFileId, string storedFileName)
+    {
+        EnsureStatus(feed, FeedStatus.Uploaded);
+        feed.StoredFileId = storedFileId;
+        feed.StoredFileName = storedFileName;
+    }
+
+    public virtual void SetValidationReport(Feed feed, FeedValidationReportModel report)
+    {
+        ArgumentNullException.ThrowIfNull(report);
+        feed.ValidationReport = report;
+        if (feed.Status != FeedStatus.Integrated)
+        {
+            feed.FailureCode = null;
+            feed.Status = report.Errors.Count == 0 ? FeedStatus.Validated : FeedStatus.ValidationFailed;
+        }
+    }
+
+    public virtual async Task<List<Feed>> GetWaitingForIntegrationAsync(CancellationToken cancellationToken = default)
+    {
+        using var allTenants = dataFilter.Disable<IMultiTenant>();
+        using var allOrganizations = dataFilter.Disable<IMultiOrganization>();
+        using var inactiveIncluded = dataFilter.Disable<ActiveFeedFilter>();
+        return await Repository.GetListAsync(
+            feed => feed.Status == FeedStatus.Validated, cancellationToken: cancellationToken);
+    }
+
+    public virtual async Task<Feed?> FindWaitingForIntegrationAsync(Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        EnsureScopeAvailable();
+        using var inactiveIncluded = dataFilter.Disable<ActiveFeedFilter>();
+        return await Repository.FindAsync(feed => feed.Id == id && feed.TenantId == CurrentTenant.Id
+            && feed.OrganizationId == currentOrganization.Id && feed.Status == FeedStatus.Validated,
+            cancellationToken: cancellationToken);
+    }
+
+    public virtual void SetIntegrated(Feed feed)
+    {
+        EnsureStatus(feed, FeedStatus.Validated);
+        feed.Status = FeedStatus.Integrated;
+        feed.FailureCode = null;
+    }
+
+    public virtual void SetIntegrationFailed(Feed feed, string? failureCode)
+    {
+        EnsureStatus(feed, FeedStatus.Validated);
+        feed.Status = FeedStatus.IntegrationFailed;
+        feed.FailureCode = failureCode;
+    }
+
+    public virtual void SetOperationUser(Feed feed)
+        => feed.LastOperationUserId = currentUser.Id ?? feed.LastOperationUserId;
+
+    public virtual void EnsureScopeAvailable()
+    {
+        if (CurrentTenant.Id is null || currentOrganization.Id is null)
             throw new BusinessException(FeedExceptionCodes.ScopeRequired);
     }
+
+    private static void EnsureStatus(Feed feed, FeedStatus expected)
+    {
+        if (feed.Status != expected)
+            throw new BusinessException(FeedExceptionCodes.StatusTransitionInvalid);
+    }
+
 }

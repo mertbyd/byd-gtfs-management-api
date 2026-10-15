@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS yuruyus yolu EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IPathwayRepository))]
 public class EfCorePathwayRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Pathway, Guid>(dbContextProvider), IPathwayRepository
+    : EfGtfsRepository<Pathway>(dbContextProvider), IPathwayRepository
 {
     // Tek kayit okumalarinda durak baglarini yukler.
     public override async Task<IQueryable<Pathway>> WithDetailsAsync()

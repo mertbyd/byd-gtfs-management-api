@@ -1,4 +1,4 @@
-﻿namespace Byd.GtfsManagement.Dtos.Levels;
+namespace Byd.GtfsManagement.Dtos.Levels;
 
 // islevi: Level ekleme ve guncelleme istekleri icin ortak GTFS alanlarini tasir.
 // sistemdeki gorevi: HTTP girdi sozlesmesini tanimlar.

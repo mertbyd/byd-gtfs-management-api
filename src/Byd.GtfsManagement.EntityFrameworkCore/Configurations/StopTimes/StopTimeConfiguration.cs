@@ -21,16 +21,19 @@ public sealed class StopTimeConfiguration : IEntityTypeConfiguration<StopTime>
             .HasForeignKey(value => value.FeedId).OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(value => value.Trip).WithMany()
-            .HasForeignKey(value => value.TripId)
+            .HasForeignKey(value => new { value.FeedId, value.TripId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(value => value.Stop).WithMany()
-            .HasForeignKey(value => value.StopId)
+            .HasForeignKey(value => new { value.FeedId, value.StopId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(value => value.LocationGroup).WithMany()
-            .HasForeignKey(value => value.LocationGroupId)
+            .HasForeignKey(value => new { value.FeedId, value.LocationGroupId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 

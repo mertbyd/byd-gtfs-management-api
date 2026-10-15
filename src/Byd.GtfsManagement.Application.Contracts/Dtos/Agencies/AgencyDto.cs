@@ -4,12 +4,17 @@ namespace Byd.GtfsManagement.Dtos.Agencies;
 
 // islevi: agency.txt kaydinin tum GTFS alanlarini ve lookup adini tasir.
 // sistemdeki gorevi: Persistence entity'sini public cevap sozlesmesinden ayirir.
-// FeedId, GTFS kaydinin kapsam anahtaridir; Feed adi Feed yonetiminden okunur.
 public class AgencyDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
     public int? CemvSupportId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
     public string? CemvSupportName { get; set; }
     public string? GtfsAgencyId { get; set; }
     public string Name { get; set; } = default!;

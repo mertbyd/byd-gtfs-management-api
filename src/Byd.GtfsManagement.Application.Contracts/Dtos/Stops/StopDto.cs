@@ -4,20 +4,25 @@ namespace Byd.GtfsManagement.Dtos.Stops;
 
 // islevi: stops.txt kaydinin tum GTFS alanlarini ve bagli kayitlarin adlarini tasir.
 // sistemdeki gorevi: Persistence entity'sini public cevap sozlesmesinden ayirir.
-// FeedId, GTFS kaydinin kapsam anahtaridir; Feed adi Feed yonetiminden okunur.
 public class StopDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
     public int? LocationTypeId { get; set; }
-    public string? LocationTypeName { get; set; }
     public int? WheelchairBoardingId { get; set; }
-    public string? WheelchairBoardingName { get; set; }
     public Guid? ParentStationId { get; set; }
-    public string? ParentStationName { get; set; }
     public Guid? LevelId { get; set; }
-    public string? LevelName { get; set; }
     public int? StopAccessId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
+    public string? LocationTypeName { get; set; }
+    public string? WheelchairBoardingName { get; set; }
+    public string? ParentStationName { get; set; }
+    public string? LevelName { get; set; }
     public string? StopAccessName { get; set; }
     public string GtfsStopId { get; set; } = default!;
     public string? ZoneId { get; set; }

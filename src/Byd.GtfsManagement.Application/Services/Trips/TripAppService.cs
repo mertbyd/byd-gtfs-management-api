@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Byd.GtfsManagement.Interfaces;
 using Byd.GtfsManagement.Dtos.Trips;
 using Byd.GtfsManagement.Entities.Trips;
 using Byd.GtfsManagement.Interfaces.Trips;
@@ -10,14 +11,24 @@ using Byd.GtfsManagement.Models.Trips;
 
 namespace Byd.GtfsManagement.Services.Trips;
 
-// islevi: Trip kayitlarinin CRUD akisini ortak tabana baglar; kaydi duraklari, sikliklari, sekli ve takvimiyle okuyan detay ucunu sunar.
-// sistemdeki gorevi: Tipli baglari bildirir; CRUD tabanda kalir, detay kurali TripManager'dadir.
+// islevi: Trip kayitlarinin CRUD ve GTFS arsiv akisini ortak tabana baglar; kaydi duraklari, sikliklari, sekli ve
+// takvimiyle okuyan detay ucunu sunar.
+// sistemdeki gorevi: Tipli baglari bildirir; CRUD ve arsiv akisi tabanda kalir, detay kurali TripManager'dadir.
 public class TripAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         Trip, CreateTripDto, UpdateTripDto, TripDto, TripFilter,
-        TripCreateModel, TripUpdateModel, TripManager, ITripRepository, TripMapper>, ITripAppService
+        TripCreateModel, TripUpdateModel, TripManager, ITripRepository, TripMapper, TripImportDto>, ITripAppService
 {
     // Kaydi duraklari, sikliklari, sekli ve takvimiyle birlikte getirir.
     public virtual async Task<TripDetailDto> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
         => Mapper.Map(await Manager.GetDetailAsync(id, cancellationToken));
+    // Taslak veya gecmis detayini yetkili surum kapsaminda okur.
+    public virtual async Task<TripDetailDto> GetDetailForFeedAsync(
+        Guid feedId, Guid id, CancellationToken cancellationToken = default)
+    {
+        using var draftRead = DataFilter.Disable<ActiveFeedFilter>();
+        await FeedManager.EnsureExistsInScopeAsync(feedId, cancellationToken);
+        Manager.EnsureInFeed(await Manager.EnsureExistsInScopeAsync(id, cancellationToken), feedId);
+        return await GetDetailAsync(id, cancellationToken);
+    }
 }

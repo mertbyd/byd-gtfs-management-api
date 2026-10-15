@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.Transfers;
 
 namespace Byd.GtfsManagement.Services.Transfers;
 
-// islevi: Transfer CRUD akisini ortak tabana baglar.
+// islevi: Transfer CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS aktarma CRUD servisini ortak tabana baglar.</summary>
 public class TransferAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         Transfer, CreateTransferDto, UpdateTransferDto, TransferDto, TransferFilter,
-        TransferCreateModel, TransferUpdateModel, TransferManager, ITransferRepository, TransferMapper>,
+        TransferCreateModel, TransferUpdateModel, TransferManager, ITransferRepository, TransferMapper, TransferImportDto>,
         ITransferAppService
 {
 }

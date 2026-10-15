@@ -159,4 +159,59 @@ public class StopController : GtfsManagementController
     public virtual async Task<Result<List<StopDepartureDto>>> GetDeparturesAsync(
         Guid id, [FromQuery] StopDepartureInputDto input, CancellationToken cancellationToken = default)
         => await AppService.GetDeparturesAsync(id, input, cancellationToken);
+
+    /// <summary>Belirli surumun taslak veya gecmis kaydini getirir.</summary>
+    /// <param name="feedId">Kapsamda okunacak surum kimligi.</param>
+    /// <param name="id">Okunacak kaydin kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Cevap yalniz istenen surumun kaydini tasir; tenant ve organizasyon sinirlari korunur.</remarks>
+    [HttpGet(GtfsRecordRoutes.ForFeed)]
+    [Authorize(GtfsManagementPermissions.Stops.Manage)]
+    public virtual async Task<Result<StopDto>> GetForFeedAsync(
+        Guid feedId, Guid id, CancellationToken cancellationToken = default)
+        => await AppService.GetForFeedAsync(feedId, id, cancellationToken);
+
+    /// <summary>Belirli surumun taslak veya gecmis kayitlarini filtreleyip sayfalar.</summary>
+    /// <param name="feedId">Kapsamda listelenecek surum kimligi.</param>
+    /// <param name="input">Kayit filtreleri, siralama ve sayfalama.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Cevap toplam sayiyi ve hedef surumun sayfasini tasir; farkli surum veya kapsam acilmaz.</remarks>
+    [HttpGet(GtfsRecordRoutes.ListForFeed)]
+    [Authorize(GtfsManagementPermissions.Stops.Manage)]
+    public virtual async Task<Result<PagedResultDto<StopDto>>> GetFilteredListForFeedAsync(
+        Guid feedId, [FromQuery] DataTableListInput<StopFilter> input,
+        CancellationToken cancellationToken = default)
+        => await AppService.GetFilteredListForFeedAsync(feedId, input, cancellationToken);
+    /// <summary>Taslak veya gecmis surumun iliskili kayit detayini getirir.</summary>
+    /// <param name="feedId">Yonetilecek surum kimligi.</param>
+    /// <param name="id">Surumdeki kayit kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Kayit ve iliskilerini getirir; tenant ve organizasyon korunur, yayin secimi degismez.</remarks>
+    [HttpGet(GtfsRecordRoutes.DetailForFeed)]
+    [Authorize(GtfsManagementPermissions.Stops.Manage)]
+    public virtual async Task<Result<StopDetailDto>> GetDetailForFeedAsync(
+        Guid feedId, Guid id, CancellationToken cancellationToken = default)
+        => await AppService.GetDetailForFeedAsync(feedId, id, cancellationToken);
+
+    /// <summary>Taslak veya gecmis surumun durak haritasini getirir.</summary>
+    /// <param name="feedId">Onizlenecek surum kimligi.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Surumun durak koordinatlarini getirir; etkin surum ve diger kapsamlar degismez.</remarks>
+    [HttpGet(GtfsRecordRoutes.MapForFeed)]
+    [Authorize(GtfsManagementPermissions.Stops.Manage)]
+    public virtual async Task<Result<List<StopDto>>> GetMapForFeedAsync(
+        Guid feedId, CancellationToken cancellationToken = default)
+        => await AppService.GetMapForFeedAsync(feedId, cancellationToken);
+
+    /// <summary>Taslak veya gecmis surumun durak kalkislarini getirir.</summary>
+    /// <param name="feedId">Onizlenecek surum kimligi.</param>
+    /// <param name="id">Kalkislari okunacak durak kimligi.</param>
+    /// <param name="input">Servis gunu, baslangic saati ve kalkis siniri.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>Yalniz secilen surumun planlanan kalkislarini tasir; yayin secimini degistirmez.</remarks>
+    [HttpGet(GtfsRecordRoutes.DeparturesForFeed)]
+    [Authorize(GtfsManagementPermissions.Stops.Manage)]
+    public virtual async Task<Result<List<StopDepartureDto>>> GetDeparturesForFeedAsync(
+        Guid feedId, Guid id, [FromQuery] StopDepartureInputDto input, CancellationToken cancellationToken = default)
+        => await AppService.GetDeparturesForFeedAsync(feedId, id, input, cancellationToken);
 }

@@ -22,7 +22,7 @@ public class ServiceManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Service(
-            GuidGenerator.Create(), feed.TenantId, feed.Id);
+            GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }

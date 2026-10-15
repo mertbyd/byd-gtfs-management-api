@@ -23,7 +23,7 @@ public class TimeframeManager(
     {
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
-        var entity = new Timeframe(GuidGenerator.Create(), feed.TenantId, feed.Id, NormalizeRequiredText(model.TimeframeGroupId), NormalizeRequiredText(model.GtfsServiceId));
+        var entity = new Timeframe(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.TimeframeGroupId), NormalizeRequiredText(model.GtfsServiceId));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

@@ -7,6 +7,10 @@ public static class GtfsManagementLocalizationKeys
     public static class Permissions
     {
         public const string Group = "Permission:GtfsManagement";
+        public const string Feeds = "Permission:Feeds";
+        public const string FeedsView = "Permission:Feeds.View";
+        public const string FeedsManage = "Permission:Feeds.Manage";
+        public const string FeedsExport = "Permission:Feeds.Export";
         public const string Agencies = "Permission:Agencies";
         public const string AgenciesView = "Permission:Agencies.View";
         public const string AgenciesManage = "Permission:Agencies.Manage";

@@ -10,29 +10,26 @@ namespace Byd.GtfsManagement.Entities.Shapes;
 /// <summary>Bir GTFS sekil noktasini temsil eder.</summary>
 public class Shape : AuditedAggregateRoot<Guid>, IGtfsEntity
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // GTFS shape_id; sekli tanimlayan dis kimlik.
-    public string GtfsShapeId { get; internal set; } = default!;
+    public string GtfsShapeId { get; protected internal set; } = default!;
 
     // Sekil noktasinin enlemi (WGS 84).
-    public double Latitude { get; internal set; }
+    public double Latitude { get; protected internal set; }
 
     // Sekil noktasinin boylami (WGS 84).
-    public double Longitude { get; internal set; }
+    public double Longitude { get; protected internal set; }
 
     // Sekil cizgisi uzerindeki sira numarasi.
-    public int Sequence { get; internal set; }
+    public int Sequence { get; protected internal set; }
 
     // Sekil baslangicindan bu noktaya kadar kat edilen toplam mesafe.
-    public double? DistTraveled { get; internal set; }
+    public double? DistTraveled { get; protected internal set; }
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
 
     // EF materialization icin bos kabuk kurar.
     protected Shape()
@@ -40,9 +37,8 @@ public class Shape : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam bilgilerini kurar.
-    public Shape(Guid id, Guid? tenantId, Guid feedId, string gtfsShapeId) : base(id)
+    public Shape(Guid id, Guid feedId, string gtfsShapeId) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
         GtfsShapeId = gtfsShapeId;
     }

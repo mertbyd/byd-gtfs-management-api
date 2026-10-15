@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.LocationGroups;
 // islevi: LocationGroup liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Sorgunun izinli alanlarini belirler.
 /// <summary>GTFS konum grubu filtrelerini tasir.</summary>
-public class LocationGroupFilter
+public class LocationGroupFilter : IFeedFilter
 {
     [DataTable(LocationGroupFilterFields.FeedId, LocationGroupFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.LocationGroups;
 
 namespace Byd.GtfsManagement.Services.LocationGroups;
 
-// islevi: LocationGroup CRUD akisini ortak tabana baglar.
+// islevi: LocationGroup CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS konum grubu CRUD servisini ortak tabana baglar.</summary>
 public class LocationGroupAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         LocationGroup, CreateLocationGroupDto, UpdateLocationGroupDto, LocationGroupDto, LocationGroupFilter,
-        LocationGroupCreateModel, LocationGroupUpdateModel, LocationGroupManager, ILocationGroupRepository, LocationGroupMapper>,
+        LocationGroupCreateModel, LocationGroupUpdateModel, LocationGroupManager, ILocationGroupRepository, LocationGroupMapper, LocationGroupImportDto>,
         ILocationGroupAppService
 {
 }

@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.StopAreas;
 // islevi: StopArea liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Sorgunun izinli alanlarini belirler.
 /// <summary>GTFS durak bolge iliskisi filtrelerini tasir.</summary>
-public class StopAreaFilter
+public class StopAreaFilter : IFeedFilter
 {
     [DataTable(StopAreaFilterFields.FeedId, StopAreaFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

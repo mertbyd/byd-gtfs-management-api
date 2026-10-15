@@ -32,12 +32,14 @@ public sealed class StopConfiguration : IEntityTypeConfiguration<Stop>
 
         // parent_station GTFS dokumaninda istege baglidir (parent_station_id null olabilir).
         builder.HasOne(stop => stop.ParentStation).WithMany()
-            .HasForeignKey(stop => stop.ParentStationId)
+            .HasForeignKey(stop => new { stop.FeedId, stop.ParentStationId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(stop => stop.Level).WithMany()
-            .HasForeignKey(stop => stop.LevelId)
+            .HasForeignKey(stop => new { stop.FeedId, stop.LevelId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -48,7 +50,7 @@ public sealed class StopConfiguration : IEntityTypeConfiguration<Stop>
 
         builder.HasIndex(stop => stop.ParentStationId)
             .HasDatabaseName(StopConsts.ParentStationIndex);
-        builder.HasIndex(stop => new { stop.TenantId, stop.FeedId, stop.GtfsStopId })
+        builder.HasIndex(stop => new { stop.FeedId, stop.GtfsStopId })
             .IsUnique().HasDatabaseName(StopConsts.GtfsStopIdIndex);
     }
 }

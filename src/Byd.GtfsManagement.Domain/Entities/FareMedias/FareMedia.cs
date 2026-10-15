@@ -8,25 +8,22 @@ namespace Byd.GtfsManagement.Entities.FareMedias;
 // islevi: fare_media.txt icindeki GTFS verilerini saklar.
 // sistemdeki gorevi: Ucret medyasi verilerini Feed altinda tutar.
 /// <summary>GTFS ucret medyasi kaydini temsil eder.</summary>
-public class FareMedia : AuditedAggregateRoot<Guid>, IGtfsEntity
+public class FareMedia : AuditedAggregateRoot<Guid>, IGtfsEntity, IHasGtfsId
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // GTFS fare_media_id dis kimligi.
-    public string GtfsFareMediaId { get; internal set; } = default!;
+    public string GtfsFareMediaId { get; protected internal set; } = default!;
 
     // Odeme medyasi okunabilir adi.
-    public string? FareMediaName { get; internal set; }
+    public string? FareMediaName { get; protected internal set; }
 
     // Odeme medyasi tipi (0: Yok, 1: Kagit, 2: Kart, 3: Temassiz EMV, 4: Mobil).
-    public int FareMediaType { get; internal set; }
+    public int FareMediaType { get; protected internal set; }
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
 
     // EF materialization icin bos kabuk kurar.
     protected FareMedia()
@@ -34,11 +31,12 @@ public class FareMedia : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam bilgilerini kurar.
-    public FareMedia(Guid id, Guid? tenantId, Guid feedId, string gtfsFareMediaId, int fareMediaType) : base(id)
+    public FareMedia(Guid id, Guid feedId, string gtfsFareMediaId, int fareMediaType) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
         GtfsFareMediaId = gtfsFareMediaId;
         FareMediaType = fareMediaType;
     }
+    // Dis anahtarlar disa aktarimda orijinal GTFS kimligine cozulur.
+    string? IHasGtfsId.GtfsId => GtfsFareMediaId;
 }

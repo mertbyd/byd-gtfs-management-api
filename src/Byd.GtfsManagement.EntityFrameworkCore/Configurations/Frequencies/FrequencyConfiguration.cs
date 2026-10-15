@@ -19,7 +19,8 @@ public sealed class FrequencyConfiguration : IEntityTypeConfiguration<Frequency>
         builder.HasOne(value => value.Feed).WithMany()
             .HasForeignKey(value => value.FeedId).OnDelete(DeleteBehavior.Restrict);
         builder.HasOne(value => value.Trip).WithMany()
-            .HasForeignKey(value => value.TripId).OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(value => new { value.FeedId, value.TripId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id }).OnDelete(DeleteBehavior.Restrict);
         builder.HasIndex(value => new { value.TripId, value.StartTime })
             .IsUnique().HasDatabaseName(FrequencyConsts.TripStartIndex);
     }

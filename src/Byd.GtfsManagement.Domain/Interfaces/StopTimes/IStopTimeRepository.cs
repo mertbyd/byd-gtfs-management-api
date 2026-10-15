@@ -23,6 +23,6 @@ public interface IStopTimeRepository : IExtendedRepository<StopTime>
 
     // Verilen servislerin, saat araliginda kalkan veya varan durak ziyaretlerini getirir.
     Task<List<StopVisitModel>> GetVisitsAsync(
-        Guid feedId, IReadOnlyCollection<Guid> serviceIds, string fromTime, string toTime,
+        Guid? feedId, IReadOnlyCollection<Guid> serviceIds, string fromTime, string toTime,
         CancellationToken cancellationToken = default);
 }

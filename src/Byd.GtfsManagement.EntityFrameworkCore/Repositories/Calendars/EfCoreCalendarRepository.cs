@@ -15,7 +15,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 // sistemdeki gorevi: Cevap DTO'sunun GTFS servis kimligini tasiyabilmesi icin Include'u tek yerde tutar.
 [ExposeServices(typeof(ICalendarRepository))]
 public class EfCoreCalendarRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Calendar, Guid>(dbContextProvider), ICalendarRepository
+    : EfGtfsRepository<Calendar>(dbContextProvider), ICalendarRepository
 {
     // Tekil okumalarda servis kimliginin dolu gelmesini saglar.
     public override async Task<IQueryable<Calendar>> WithDetailsAsync()

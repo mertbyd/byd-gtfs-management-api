@@ -23,7 +23,7 @@ public class BookingRuleManager(
     {
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
-        var entity = new BookingRule(GuidGenerator.Create(), feed.TenantId, feed.Id, NormalizeRequiredText(model.GtfsBookingRuleId), model.BookingType);
+        var entity = new BookingRule(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsBookingRuleId), model.BookingType);
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

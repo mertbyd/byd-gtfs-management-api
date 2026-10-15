@@ -23,7 +23,7 @@ public class FareLegRuleManager(
     {
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
-        var entity = new FareLegRule(GuidGenerator.Create(), feed.TenantId, feed.Id, NormalizeRequiredText(model.GtfsFareProductId));
+        var entity = new FareLegRule(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsFareProductId));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

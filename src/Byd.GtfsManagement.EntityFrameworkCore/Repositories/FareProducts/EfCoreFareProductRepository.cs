@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS ucret urunu EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IFareProductRepository))]
 public class EfCoreFareProductRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, FareProduct, Guid>(dbContextProvider), IFareProductRepository
+    : EfGtfsRepository<FareProduct>(dbContextProvider), IFareProductRepository
 {
 }

@@ -1,4 +1,4 @@
-﻿using Byd.GtfsManagement.Dtos.Levels;
+using Byd.GtfsManagement.Dtos.Levels;
 using Byd.GtfsManagement.Entities.Levels;
 using Byd.GtfsManagement.Models.Levels;
 using Riok.Mapperly.Abstractions;
@@ -10,7 +10,7 @@ namespace Byd.GtfsManagement.Mappers.Levels;
 /// <summary>GTFS kat DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class LevelMapper
-    : IGtfsCrudMapper<Level, CreateLevelDto, UpdateLevelDto, LevelDto,
+    : IGtfsArchiveMapper<LevelImportDto, Level>, IGtfsCrudMapper<Level, CreateLevelDto, UpdateLevelDto, LevelDto,
         LevelCreateModel, LevelUpdateModel>
 {
     // Olusturma istegini domain modeline donusturur.
@@ -21,4 +21,10 @@ public partial class LevelMapper
 
     // Kaydi public cevap sozlesmesine donusturur.
     public partial LevelDto Map(Level entity);
+
+    // CSV satirini entity'ye esler.
+    public partial Level Map(LevelImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial LevelImportDto MapToImport(Level entity);
 }

@@ -1,4 +1,4 @@
-﻿namespace Byd.GtfsManagement.Dtos.Shapes;
+namespace Byd.GtfsManagement.Dtos.Shapes;
 
 // islevi: Sekil noktasi guncelleme HTTP istegini tasir.
 // sistemdeki gorevi: Degistirilebilir alanlari girdi sozlesmesinde sunar.

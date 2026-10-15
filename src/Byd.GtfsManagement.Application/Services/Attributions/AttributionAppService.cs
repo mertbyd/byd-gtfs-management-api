@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.Attributions;
 
 namespace Byd.GtfsManagement.Services.Attributions;
 
-// islevi: Attribution CRUD akisini ortak tabana baglar.
+// islevi: Attribution CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS atif CRUD servisini ortak tabana baglar.</summary>
 public class AttributionAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         Attribution, CreateAttributionDto, UpdateAttributionDto, AttributionDto, AttributionFilter,
-        AttributionCreateModel, AttributionUpdateModel, AttributionManager, IAttributionRepository, AttributionMapper>,
+        AttributionCreateModel, AttributionUpdateModel, AttributionManager, IAttributionRepository, AttributionMapper, AttributionImportDto>,
         IAttributionAppService
 {
 }

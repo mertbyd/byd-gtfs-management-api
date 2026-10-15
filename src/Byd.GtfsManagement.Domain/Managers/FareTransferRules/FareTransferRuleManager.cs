@@ -23,7 +23,7 @@ public class FareTransferRuleManager(
     {
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
-        var entity = new FareTransferRule(GuidGenerator.Create(), feed.TenantId, feed.Id, model.FareTransferType);
+        var entity = new FareTransferRule(GuidGenerator.Create(), feed.Id, model.FareTransferType);
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

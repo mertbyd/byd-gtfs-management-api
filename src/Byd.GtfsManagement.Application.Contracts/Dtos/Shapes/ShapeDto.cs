@@ -8,8 +8,14 @@ namespace Byd.GtfsManagement.Dtos.Shapes;
 /// <summary>GTFS sekil cevap alanlarini tasir.</summary>
 public class ShapeDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
     public string GtfsShapeId { get; set; } = default!;
     public double Latitude { get; set; }
     public double Longitude { get; set; }

@@ -29,7 +29,7 @@ public class AgencyManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Agency(
-            GuidGenerator.Create(), feed.TenantId, feed.Id);
+            GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }

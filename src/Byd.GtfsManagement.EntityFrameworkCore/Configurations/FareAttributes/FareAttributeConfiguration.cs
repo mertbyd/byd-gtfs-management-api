@@ -24,7 +24,8 @@ public sealed class FareAttributeConfiguration : IEntityTypeConfiguration<FareAt
 
         builder.HasOne(value => value.Agency)
             .WithMany()
-            .HasForeignKey(value => value.AgencyId)
+            .HasForeignKey(value => new { value.FeedId, value.AgencyId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 

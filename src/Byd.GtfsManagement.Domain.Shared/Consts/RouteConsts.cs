@@ -5,7 +5,7 @@ namespace Byd.GtfsManagement.Consts;
 public static class RouteConsts
 {
     public const string TableName = "Routes";
-    public const string GtfsRouteIdIndex = "IX_Routes_Tenant_Feed_GtfsRouteId";
+    public const string GtfsRouteIdIndex = "IX_Routes_Feed_GtfsRouteId";
     public const string AgencyIndex = "IX_Routes_AgencyId";
 
     public const int MaxGtfsRouteIdLength = 100;

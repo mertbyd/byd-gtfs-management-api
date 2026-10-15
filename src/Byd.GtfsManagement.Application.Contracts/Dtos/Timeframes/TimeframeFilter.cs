@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.Timeframes;
 // islevi: Timeframe liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Sorgunun izinli alanlarini belirler.
 /// <summary>GTFS zaman araligi filtrelerini tasir.</summary>
-public class TimeframeFilter
+public class TimeframeFilter : IFeedFilter
 {
     [DataTable(TimeframeFilterFields.FeedId, TimeframeFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

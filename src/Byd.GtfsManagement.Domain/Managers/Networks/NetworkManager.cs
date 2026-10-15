@@ -23,7 +23,7 @@ public class NetworkManager(
     {
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
-        var entity = new Network(GuidGenerator.Create(), feed.TenantId, feed.Id, NormalizeRequiredText(model.GtfsNetworkId));
+        var entity = new Network(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsNetworkId));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

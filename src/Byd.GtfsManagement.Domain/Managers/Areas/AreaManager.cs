@@ -24,8 +24,7 @@ public class AreaManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Area(
-            GuidGenerator.Create(), feed.TenantId,
-            feed.Id, NormalizeRequiredText(model.GtfsAreaId));
+            GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsAreaId));
         Apply(entity, model);
         await CheckAreaUniqueAsync(entity, cancellationToken);
         return entity;

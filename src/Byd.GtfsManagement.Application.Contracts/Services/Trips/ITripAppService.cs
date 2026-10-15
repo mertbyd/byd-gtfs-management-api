@@ -12,4 +12,6 @@ public interface ITripAppService
     : IGtfsCrudAppService<CreateTripDto, UpdateTripDto, TripDto, TripFilter>
 {
     Task<TripDetailDto> GetDetailAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<TripDetailDto> GetDetailForFeedAsync(
+        Guid feedId, Guid id, CancellationToken cancellationToken = default);
 }

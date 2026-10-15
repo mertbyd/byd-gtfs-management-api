@@ -7,8 +7,14 @@ namespace Byd.GtfsManagement.Dtos.FareProducts;
 /// <summary>GTFS ucret urunu cevap alanlarini tasir.</summary>
 public class FareProductDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
     public string GtfsFareProductId { get; set; } = default!;
     public string? GtfsRiderCategoryId { get; set; }
     public string? GtfsFareMediaId { get; set; }

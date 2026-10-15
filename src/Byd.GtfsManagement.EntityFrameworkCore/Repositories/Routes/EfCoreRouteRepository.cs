@@ -18,7 +18,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 // sistemdeki gorevi: Cevap DTO'sunun ajans ve lookup adlarini tasiyabilmesi icin Include'u tek yerde tutar.
 [ExposeServices(typeof(IRouteRepository))]
 public class EfCoreRouteRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Route, Guid>(dbContextProvider), IRouteRepository
+    : EfGtfsRepository<Route>(dbContextProvider), IRouteRepository
 {
     // Tekil okumalarda ajans, ulasim turu ve yol boyu kurallarinin adlarinin dolu gelmesini saglar.
     public override async Task<IQueryable<Route>> WithDetailsAsync()

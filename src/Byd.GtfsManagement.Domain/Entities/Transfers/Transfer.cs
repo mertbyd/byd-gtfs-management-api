@@ -13,56 +13,47 @@ namespace Byd.GtfsManagement.Entities.Transfers;
 /// <summary>Bir GTFS aktarma kuralini temsil eder.</summary>
 public class Transfer : AuditedAggregateRoot<Guid>, IGtfsEntity
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // Aktarmanin basladigi durak.
-    public Guid? FromStopId { get; internal set; }
-
-    // Aktarmanin basladigi durak kaydi.
-    public Stop? FromStop { get; internal set; }
+    public Guid? FromStopId { get; protected internal set; }
 
     // Aktarmanin bittigi durak.
-    public Guid? ToStopId { get; internal set; }
-
-    // Aktarmanin bittigi durak kaydi.
-    public Stop? ToStop { get; internal set; }
+    public Guid? ToStopId { get; protected internal set; }
 
     // Baslangic guzergahi.
-    public Guid? FromRouteId { get; internal set; }
-
-    // Baslangic guzergah kaydi.
-    public Route? FromRoute { get; internal set; }
+    public Guid? FromRouteId { get; protected internal set; }
 
     // Varis guzergahi.
-    public Guid? ToRouteId { get; internal set; }
-
-    // Varis guzergah kaydi.
-    public Route? ToRoute { get; internal set; }
+    public Guid? ToRouteId { get; protected internal set; }
 
     // Aktarmanin basladigi sefer.
-    public Guid? FromTripId { get; internal set; }
-
-    // Baslangic sefer kaydi.
-    public Trip? FromTrip { get; internal set; }
+    public Guid? FromTripId { get; protected internal set; }
 
     // Aktarmanin bittigi sefer.
-    public Guid? ToTripId { get; internal set; }
-
-    // Varis sefer kaydi.
-    public Trip? ToTrip { get; internal set; }
+    public Guid? ToTripId { get; protected internal set; }
 
     // GTFS transfer_type kodu.
-    public int TransferType { get; internal set; }
+    public int TransferType { get; protected internal set; }
 
     // Istege bagli asgari aktarma suresi.
-    public int? MinTransferTime { get; internal set; }
+    public int? MinTransferTime { get; protected internal set; }
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
+    // Aktarmanin basladigi durak kaydi.
+    public Stop? FromStop { get; protected internal set; }
+    // Aktarmanin bittigi durak kaydi.
+    public Stop? ToStop { get; protected internal set; }
+    // Baslangic guzergah kaydi.
+    public Route? FromRoute { get; protected internal set; }
+    // Varis guzergah kaydi.
+    public Route? ToRoute { get; protected internal set; }
+    // Baslangic sefer kaydi.
+    public Trip? FromTrip { get; protected internal set; }
+    // Varis sefer kaydi.
+    public Trip? ToTrip { get; protected internal set; }
 
     // EF materialization icin bos kabuk kurar.
     protected Transfer()
@@ -70,9 +61,8 @@ public class Transfer : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam alanlarini kurar.
-    public Transfer(Guid id, Guid? tenantId, Guid feedId) : base(id)
+    public Transfer(Guid id, Guid feedId) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
     }
 }

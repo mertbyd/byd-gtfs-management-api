@@ -10,7 +10,7 @@ namespace Byd.GtfsManagement.Mappers.Frequencies;
 /// <summary>Sefer sikligi DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class FrequencyMapper
-    : IGtfsCrudMapper<Frequency, CreateFrequencyDto, UpdateFrequencyDto, FrequencyDto,
+    : IGtfsArchiveMapper<FrequencyImportDto, Frequency>, IGtfsCrudMapper<Frequency, CreateFrequencyDto, UpdateFrequencyDto, FrequencyDto,
         FrequencyCreateModel, FrequencyUpdateModel>
 {
     // Olusturma istegini domain modeline donusturur.
@@ -21,4 +21,10 @@ public partial class FrequencyMapper
 
     // Kaydi public cevap sozlesmesine donusturur.
     public partial FrequencyDto Map(Frequency entity);
+
+    // CSV satirini entity'ye esler.
+    public partial Frequency Map(FrequencyImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial FrequencyImportDto MapToImport(Frequency entity);
 }

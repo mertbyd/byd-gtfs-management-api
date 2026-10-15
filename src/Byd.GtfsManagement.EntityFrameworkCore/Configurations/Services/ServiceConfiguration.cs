@@ -20,7 +20,7 @@ public sealed class ServiceConfiguration : IEntityTypeConfiguration<Service>
             .HasForeignKey(service => service.FeedId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasIndex(service => new { service.TenantId, service.FeedId, service.GtfsServiceId })
+        builder.HasIndex(service => new { service.FeedId, service.GtfsServiceId })
             .IsUnique().HasDatabaseName(ServiceConsts.GtfsServiceIdIndex);
     }
 }

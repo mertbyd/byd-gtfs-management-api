@@ -23,7 +23,7 @@ public class FareProductManager(
     {
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
-        var entity = new FareProduct(GuidGenerator.Create(), feed.TenantId, feed.Id, NormalizeRequiredText(model.GtfsFareProductId), model.Amount, NormalizeRequiredText(model.Currency));
+        var entity = new FareProduct(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsFareProductId), model.Amount, NormalizeRequiredText(model.Currency));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

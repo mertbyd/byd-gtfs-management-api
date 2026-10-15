@@ -14,6 +14,7 @@ public partial class GtfsManagementPermissionDefinitionProvider : PermissionDefi
         var group = context.AddGroup(
             GtfsManagementPermissions.GroupName,
             L(GtfsManagementLocalizationKeys.Permissions.Group));
+        AddFeedPermissions(group);
         AddAgencyPermissions(group);
         AddStopPermissions(group);
         AddRoutePermissions(group);

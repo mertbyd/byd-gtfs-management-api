@@ -16,7 +16,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>Sefer sikligi EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IFrequencyRepository))]
 public class EfCoreFrequencyRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Frequency, Guid>(dbContextProvider),
+    : EfGtfsRepository<Frequency>(dbContextProvider),
         IFrequencyRepository
 {
     // Tek kayit okumalarinda bagli seferi yukler.

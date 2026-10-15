@@ -19,7 +19,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>StopTime EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IStopTimeRepository))]
 public class EfCoreStopTimeRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, StopTime, Guid>(dbContextProvider), IStopTimeRepository
+    : EfGtfsRepository<StopTime>(dbContextProvider), IStopTimeRepository
 {
     // Tek kayit okumalarinda sefer, durak ve lookup adlarini yukler.
     public override async Task<IQueryable<StopTime>> WithDetailsAsync()
@@ -64,10 +64,10 @@ public class EfCoreStopTimeRepository(IDbContextProvider<GtfsManagementDbContext
 
     // Verilen servislerin saat araliginda kalkan veya varan, duraga bagli ve saatli ziyaretlerini getirir.
     public virtual async Task<List<StopVisitModel>> GetVisitsAsync(
-        Guid feedId, IReadOnlyCollection<Guid> serviceIds, string fromTime, string toTime,
+        Guid? feedId, IReadOnlyCollection<Guid> serviceIds, string fromTime, string toTime,
         CancellationToken cancellationToken = default)
         => await (await GetQueryableAsync())
-            .Where(stopTime => stopTime.FeedId == feedId && stopTime.StopId != null
+            .Where(stopTime => (feedId == null || stopTime.FeedId == feedId) && stopTime.StopId != null
                 && stopTime.ArrivalTime != null && stopTime.DepartureTime != null
                 && serviceIds.Contains(stopTime.Trip.ServiceId))
             .Where(stopTime =>

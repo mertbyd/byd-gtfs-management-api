@@ -21,11 +21,13 @@ public sealed class TripConfiguration : IEntityTypeConfiguration<Trip>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(trip => trip.Route).WithMany()
-            .HasForeignKey(trip => trip.RouteId)
+            .HasForeignKey(trip => new { trip.FeedId, trip.RouteId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(trip => trip.Service).WithMany()
-            .HasForeignKey(trip => trip.ServiceId)
+            .HasForeignKey(trip => new { trip.FeedId, trip.ServiceId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(trip => trip.TripDirection).WithMany()
@@ -52,7 +54,7 @@ public sealed class TripConfiguration : IEntityTypeConfiguration<Trip>
             .HasDatabaseName(TripConsts.RouteIndex);
         builder.HasIndex(trip => trip.ServiceId)
             .HasDatabaseName(TripConsts.ServiceIndex);
-        builder.HasIndex(trip => new { trip.TenantId, trip.FeedId, trip.GtfsTripId })
+        builder.HasIndex(trip => new { trip.FeedId, trip.GtfsTripId })
             .IsUnique().HasDatabaseName(TripConsts.GtfsTripIdIndex);
     }
 }

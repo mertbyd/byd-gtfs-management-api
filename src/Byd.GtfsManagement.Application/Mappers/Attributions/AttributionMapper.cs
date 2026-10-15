@@ -10,7 +10,7 @@ namespace Byd.GtfsManagement.Mappers.Attributions;
 /// <summary>GTFS atif DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class AttributionMapper
-    : IGtfsCrudMapper<Attribution, CreateAttributionDto, UpdateAttributionDto, AttributionDto,
+    : IGtfsArchiveMapper<AttributionImportDto, Attribution>, IGtfsCrudMapper<Attribution, CreateAttributionDto, UpdateAttributionDto, AttributionDto,
         AttributionCreateModel, AttributionUpdateModel>
 {
     // Olusturma istegini domain modeline donusturur.
@@ -21,4 +21,10 @@ public partial class AttributionMapper
 
     // Kaydi public cevap sozlesmesine donusturur.
     public partial AttributionDto Map(Attribution entity);
+
+    // CSV satirini entity'ye esler.
+    public partial Attribution Map(AttributionImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial AttributionImportDto MapToImport(Attribution entity);
 }

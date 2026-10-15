@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.Transfers;
 // islevi: Transfer liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Aktarma sorgusunun izinli alanlarini belirler.
 /// <summary>GTFS aktarma filtrelerini tasir.</summary>
-public class TransferFilter
+public class TransferFilter : IFeedFilter
 {
     [DataTable(TransferFilterFields.FeedId, TransferFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

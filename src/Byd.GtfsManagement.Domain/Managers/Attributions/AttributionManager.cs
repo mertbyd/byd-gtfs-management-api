@@ -32,8 +32,7 @@ public class AttributionManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Attribution(
-            GuidGenerator.Create(), feed.TenantId,
-            feed.Id, NormalizeRequiredText(model.OrganizationName));
+            GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.OrganizationName));
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }

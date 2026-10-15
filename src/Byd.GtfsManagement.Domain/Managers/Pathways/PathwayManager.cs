@@ -29,8 +29,7 @@ public class PathwayManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Pathway(
-            GuidGenerator.Create(), feed.TenantId,
-            feed.Id, NormalizeRequiredText(model.GtfsPathwayId));
+            GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsPathwayId));
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }

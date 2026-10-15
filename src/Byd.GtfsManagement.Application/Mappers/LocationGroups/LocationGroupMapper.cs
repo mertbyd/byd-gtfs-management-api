@@ -10,10 +10,16 @@ namespace Byd.GtfsManagement.Mappers.LocationGroups;
 /// <summary>GTFS konum grubu DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class LocationGroupMapper
-    : IGtfsCrudMapper<LocationGroup, CreateLocationGroupDto, UpdateLocationGroupDto, LocationGroupDto,
+    : IGtfsArchiveMapper<LocationGroupImportDto, LocationGroup>, IGtfsCrudMapper<LocationGroup, CreateLocationGroupDto, UpdateLocationGroupDto, LocationGroupDto,
         LocationGroupCreateModel, LocationGroupUpdateModel>
 {
     public partial LocationGroupCreateModel Map(CreateLocationGroupDto input);
     public partial LocationGroupUpdateModel Map(UpdateLocationGroupDto input);
     public partial LocationGroupDto Map(LocationGroup entity);
+
+    // CSV satirini entity'ye esler.
+    public partial LocationGroup Map(LocationGroupImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial LocationGroupImportDto MapToImport(LocationGroup entity);
 }

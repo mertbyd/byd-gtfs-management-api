@@ -10,10 +10,16 @@ namespace Byd.GtfsManagement.Mappers.Networks;
 /// <summary>GTFS ulasim agi DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class NetworkMapper
-    : IGtfsCrudMapper<Network, CreateNetworkDto, UpdateNetworkDto, NetworkDto,
+    : IGtfsArchiveMapper<NetworkImportDto, Network>, IGtfsCrudMapper<Network, CreateNetworkDto, UpdateNetworkDto, NetworkDto,
         NetworkCreateModel, NetworkUpdateModel>
 {
     public partial NetworkCreateModel Map(CreateNetworkDto input);
     public partial NetworkUpdateModel Map(UpdateNetworkDto input);
     public partial NetworkDto Map(Network entity);
+
+    // CSV satirini entity'ye esler.
+    public partial Network Map(NetworkImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial NetworkImportDto MapToImport(Network entity);
 }

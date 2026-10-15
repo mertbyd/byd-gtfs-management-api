@@ -54,34 +54,32 @@ public class JourneyManager(
         ArgumentNullException.ThrowIfNull(query);
         var from = await stopManager.EnsureExistsInScopeAsync(query.FromStopId, cancellationToken);
         var to = await stopManager.EnsureExistsInScopeAsync(query.ToStopId, cancellationToken);
-        if (from.FeedId != to.FeedId)
-            throw new BusinessException(JourneyExceptionCodes.StopsInDifferentFeeds);
-        var places = (await stopRepository.GetPlacesAsync(from.FeedId, cancellationToken)).ToDictionary(place => place.Id);
+        var places = (await stopRepository.GetPlacesAsync(null, cancellationToken)).ToDictionary(place => place.Id);
         var departure = query.Time.ToServiceSeconds();
-        var connections = await LoadConnectionsAsync(from.FeedId, query.Date, departure, cancellationToken);
-        var scan = await CreateScanAsync(from.FeedId, places, query.MaxTransfers, cancellationToken);
+        var connections = await LoadConnectionsAsync(query.Date, departure, cancellationToken);
+        var scan = await CreateScanAsync(places, query.MaxTransfers, cancellationToken);
         var itineraries = Scan(scan, connections, places, from.Id, to.Id, departure);
         return await DescribeAsync(from.Id, to.Id, itineraries, cancellationToken);
     }
 
     // Gunun ve gece yarisini asan onceki gun seferlerinin arama penceresindeki baglantilarini kalkis sirasiyla kurar.
     private async Task<List<JourneyConnectionModel>> LoadConnectionsAsync(
-        Guid feedId, DateOnly date, int departure, CancellationToken cancellationToken = default)
+        DateOnly date, int departure, CancellationToken cancellationToken = default)
     {
-        var today = await LoadDayConnectionsAsync(feedId, date, departure, 0, cancellationToken);
-        var overnight = await LoadDayConnectionsAsync(feedId, date.AddDays(-1), departure + JourneyConsts.SecondsPerDay,
+        var today = await LoadDayConnectionsAsync(date, departure, 0, cancellationToken);
+        var overnight = await LoadDayConnectionsAsync(date.AddDays(-1), departure + JourneyConsts.SecondsPerDay,
             -JourneyConsts.SecondsPerDay, cancellationToken);
         return today.Concat(overnight).OrderBy(connection => connection.DepartureSeconds).ToList();
     }
 
     // Bir servis gununun penceredeki ziyaretlerini okur ve ayni seferin ardisik ziyaretlerinden baglanti kurar.
     private async Task<List<JourneyConnectionModel>> LoadDayConnectionsAsync(
-        Guid feedId, DateOnly serviceDate, int windowStart, int shift, CancellationToken cancellationToken = default)
+        DateOnly serviceDate, int windowStart, int shift, CancellationToken cancellationToken = default)
     {
-        var serviceIds = await serviceRepository.GetActiveIdsAsync(feedId, serviceDate, cancellationToken);
+        var serviceIds = await serviceRepository.GetActiveIdsAsync(null, serviceDate, cancellationToken);
         if (serviceIds.Count == 0)
             return [];
-        var visits = await stopTimeRepository.GetVisitsAsync(feedId, serviceIds, windowStart.ToGtfsTime(),
+        var visits = await stopTimeRepository.GetVisitsAsync(null, serviceIds, windowStart.ToGtfsTime(),
             (windowStart + JourneyConsts.SearchWindowSeconds).ToGtfsTime(), cancellationToken);
         return visits.GroupBy(visit => visit.TripId)
             .SelectMany(trip => ToConnections(trip.OrderBy(visit => visit.StopSequence).ToList(), shift))
@@ -101,24 +99,23 @@ public class JourneyManager(
 
     // Tarama durumunu aktarma sinirina gore kurar ve yurume yollarini yukler.
     private async Task<JourneyScanModel> CreateScanAsync(
-        Guid feedId, Dictionary<Guid, StopPlaceModel> places, int maxTransfers, CancellationToken cancellationToken = default)
+        Dictionary<Guid, StopPlaceModel> places, int maxTransfers, CancellationToken cancellationToken = default)
     {
         var rounds = maxTransfers + 2;
         return new JourneyScanModel
         {
             Labels = Enumerable.Range(0, rounds).Select(_ => new Dictionary<Guid, JourneyLabelModel>()).ToArray(),
             Ready = Enumerable.Range(0, rounds).Select(_ => new Dictionary<Guid, int>()).ToArray(),
-            Edges = await LoadEdgesAsync(feedId, places, cancellationToken)
+            Edges = await LoadEdgesAsync(places, cancellationToken)
         };
     }
 
     // Yakin duraklar arasi yurume, istasyon ici gecis, pathway ve transfers.txt yollarini kurar.
     private async Task<Dictionary<Guid, List<JourneyFootpathModel>>> LoadEdgesAsync(
-        Guid feedId, Dictionary<Guid, StopPlaceModel> places, CancellationToken cancellationToken = default)
+        Dictionary<Guid, StopPlaceModel> places, CancellationToken cancellationToken = default)
     {
-        var pathways = await pathwayRepository.GetListAsync(pathway => pathway.FeedId == feedId, false, cancellationToken);
-        var transfers = await transferRepository.GetListAsync(transfer => transfer.FeedId == feedId
-            && transfer.FromStopId != null && transfer.ToStopId != null && transfer.FromTripId == null && transfer.ToTripId == null
+        var pathways = await pathwayRepository.GetListAsync(includeDetails: false, cancellationToken: cancellationToken);
+        var transfers = await transferRepository.GetListAsync(transfer => transfer.FromStopId != null && transfer.ToStopId != null && transfer.FromTripId == null && transfer.ToTripId == null
             && transfer.FromRouteId == null && transfer.ToRouteId == null, false, cancellationToken);
         var edges = new Dictionary<(Guid From, Guid To), JourneyFootpathModel>();
         AddWalkingEdges(edges, places.Values);

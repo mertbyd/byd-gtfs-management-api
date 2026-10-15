@@ -42,7 +42,7 @@ public class StopTimeManager(
         ArgumentNullException.ThrowIfNull(model);
         var trip = await tripManager.EnsureExistsInScopeAsync(model.TripId, cancellationToken);
         var entity = new StopTime(
-            GuidGenerator.Create(), trip.TenantId, trip.FeedId)
+            GuidGenerator.Create(), trip.FeedId)
         {
             TripId = trip.Id
         };

@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS ucret aktarma kurali EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IFareTransferRuleRepository))]
 public class EfCoreFareTransferRuleRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, FareTransferRule, Guid>(dbContextProvider), IFareTransferRuleRepository
+    : EfGtfsRepository<FareTransferRule>(dbContextProvider), IFareTransferRuleRepository
 {
 }

@@ -91,10 +91,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("text")
                         .HasColumnName("phone");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<string>("Timezone")
                         .IsRequired()
                         .HasColumnType("text")
@@ -108,20 +104,20 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasKey("Id")
                         .HasName("pk_agencies");
 
+                    b.HasAlternateKey("FeedId", "Id")
+                        .HasName("ak_agencies_feed_id_id");
+
                     b.HasIndex("CemvSupportId")
                         .HasDatabaseName("ix_agencies_cemv_support_id");
 
                     b.HasIndex("FeedId")
-                        .HasDatabaseName("ix_agencies_feed_id");
-
-                    b.HasIndex("TenantId", "FeedId")
                         .IsUnique()
-                        .HasDatabaseName("IX_Agencies_Tenant_Feed_NoGtfsAgencyId")
+                        .HasDatabaseName("IX_Agencies_Feed_NoGtfsAgencyId")
                         .HasFilter("gtfs_agency_id IS NULL");
 
-                    b.HasIndex("TenantId", "FeedId", "GtfsAgencyId")
+                    b.HasIndex("FeedId", "GtfsAgencyId")
                         .IsUnique()
-                        .HasDatabaseName("IX_Agencies_Tenant_Feed_GtfsAgencyId")
+                        .HasDatabaseName("IX_Agencies_Feed_GtfsAgencyId")
                         .HasFilter("gtfs_agency_id IS NOT NULL");
 
                     b.ToTable("Agencies", "gtfs_management");
@@ -175,10 +171,6 @@ namespace Byd.GtfsManagement.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("uuid")
                         .HasColumnName("last_modifier_id");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
 
                     b.HasKey("Id")
                         .HasName("pk_areas");
@@ -270,10 +262,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("route_id");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<Guid?>("TripId")
                         .HasColumnType("uuid")
                         .HasColumnName("trip_id");
@@ -281,17 +269,17 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasKey("Id")
                         .HasName("pk_attributions");
 
-                    b.HasIndex("AgencyId")
-                        .HasDatabaseName("ix_attributions_agency_id");
-
-                    b.HasIndex("RouteId")
-                        .HasDatabaseName("ix_attributions_route_id");
-
-                    b.HasIndex("TripId")
-                        .HasDatabaseName("ix_attributions_trip_id");
+                    b.HasIndex("FeedId", "AgencyId")
+                        .HasDatabaseName("ix_attributions_feed_id_agency_id");
 
                     b.HasIndex("FeedId", "GtfsAttributionId")
                         .HasDatabaseName("IX_Attributions_FeedId_GtfsAttributionId");
+
+                    b.HasIndex("FeedId", "RouteId")
+                        .HasDatabaseName("ix_attributions_feed_id_route_id");
+
+                    b.HasIndex("FeedId", "TripId")
+                        .HasDatabaseName("ix_attributions_feed_id_trip_id");
 
                     b.ToTable("Attributions", "gtfs_management");
 
@@ -397,10 +385,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("text")
                         .HasColumnName("prior_notice_start_time");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.HasKey("Id")
                         .HasName("pk_booking_rules");
 
@@ -462,18 +446,14 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("service_id");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.HasKey("Id")
                         .HasName("pk_calendar_dates");
 
                     b.HasIndex("ExceptionTypeId")
                         .HasDatabaseName("ix_calendar_dates_exception_type_id");
 
-                    b.HasIndex("FeedId")
-                        .HasDatabaseName("ix_calendar_dates_feed_id");
+                    b.HasIndex("FeedId", "ServiceId")
+                        .HasDatabaseName("ix_calendar_dates_feed_id_service_id");
 
                     b.HasIndex("ServiceId", "Date")
                         .IsUnique()
@@ -550,10 +530,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("sunday");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<bool>("Thursday")
                         .HasColumnType("boolean")
                         .HasColumnName("thursday");
@@ -569,12 +545,12 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasKey("Id")
                         .HasName("pk_calendars");
 
-                    b.HasIndex("FeedId")
-                        .HasDatabaseName("ix_calendars_feed_id");
-
                     b.HasIndex("ServiceId")
                         .IsUnique()
                         .HasDatabaseName("IX_Calendars_ServiceId");
+
+                    b.HasIndex("FeedId", "ServiceId")
+                        .HasDatabaseName("ix_calendars_feed_id_service_id");
 
                     b.ToTable("Calendars", "gtfs_management");
 
@@ -641,10 +617,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("price");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<int?>("TransferDuration")
                         .HasColumnType("integer")
                         .HasColumnName("transfer_duration");
@@ -656,8 +628,11 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasKey("Id")
                         .HasName("pk_fare_attributes");
 
-                    b.HasIndex("AgencyId")
-                        .HasDatabaseName("ix_fare_attributes_agency_id");
+                    b.HasAlternateKey("FeedId", "Id")
+                        .HasName("ak_fare_attributes_feed_id_id");
+
+                    b.HasIndex("FeedId", "AgencyId")
+                        .HasDatabaseName("ix_fare_attributes_feed_id_agency_id");
 
                     b.HasIndex("FeedId", "GtfsFareId")
                         .IsUnique()
@@ -713,10 +688,6 @@ namespace Byd.GtfsManagement.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("uuid")
                         .HasColumnName("last_modifier_id");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
 
                     b.Property<string>("ToNetworkId")
                         .HasColumnType("text")
@@ -800,10 +771,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("rule_priority");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<string>("ToAreaId")
                         .HasColumnType("text")
                         .HasColumnName("to_area_id");
@@ -873,10 +840,6 @@ namespace Byd.GtfsManagement.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("uuid")
                         .HasColumnName("last_modifier_id");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
 
                     b.HasKey("Id")
                         .HasName("pk_fare_media");
@@ -953,10 +916,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("last_modifier_id");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.HasKey("Id")
                         .HasName("pk_fare_products");
 
@@ -1026,21 +985,14 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("route_id");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.HasKey("Id")
                         .HasName("pk_fare_rules");
 
-                    b.HasIndex("FareAttributeId")
-                        .HasDatabaseName("ix_fare_rules_fare_attribute_id");
-
-                    b.HasIndex("RouteId")
-                        .HasDatabaseName("ix_fare_rules_route_id");
-
                     b.HasIndex("FeedId", "FareAttributeId")
                         .HasDatabaseName("IX_FareRules_FeedId_FareAttributeId");
+
+                    b.HasIndex("FeedId", "RouteId")
+                        .HasDatabaseName("ix_fare_rules_feed_id_route_id");
 
                     b.ToTable("FareRules", "gtfs_management");
 
@@ -1104,10 +1056,6 @@ namespace Byd.GtfsManagement.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("uuid")
                         .HasColumnName("last_modifier_id");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
 
                     b.Property<string>("ToLegGroupId")
                         .HasColumnType("text")
@@ -1201,10 +1149,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("text")
                         .HasColumnName("start_date");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<string>("Version")
                         .HasColumnType("text")
                         .HasColumnName("version");
@@ -1247,6 +1191,11 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("text")
                         .HasColumnName("extra_properties");
 
+                    b.Property<string>("FailureCode")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("failure_code");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
@@ -1259,22 +1208,64 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("last_modifier_id");
 
+                    b.Property<Guid?>("LastOperationUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("last_operation_user_id");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("name");
 
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("organization_id");
+
+                    b.Property<string>("SourceType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("source_type");
+
+                    b.Property<string>("SourceUrl")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)")
+                        .HasColumnName("source_url");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("StoredFileId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("stored_file_id");
+
+                    b.Property<string>("StoredFileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("stored_file_name");
+
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uuid")
                         .HasColumnName("tenant_id");
 
+                    b.Property<string>("ValidationReport")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("validation_report");
+
                     b.HasKey("Id")
                         .HasName("pk_feeds");
 
-                    b.HasIndex("TenantId", "Name")
+                    b.HasIndex("TenantId", "OrganizationId")
                         .IsUnique()
-                        .HasDatabaseName("IX_Feeds_Tenant_Name");
+                        .HasDatabaseName("IX_Feeds_Tenant_Organization_Active")
+                        .HasFilter("is_active = true");
+
+                    b.HasIndex("TenantId", "OrganizationId", "Name")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Feeds_Tenant_Organization_Name");
 
                     b.ToTable("Feeds", "gtfs_management");
 
@@ -1337,10 +1328,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("text")
                         .HasColumnName("start_time");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<Guid>("TripId")
                         .HasColumnType("uuid")
                         .HasColumnName("trip_id");
@@ -1348,8 +1335,8 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasKey("Id")
                         .HasName("pk_frequencies");
 
-                    b.HasIndex("FeedId")
-                        .HasDatabaseName("ix_frequencies_feed_id");
+                    b.HasIndex("FeedId", "TripId")
+                        .HasDatabaseName("ix_frequencies_feed_id_trip_id");
 
                     b.HasIndex("TripId", "StartTime")
                         .IsUnique()
@@ -1411,12 +1398,11 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.HasKey("Id")
                         .HasName("pk_levels");
+
+                    b.HasAlternateKey("FeedId", "Id")
+                        .HasName("ak_levels_feed_id_id");
 
                     b.HasIndex("FeedId", "GtfsLevelId")
                         .IsUnique()
@@ -1474,10 +1460,6 @@ namespace Byd.GtfsManagement.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("uuid")
                         .HasColumnName("last_modifier_id");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
 
                     b.HasKey("Id")
                         .HasName("pk_location_group_stops");
@@ -1537,12 +1519,11 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("text")
                         .HasColumnName("location_group_name");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.HasKey("Id")
                         .HasName("pk_location_groups");
+
+                    b.HasAlternateKey("FeedId", "Id")
+                        .HasName("ak_location_groups_feed_id_id");
 
                     b.HasIndex("FeedId", "GtfsLocationGroupId")
                         .HasDatabaseName("IX_LocationGroups_FeedId_GtfsLocationGroupId");
@@ -1896,12 +1877,11 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("text")
                         .HasColumnName("network_name");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.HasKey("Id")
                         .HasName("pk_networks");
+
+                    b.HasAlternateKey("FeedId", "Id")
+                        .HasName("ak_networks_feed_id_id");
 
                     b.HasIndex("FeedId", "GtfsNetworkId")
                         .HasDatabaseName("IX_Networks_FeedId_GtfsNetworkId");
@@ -1990,10 +1970,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("stair_count");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<Guid>("ToStopId")
                         .HasColumnType("uuid")
                         .HasColumnName("to_stop_id");
@@ -2005,15 +1981,15 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasKey("Id")
                         .HasName("pk_pathways");
 
-                    b.HasIndex("FromStopId")
-                        .HasDatabaseName("ix_pathways_from_stop_id");
-
-                    b.HasIndex("ToStopId")
-                        .HasDatabaseName("ix_pathways_to_stop_id");
+                    b.HasIndex("FeedId", "FromStopId")
+                        .HasDatabaseName("ix_pathways_feed_id_from_stop_id");
 
                     b.HasIndex("FeedId", "GtfsPathwayId")
                         .IsUnique()
                         .HasDatabaseName("IX_Pathways_FeedId_GtfsPathwayId");
+
+                    b.HasIndex("FeedId", "ToStopId")
+                        .HasDatabaseName("ix_pathways_feed_id_to_stop_id");
 
                     b.ToTable("Pathways", "gtfs_management");
 
@@ -2076,10 +2052,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("text")
                         .HasColumnName("rider_category_name");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.HasKey("Id")
                         .HasName("pk_rider_categories");
 
@@ -2138,10 +2110,6 @@ namespace Byd.GtfsManagement.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("uuid")
                         .HasColumnName("last_modifier_id");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
 
                     b.HasKey("Id")
                         .HasName("pk_route_networks");
@@ -2241,10 +2209,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("sort_order");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<string>("TextColor")
                         .HasColumnType("text")
                         .HasColumnName("text_color");
@@ -2255,6 +2219,9 @@ namespace Byd.GtfsManagement.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_routes");
+
+                    b.HasAlternateKey("FeedId", "Id")
+                        .HasName("ak_routes_feed_id_id");
 
                     b.HasIndex("AgencyId")
                         .HasDatabaseName("IX_Routes_AgencyId");
@@ -2268,18 +2235,18 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasIndex("ContinuousPickupId")
                         .HasDatabaseName("ix_routes_continuous_pickup_id");
 
-                    b.HasIndex("FeedId")
-                        .HasDatabaseName("ix_routes_feed_id");
-
-                    b.HasIndex("NetworkId")
-                        .HasDatabaseName("ix_routes_network_id");
-
                     b.HasIndex("RouteTypeId")
                         .HasDatabaseName("ix_routes_route_type_id");
 
-                    b.HasIndex("TenantId", "FeedId", "GtfsRouteId")
+                    b.HasIndex("FeedId", "AgencyId")
+                        .HasDatabaseName("ix_routes_feed_id_agency_id");
+
+                    b.HasIndex("FeedId", "GtfsRouteId")
                         .IsUnique()
-                        .HasDatabaseName("IX_Routes_Tenant_Feed_GtfsRouteId");
+                        .HasDatabaseName("IX_Routes_Feed_GtfsRouteId");
+
+                    b.HasIndex("FeedId", "NetworkId")
+                        .HasDatabaseName("ix_routes_feed_id_network_id");
 
                     b.ToTable("Routes", "gtfs_management");
 
@@ -2329,19 +2296,15 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("last_modifier_id");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.HasKey("Id")
                         .HasName("pk_services");
 
-                    b.HasIndex("FeedId")
-                        .HasDatabaseName("ix_services_feed_id");
+                    b.HasAlternateKey("FeedId", "Id")
+                        .HasName("ak_services_feed_id_id");
 
-                    b.HasIndex("TenantId", "FeedId", "GtfsServiceId")
+                    b.HasIndex("FeedId", "GtfsServiceId")
                         .IsUnique()
-                        .HasDatabaseName("IX_Services_Tenant_Feed_GtfsServiceId");
+                        .HasDatabaseName("IX_Services_Feed_GtfsServiceId");
 
                     b.ToTable("Services", "gtfs_management");
 
@@ -2407,10 +2370,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("sequence");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.HasKey("Id")
                         .HasName("pk_shapes");
 
@@ -2470,10 +2429,6 @@ namespace Byd.GtfsManagement.Migrations
                     b.Property<Guid?>("LastModifierId")
                         .HasColumnType("uuid")
                         .HasColumnName("last_modifier_id");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
 
                     b.HasKey("Id")
                         .HasName("pk_stop_areas");
@@ -2584,10 +2539,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("stop_sequence");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<int?>("Timepoint")
                         .HasColumnType("integer")
                         .HasColumnName("timepoint");
@@ -2608,17 +2559,20 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasIndex("DropOffTypeId")
                         .HasDatabaseName("ix_stop_times_drop_off_type_id");
 
-                    b.HasIndex("FeedId")
-                        .HasDatabaseName("ix_stop_times_feed_id");
-
-                    b.HasIndex("LocationGroupId")
-                        .HasDatabaseName("ix_stop_times_location_group_id");
-
                     b.HasIndex("PickupTypeId")
                         .HasDatabaseName("ix_stop_times_pickup_type_id");
 
                     b.HasIndex("StopId")
                         .HasDatabaseName("IX_StopTimes_StopId");
+
+                    b.HasIndex("FeedId", "LocationGroupId")
+                        .HasDatabaseName("ix_stop_times_feed_id_location_group_id");
+
+                    b.HasIndex("FeedId", "StopId")
+                        .HasDatabaseName("ix_stop_times_feed_id_stop_id");
+
+                    b.HasIndex("FeedId", "TripId")
+                        .HasDatabaseName("ix_stop_times_feed_id_trip_id");
 
                     b.HasIndex("TripId", "StopSequence")
                         .IsUnique()
@@ -2712,10 +2666,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("stop_access_id");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<string>("Timezone")
                         .HasColumnType("text")
                         .HasColumnName("timezone");
@@ -2739,11 +2689,8 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasKey("Id")
                         .HasName("pk_stops");
 
-                    b.HasIndex("FeedId")
-                        .HasDatabaseName("ix_stops_feed_id");
-
-                    b.HasIndex("LevelId")
-                        .HasDatabaseName("ix_stops_level_id");
+                    b.HasAlternateKey("FeedId", "Id")
+                        .HasName("ak_stops_feed_id_id");
 
                     b.HasIndex("LocationTypeId")
                         .HasDatabaseName("ix_stops_location_type_id");
@@ -2757,9 +2704,15 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasIndex("WheelchairBoardingId")
                         .HasDatabaseName("ix_stops_wheelchair_boarding_id");
 
-                    b.HasIndex("TenantId", "FeedId", "GtfsStopId")
+                    b.HasIndex("FeedId", "GtfsStopId")
                         .IsUnique()
-                        .HasDatabaseName("IX_Stops_Tenant_Feed_GtfsStopId");
+                        .HasDatabaseName("IX_Stops_Feed_GtfsStopId");
+
+                    b.HasIndex("FeedId", "LevelId")
+                        .HasDatabaseName("ix_stops_feed_id_level_id");
+
+                    b.HasIndex("FeedId", "ParentStationId")
+                        .HasDatabaseName("ix_stops_feed_id_parent_station_id");
 
                     b.ToTable("Stops", "gtfs_management");
 
@@ -2816,10 +2769,6 @@ namespace Byd.GtfsManagement.Migrations
                     b.Property<string>("StartTime")
                         .HasColumnType("text")
                         .HasColumnName("start_time");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
 
                     b.Property<string>("TimeframeGroupId")
                         .IsRequired()
@@ -2891,10 +2840,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("min_transfer_time");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<Guid?>("ToRouteId")
                         .HasColumnType("uuid")
                         .HasColumnName("to_route_id");
@@ -2914,23 +2859,20 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasKey("Id")
                         .HasName("pk_transfers");
 
-                    b.HasIndex("FromRouteId")
-                        .HasDatabaseName("ix_transfers_from_route_id");
+                    b.HasIndex("FeedId", "FromRouteId")
+                        .HasDatabaseName("ix_transfers_feed_id_from_route_id");
 
-                    b.HasIndex("FromStopId")
-                        .HasDatabaseName("ix_transfers_from_stop_id");
+                    b.HasIndex("FeedId", "FromTripId")
+                        .HasDatabaseName("ix_transfers_feed_id_from_trip_id");
 
-                    b.HasIndex("FromTripId")
-                        .HasDatabaseName("ix_transfers_from_trip_id");
+                    b.HasIndex("FeedId", "ToRouteId")
+                        .HasDatabaseName("ix_transfers_feed_id_to_route_id");
 
-                    b.HasIndex("ToRouteId")
-                        .HasDatabaseName("ix_transfers_to_route_id");
+                    b.HasIndex("FeedId", "ToStopId")
+                        .HasDatabaseName("ix_transfers_feed_id_to_stop_id");
 
-                    b.HasIndex("ToStopId")
-                        .HasDatabaseName("ix_transfers_to_stop_id");
-
-                    b.HasIndex("ToTripId")
-                        .HasDatabaseName("ix_transfers_to_trip_id");
+                    b.HasIndex("FeedId", "ToTripId")
+                        .HasDatabaseName("ix_transfers_feed_id_to_trip_id");
 
                     b.HasIndex("FeedId", "FromStopId", "ToStopId", "FromTripId", "ToTripId", "FromRouteId", "ToRouteId")
                         .IsUnique()
@@ -3007,10 +2949,6 @@ namespace Byd.GtfsManagement.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("table_name");
-
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
 
                     b.Property<string>("TranslationText")
                         .IsRequired()
@@ -3103,10 +3041,6 @@ namespace Byd.GtfsManagement.Migrations
                         .HasColumnType("text")
                         .HasColumnName("short_name");
 
-                    b.Property<Guid?>("TenantId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("tenant_id");
-
                     b.Property<int?>("TripDirectionId")
                         .HasColumnType("integer")
                         .HasColumnName("trip_direction_id");
@@ -3118,14 +3052,14 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasKey("Id")
                         .HasName("pk_trips");
 
+                    b.HasAlternateKey("FeedId", "Id")
+                        .HasName("ak_trips_feed_id_id");
+
                     b.HasIndex("BikesAllowedId")
                         .HasDatabaseName("ix_trips_bikes_allowed_id");
 
                     b.HasIndex("CarsAllowedId")
                         .HasDatabaseName("ix_trips_cars_allowed_id");
-
-                    b.HasIndex("FeedId")
-                        .HasDatabaseName("ix_trips_feed_id");
 
                     b.HasIndex("RouteId")
                         .HasDatabaseName("IX_Trips_RouteId");
@@ -3139,9 +3073,15 @@ namespace Byd.GtfsManagement.Migrations
                     b.HasIndex("WheelchairAccessibleId")
                         .HasDatabaseName("ix_trips_wheelchair_accessible_id");
 
-                    b.HasIndex("TenantId", "FeedId", "GtfsTripId")
+                    b.HasIndex("FeedId", "GtfsTripId")
                         .IsUnique()
-                        .HasDatabaseName("IX_Trips_Tenant_Feed_GtfsTripId");
+                        .HasDatabaseName("IX_Trips_Feed_GtfsTripId");
+
+                    b.HasIndex("FeedId", "RouteId")
+                        .HasDatabaseName("ix_trips_feed_id_route_id");
+
+                    b.HasIndex("FeedId", "ServiceId")
+                        .HasDatabaseName("ix_trips_feed_id_service_id");
 
                     b.ToTable("Trips", "gtfs_management");
 
@@ -3181,12 +3121,6 @@ namespace Byd.GtfsManagement.Migrations
 
             modelBuilder.Entity("Byd.GtfsManagement.Entities.Attributions.Attribution", b =>
                 {
-                    b.HasOne("Byd.GtfsManagement.Entities.Agencies.Agency", "Agency")
-                        .WithMany()
-                        .HasForeignKey("AgencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_attributions_agencies_agency_id");
-
                     b.HasOne("Byd.GtfsManagement.Entities.Feeds.Feed", "Feed")
                         .WithMany()
                         .HasForeignKey("FeedId")
@@ -3194,17 +3128,26 @@ namespace Byd.GtfsManagement.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_attributions_feeds_feed_id");
 
+                    b.HasOne("Byd.GtfsManagement.Entities.Agencies.Agency", "Agency")
+                        .WithMany()
+                        .HasForeignKey("FeedId", "AgencyId")
+                        .HasPrincipalKey("FeedId", "Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_attributions_agencies_feed_id_agency_id");
+
                     b.HasOne("Byd.GtfsManagement.Entities.Routes.Route", "Route")
                         .WithMany()
-                        .HasForeignKey("RouteId")
+                        .HasForeignKey("FeedId", "RouteId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_attributions_routes_route_id");
+                        .HasConstraintName("fk_attributions_routes_feed_id_route_id");
 
                     b.HasOne("Byd.GtfsManagement.Entities.Trips.Trip", "Trip")
                         .WithMany()
-                        .HasForeignKey("TripId")
+                        .HasForeignKey("FeedId", "TripId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_attributions_trips_trip_id");
+                        .HasConstraintName("fk_attributions_trips_feed_id_trip_id");
 
                     b.Navigation("Agency");
 
@@ -3245,10 +3188,11 @@ namespace Byd.GtfsManagement.Migrations
 
                     b.HasOne("Byd.GtfsManagement.Entities.Services.Service", "Service")
                         .WithMany()
-                        .HasForeignKey("ServiceId")
+                        .HasForeignKey("FeedId", "ServiceId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_calendar_dates_services_service_id");
+                        .HasConstraintName("fk_calendar_dates_services_feed_id_service_id");
 
                     b.Navigation("ExceptionType");
 
@@ -3268,10 +3212,11 @@ namespace Byd.GtfsManagement.Migrations
 
                     b.HasOne("Byd.GtfsManagement.Entities.Services.Service", "Service")
                         .WithMany()
-                        .HasForeignKey("ServiceId")
+                        .HasForeignKey("FeedId", "ServiceId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_calendars_services_service_id");
+                        .HasConstraintName("fk_calendars_services_feed_id_service_id");
 
                     b.Navigation("Feed");
 
@@ -3280,18 +3225,19 @@ namespace Byd.GtfsManagement.Migrations
 
             modelBuilder.Entity("Byd.GtfsManagement.Entities.FareAttributes.FareAttribute", b =>
                 {
-                    b.HasOne("Byd.GtfsManagement.Entities.Agencies.Agency", "Agency")
-                        .WithMany()
-                        .HasForeignKey("AgencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_fare_attributes_agencies_agency_id");
-
                     b.HasOne("Byd.GtfsManagement.Entities.Feeds.Feed", "Feed")
                         .WithMany()
                         .HasForeignKey("FeedId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_fare_attributes_feeds_feed_id");
+
+                    b.HasOne("Byd.GtfsManagement.Entities.Agencies.Agency", "Agency")
+                        .WithMany()
+                        .HasForeignKey("FeedId", "AgencyId")
+                        .HasPrincipalKey("FeedId", "Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_fare_attributes_agencies_feed_id_agency_id");
 
                     b.Navigation("Agency");
 
@@ -3348,13 +3294,6 @@ namespace Byd.GtfsManagement.Migrations
 
             modelBuilder.Entity("Byd.GtfsManagement.Entities.FareRules.FareRule", b =>
                 {
-                    b.HasOne("Byd.GtfsManagement.Entities.FareAttributes.FareAttribute", "FareAttribute")
-                        .WithMany()
-                        .HasForeignKey("FareAttributeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_fare_rules_fare_attributes_fare_attribute_id");
-
                     b.HasOne("Byd.GtfsManagement.Entities.Feeds.Feed", "Feed")
                         .WithMany()
                         .HasForeignKey("FeedId")
@@ -3362,11 +3301,20 @@ namespace Byd.GtfsManagement.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_fare_rules_feeds_feed_id");
 
+                    b.HasOne("Byd.GtfsManagement.Entities.FareAttributes.FareAttribute", "FareAttribute")
+                        .WithMany()
+                        .HasForeignKey("FeedId", "FareAttributeId")
+                        .HasPrincipalKey("FeedId", "Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_fare_rules_fare_attributes_feed_id_fare_attribute_id");
+
                     b.HasOne("Byd.GtfsManagement.Entities.Routes.Route", "Route")
                         .WithMany()
-                        .HasForeignKey("RouteId")
+                        .HasForeignKey("FeedId", "RouteId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_fare_rules_routes_route_id");
+                        .HasConstraintName("fk_fare_rules_routes_feed_id_route_id");
 
                     b.Navigation("FareAttribute");
 
@@ -3410,10 +3358,11 @@ namespace Byd.GtfsManagement.Migrations
 
                     b.HasOne("Byd.GtfsManagement.Entities.Trips.Trip", "Trip")
                         .WithMany()
-                        .HasForeignKey("TripId")
+                        .HasForeignKey("FeedId", "TripId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_frequencies_trips_trip_id");
+                        .HasConstraintName("fk_frequencies_trips_feed_id_trip_id");
 
                     b.Navigation("Feed");
 
@@ -3479,17 +3428,19 @@ namespace Byd.GtfsManagement.Migrations
 
                     b.HasOne("Byd.GtfsManagement.Entities.Stops.Stop", "FromStop")
                         .WithMany()
-                        .HasForeignKey("FromStopId")
+                        .HasForeignKey("FeedId", "FromStopId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_pathways_stops_from_stop_id");
+                        .HasConstraintName("fk_pathways_stops_feed_id_from_stop_id");
 
                     b.HasOne("Byd.GtfsManagement.Entities.Stops.Stop", "ToStop")
                         .WithMany()
-                        .HasForeignKey("ToStopId")
+                        .HasForeignKey("FeedId", "ToStopId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_pathways_stops_to_stop_id");
+                        .HasConstraintName("fk_pathways_stops_feed_id_to_stop_id");
 
                     b.Navigation("Feed");
 
@@ -3524,12 +3475,6 @@ namespace Byd.GtfsManagement.Migrations
 
             modelBuilder.Entity("Byd.GtfsManagement.Entities.Routes.Route", b =>
                 {
-                    b.HasOne("Byd.GtfsManagement.Entities.Agencies.Agency", "Agency")
-                        .WithMany()
-                        .HasForeignKey("AgencyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_routes_agencies_agency_id");
-
                     b.HasOne("Byd.GtfsManagement.Entities.Lookup.CemvSupports.CemvSupport", "CemvSupport")
                         .WithMany()
                         .HasForeignKey("CemvSupportId")
@@ -3555,18 +3500,26 @@ namespace Byd.GtfsManagement.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_routes_feeds_feed_id");
 
-                    b.HasOne("Byd.GtfsManagement.Entities.Networks.Network", "Network")
-                        .WithMany()
-                        .HasForeignKey("NetworkId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_routes_networks_network_id");
-
                     b.HasOne("Byd.GtfsManagement.Entities.Lookup.RouteTypes.RouteType", "RouteType")
                         .WithMany()
                         .HasForeignKey("RouteTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_routes_route_types_route_type_id");
+
+                    b.HasOne("Byd.GtfsManagement.Entities.Agencies.Agency", "Agency")
+                        .WithMany()
+                        .HasForeignKey("FeedId", "AgencyId")
+                        .HasPrincipalKey("FeedId", "Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_routes_agencies_feed_id_agency_id");
+
+                    b.HasOne("Byd.GtfsManagement.Entities.Networks.Network", "Network")
+                        .WithMany()
+                        .HasForeignKey("FeedId", "NetworkId")
+                        .HasPrincipalKey("FeedId", "Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_routes_networks_feed_id_network_id");
 
                     b.Navigation("Agency");
 
@@ -3646,30 +3599,33 @@ namespace Byd.GtfsManagement.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_stop_times_feeds_feed_id");
 
-                    b.HasOne("Byd.GtfsManagement.Entities.LocationGroups.LocationGroup", "LocationGroup")
-                        .WithMany()
-                        .HasForeignKey("LocationGroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_stop_times_location_groups_location_group_id");
-
                     b.HasOne("Byd.GtfsManagement.Entities.Lookup.PickupDropOffTypes.PickupDropOffType", "PickupType")
                         .WithMany()
                         .HasForeignKey("PickupTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_stop_times_pickup_drop_off_types_pickup_type_id");
 
+                    b.HasOne("Byd.GtfsManagement.Entities.LocationGroups.LocationGroup", "LocationGroup")
+                        .WithMany()
+                        .HasForeignKey("FeedId", "LocationGroupId")
+                        .HasPrincipalKey("FeedId", "Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_stop_times_location_groups_feed_id_location_group_id");
+
                     b.HasOne("Byd.GtfsManagement.Entities.Stops.Stop", "Stop")
                         .WithMany()
-                        .HasForeignKey("StopId")
+                        .HasForeignKey("FeedId", "StopId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_stop_times_stops_stop_id");
+                        .HasConstraintName("fk_stop_times_stops_feed_id_stop_id");
 
                     b.HasOne("Byd.GtfsManagement.Entities.Trips.Trip", "Trip")
                         .WithMany()
-                        .HasForeignKey("TripId")
+                        .HasForeignKey("FeedId", "TripId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_stop_times_trips_trip_id");
+                        .HasConstraintName("fk_stop_times_trips_feed_id_trip_id");
 
                     b.Navigation("ContinuousDropOff");
 
@@ -3697,23 +3653,11 @@ namespace Byd.GtfsManagement.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_stops_feeds_feed_id");
 
-                    b.HasOne("Byd.GtfsManagement.Entities.Levels.Level", "Level")
-                        .WithMany()
-                        .HasForeignKey("LevelId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_stops_levels_level_id");
-
                     b.HasOne("Byd.GtfsManagement.Entities.Lookup.LocationTypes.LocationType", "LocationType")
                         .WithMany()
                         .HasForeignKey("LocationTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_stops_location_types_location_type_id");
-
-                    b.HasOne("Byd.GtfsManagement.Entities.Stops.Stop", "ParentStation")
-                        .WithMany()
-                        .HasForeignKey("ParentStationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_stops_stops_parent_station_id");
 
                     b.HasOne("Byd.GtfsManagement.Entities.Lookup.StopAccesses.StopAccess", "StopAccess")
                         .WithMany()
@@ -3726,6 +3670,20 @@ namespace Byd.GtfsManagement.Migrations
                         .HasForeignKey("WheelchairBoardingId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_stops_wheelchair_boardings_wheelchair_boarding_id");
+
+                    b.HasOne("Byd.GtfsManagement.Entities.Levels.Level", "Level")
+                        .WithMany()
+                        .HasForeignKey("FeedId", "LevelId")
+                        .HasPrincipalKey("FeedId", "Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_stops_levels_feed_id_level_id");
+
+                    b.HasOne("Byd.GtfsManagement.Entities.Stops.Stop", "ParentStation")
+                        .WithMany()
+                        .HasForeignKey("FeedId", "ParentStationId")
+                        .HasPrincipalKey("FeedId", "Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_stops_stops_feed_id_parent_station_id");
 
                     b.Navigation("Feed");
 
@@ -3763,39 +3721,45 @@ namespace Byd.GtfsManagement.Migrations
 
                     b.HasOne("Byd.GtfsManagement.Entities.Routes.Route", "FromRoute")
                         .WithMany()
-                        .HasForeignKey("FromRouteId")
+                        .HasForeignKey("FeedId", "FromRouteId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_transfers_routes_from_route_id");
+                        .HasConstraintName("fk_transfers_routes_feed_id_from_route_id");
 
                     b.HasOne("Byd.GtfsManagement.Entities.Stops.Stop", "FromStop")
                         .WithMany()
-                        .HasForeignKey("FromStopId")
+                        .HasForeignKey("FeedId", "FromStopId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_transfers_stops_from_stop_id");
+                        .HasConstraintName("fk_transfers_stops_feed_id_from_stop_id");
 
                     b.HasOne("Byd.GtfsManagement.Entities.Trips.Trip", "FromTrip")
                         .WithMany()
-                        .HasForeignKey("FromTripId")
+                        .HasForeignKey("FeedId", "FromTripId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_transfers_trips_from_trip_id");
+                        .HasConstraintName("fk_transfers_trips_feed_id_from_trip_id");
 
                     b.HasOne("Byd.GtfsManagement.Entities.Routes.Route", "ToRoute")
                         .WithMany()
-                        .HasForeignKey("ToRouteId")
+                        .HasForeignKey("FeedId", "ToRouteId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_transfers_routes_to_route_id");
+                        .HasConstraintName("fk_transfers_routes_feed_id_to_route_id");
 
                     b.HasOne("Byd.GtfsManagement.Entities.Stops.Stop", "ToStop")
                         .WithMany()
-                        .HasForeignKey("ToStopId")
+                        .HasForeignKey("FeedId", "ToStopId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_transfers_stops_to_stop_id");
+                        .HasConstraintName("fk_transfers_stops_feed_id_to_stop_id");
 
                     b.HasOne("Byd.GtfsManagement.Entities.Trips.Trip", "ToTrip")
                         .WithMany()
-                        .HasForeignKey("ToTripId")
+                        .HasForeignKey("FeedId", "ToTripId")
+                        .HasPrincipalKey("FeedId", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_transfers_trips_to_trip_id");
+                        .HasConstraintName("fk_transfers_trips_feed_id_to_trip_id");
 
                     b.Navigation("Feed");
 
@@ -3845,20 +3809,6 @@ namespace Byd.GtfsManagement.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_trips_feeds_feed_id");
 
-                    b.HasOne("Byd.GtfsManagement.Entities.Routes.Route", "Route")
-                        .WithMany()
-                        .HasForeignKey("RouteId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_trips_routes_route_id");
-
-                    b.HasOne("Byd.GtfsManagement.Entities.Services.Service", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_trips_services_service_id");
-
                     b.HasOne("Byd.GtfsManagement.Entities.Lookup.TripDirections.TripDirection", "TripDirection")
                         .WithMany()
                         .HasForeignKey("TripDirectionId")
@@ -3870,6 +3820,22 @@ namespace Byd.GtfsManagement.Migrations
                         .HasForeignKey("WheelchairAccessibleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .HasConstraintName("fk_trips_wheelchair_boardings_wheelchair_accessible_id");
+
+                    b.HasOne("Byd.GtfsManagement.Entities.Routes.Route", "Route")
+                        .WithMany()
+                        .HasForeignKey("FeedId", "RouteId")
+                        .HasPrincipalKey("FeedId", "Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_trips_routes_feed_id_route_id");
+
+                    b.HasOne("Byd.GtfsManagement.Entities.Services.Service", "Service")
+                        .WithMany()
+                        .HasForeignKey("FeedId", "ServiceId")
+                        .HasPrincipalKey("FeedId", "Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_trips_services_feed_id_service_id");
 
                     b.Navigation("BikesAllowed");
 

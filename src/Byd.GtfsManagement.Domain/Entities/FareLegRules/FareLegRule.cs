@@ -10,38 +10,35 @@ namespace Byd.GtfsManagement.Entities.FareLegRules;
 /// <summary>GTFS ucret etap kurali kaydini temsil eder.</summary>
 public class FareLegRule : AuditedAggregateRoot<Guid>, IGtfsEntity
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // Etap grubu dis kimligi.
-    public string? LegGroupId { get; internal set; }
+    public string? LegGroupId { get; protected internal set; }
 
     // Ulasim agi dis kimligi.
-    public string? NetworkId { get; internal set; }
+    public string? NetworkId { get; protected internal set; }
 
     // Kalkis bolgesi dis kimligi.
-    public string? FromAreaId { get; internal set; }
+    public string? FromAreaId { get; protected internal set; }
 
     // Varis bolgesi dis kimligi.
-    public string? ToAreaId { get; internal set; }
+    public string? ToAreaId { get; protected internal set; }
 
     // Kalkis zaman araligi grubu dis kimligi.
-    public string? FromTimeframeGroupId { get; internal set; }
+    public string? FromTimeframeGroupId { get; protected internal set; }
 
     // Varis zaman araligi grubu dis kimligi.
-    public string? ToTimeframeGroupId { get; internal set; }
+    public string? ToTimeframeGroupId { get; protected internal set; }
 
     // GTFS fare_product_id dis kimligi.
-    public string GtfsFareProductId { get; internal set; } = default!;
+    public string GtfsFareProductId { get; protected internal set; } = default!;
 
     // Kural oncelik degeri.
-    public int? RulePriority { get; internal set; }
+    public int? RulePriority { get; protected internal set; }
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
 
     // EF materialization icin bos kabuk kurar.
     protected FareLegRule()
@@ -49,9 +46,8 @@ public class FareLegRule : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam bilgilerini kurar.
-    public FareLegRule(Guid id, Guid? tenantId, Guid feedId, string gtfsFareProductId) : base(id)
+    public FareLegRule(Guid id, Guid feedId, string gtfsFareProductId) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
         GtfsFareProductId = gtfsFareProductId;
     }

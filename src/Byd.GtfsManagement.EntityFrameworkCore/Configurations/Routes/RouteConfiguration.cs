@@ -22,7 +22,8 @@ public sealed class RouteConfiguration : IEntityTypeConfiguration<Route>
 
         // agency_id GTFS dokumaninda tek ajans oldugunda istege baglidir; dis verilerde hata vermemesi icin optional eslenir.
         builder.HasOne(route => route.Agency).WithMany()
-            .HasForeignKey(route => route.AgencyId)
+            .HasForeignKey(route => new { route.FeedId, route.AgencyId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -41,7 +42,8 @@ public sealed class RouteConfiguration : IEntityTypeConfiguration<Route>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(route => route.Network).WithMany()
-            .HasForeignKey(route => route.NetworkId)
+            .HasForeignKey(route => new { route.FeedId, route.NetworkId })
+            .HasPrincipalKey(principal => new { principal.FeedId, principal.Id })
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -52,7 +54,7 @@ public sealed class RouteConfiguration : IEntityTypeConfiguration<Route>
 
         builder.HasIndex(route => route.AgencyId)
             .HasDatabaseName(RouteConsts.AgencyIndex);
-        builder.HasIndex(route => new { route.TenantId, route.FeedId, route.GtfsRouteId })
+        builder.HasIndex(route => new { route.FeedId, route.GtfsRouteId })
             .IsUnique().HasDatabaseName(RouteConsts.GtfsRouteIdIndex);
     }
 }

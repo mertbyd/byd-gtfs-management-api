@@ -16,7 +16,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS atif EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IAttributionRepository))]
 public class EfCoreAttributionRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Attribution, Guid>(dbContextProvider), IAttributionRepository
+    : EfGtfsRepository<Attribution>(dbContextProvider), IAttributionRepository
 {
     // Tek kayit okumalarinda ajans, guzergah ve sefer baglarini yukler.
     public override async Task<IQueryable<Attribution>> WithDetailsAsync()

@@ -24,8 +24,7 @@ public class ShapeManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Shape(
-            GuidGenerator.Create(), feed.TenantId,
-            feed.Id, NormalizeRequiredText(model.GtfsShapeId));
+            GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsShapeId));
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }

@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.Levels;
 // islevi: Level liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Kat sorgusunun izinli alanlarini belirler.
 /// <summary>GTFS kat filtrelerini tasir.</summary>
-public class LevelFilter
+public class LevelFilter : IFeedFilter
 {
     [DataTable(LevelFilterFields.FeedId, LevelFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

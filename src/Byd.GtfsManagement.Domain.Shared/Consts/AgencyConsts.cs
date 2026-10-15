@@ -5,8 +5,8 @@ namespace Byd.GtfsManagement.Consts;
 public static class AgencyConsts
 {
     public const string TableName = "Agencies";
-    public const string GtfsAgencyIdIndex = "IX_Agencies_Tenant_Feed_GtfsAgencyId";
-    public const string MissingGtfsAgencyIdIndex = "IX_Agencies_Tenant_Feed_NoGtfsAgencyId";
+    public const string GtfsAgencyIdIndex = "IX_Agencies_Feed_GtfsAgencyId";
+    public const string MissingGtfsAgencyIdIndex = "IX_Agencies_Feed_NoGtfsAgencyId";
 
     // agency_id verilen ajanslar Feed icinde tekildir, verilmeyen tek ajans olabilir; filtreler veritabani kolon adiyla
     // yazilir.

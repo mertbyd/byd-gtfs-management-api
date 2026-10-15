@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS durak bolge iliskisi EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IStopAreaRepository))]
 public class EfCoreStopAreaRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, StopArea, Guid>(dbContextProvider), IStopAreaRepository
+    : EfGtfsRepository<StopArea>(dbContextProvider), IStopAreaRepository
 {
 }

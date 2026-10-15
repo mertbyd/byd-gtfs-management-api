@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.RiderCategories;
 
 namespace Byd.GtfsManagement.Services.RiderCategories;
 
-// islevi: RiderCategory CRUD akisini ortak tabana baglar.
+// islevi: RiderCategory CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS yolcu kategorisi CRUD servisini ortak tabana baglar.</summary>
 public class RiderCategoryAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         RiderCategory, CreateRiderCategoryDto, UpdateRiderCategoryDto, RiderCategoryDto, RiderCategoryFilter,
-        RiderCategoryCreateModel, RiderCategoryUpdateModel, RiderCategoryManager, IRiderCategoryRepository, RiderCategoryMapper>,
+        RiderCategoryCreateModel, RiderCategoryUpdateModel, RiderCategoryManager, IRiderCategoryRepository, RiderCategoryMapper, RiderCategoryImportDto>,
         IRiderCategoryAppService
 {
 }

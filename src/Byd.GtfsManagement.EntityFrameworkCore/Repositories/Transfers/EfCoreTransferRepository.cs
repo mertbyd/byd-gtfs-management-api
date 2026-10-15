@@ -16,7 +16,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS aktarma EF sorgularini uygular.</summary>
 [ExposeServices(typeof(ITransferRepository))]
 public class EfCoreTransferRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Transfer, Guid>(dbContextProvider), ITransferRepository
+    : EfGtfsRepository<Transfer>(dbContextProvider), ITransferRepository
 {
     // Tek kayit okumalarinda aktarma baglarini yukler.
     public override async Task<IQueryable<Transfer>> WithDetailsAsync()

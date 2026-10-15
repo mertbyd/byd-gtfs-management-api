@@ -10,35 +10,32 @@ namespace Byd.GtfsManagement.Entities.FareTransferRules;
 /// <summary>GTFS ucret aktarma kurali kaydini temsil eder.</summary>
 public class FareTransferRule : AuditedAggregateRoot<Guid>, IGtfsEntity
 {
-    // Kaydin ait oldugu tenant kimligi.
-    public Guid? TenantId { get; internal set; }
-
     // Kaydin ait oldugu GTFS Feed kimligi.
-    public Guid FeedId { get; internal set; }
-
-    // Bagli oldugu Feed kaydi.
-    public Feed Feed { get; internal set; } = default!;
+    public Guid FeedId { get; protected internal set; }
 
     // Kalkis etap grubu dis kimligi.
-    public string? FromLegGroupId { get; internal set; }
+    public string? FromLegGroupId { get; protected internal set; }
 
     // Varis etap grubu dis kimligi.
-    public string? ToLegGroupId { get; internal set; }
+    public string? ToLegGroupId { get; protected internal set; }
 
     // GTFS fare_product_id dis kimligi.
-    public string? GtfsFareProductId { get; internal set; }
+    public string? GtfsFareProductId { get; protected internal set; }
 
     // Izin verilen aktarma adedi (-1: sinirsiz).
-    public int? TransferCount { get; internal set; }
+    public int? TransferCount { get; protected internal set; }
 
     // Aktarma gecerlilik suresi (saniye).
-    public int? DurationLimit { get; internal set; }
+    public int? DurationLimit { get; protected internal set; }
 
     // Sure siniri hesaplama tipi.
-    public int? DurationLimitType { get; internal set; }
+    public int? DurationLimitType { get; protected internal set; }
 
     // Aktarma ucretlendirme tipi (0: Toplam, 1: Ilk bilet + aktarma, 2: Sadece aktarma).
-    public int FareTransferType { get; internal set; }
+    public int FareTransferType { get; protected internal set; }
+
+    // Bagli oldugu Feed kaydi.
+    public Feed Feed { get; protected internal set; } = default!;
 
     // EF materialization icin bos kabuk kurar.
     protected FareTransferRule()
@@ -46,9 +43,8 @@ public class FareTransferRule : AuditedAggregateRoot<Guid>, IGtfsEntity
     }
 
     // Kaydin degismeyen kimlik ve kapsam bilgilerini kurar.
-    public FareTransferRule(Guid id, Guid? tenantId, Guid feedId, int fareTransferType) : base(id)
+    public FareTransferRule(Guid id, Guid feedId, int fareTransferType) : base(id)
     {
-        TenantId = tenantId;
         FeedId = feedId;
         FareTransferType = fareTransferType;
     }

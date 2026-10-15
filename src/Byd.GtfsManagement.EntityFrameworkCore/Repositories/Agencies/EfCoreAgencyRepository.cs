@@ -15,7 +15,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 // sistemdeki gorevi: Cevap DTO'sunun lookup adini tasiyabilmesi icin Include'u tek yerde tutar.
 [ExposeServices(typeof(IAgencyRepository))]
 public class EfCoreAgencyRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Agency, Guid>(dbContextProvider), IAgencyRepository
+    : EfGtfsRepository<Agency>(dbContextProvider), IAgencyRepository
 {
     // Tekil okumalarda cEMV adinin dolu gelmesini saglar.
     public override async Task<IQueryable<Agency>> WithDetailsAsync()

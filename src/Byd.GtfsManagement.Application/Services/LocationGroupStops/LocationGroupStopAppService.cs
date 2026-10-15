@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.LocationGroupStops;
 
 namespace Byd.GtfsManagement.Services.LocationGroupStops;
 
-// islevi: LocationGroupStop CRUD akisini ortak tabana baglar.
+// islevi: LocationGroupStop CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS konum grubu durak iliskisi CRUD servisini ortak tabana baglar.</summary>
 public class LocationGroupStopAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         LocationGroupStop, CreateLocationGroupStopDto, UpdateLocationGroupStopDto, LocationGroupStopDto, LocationGroupStopFilter,
-        LocationGroupStopCreateModel, LocationGroupStopUpdateModel, LocationGroupStopManager, ILocationGroupStopRepository, LocationGroupStopMapper>,
+        LocationGroupStopCreateModel, LocationGroupStopUpdateModel, LocationGroupStopManager, ILocationGroupStopRepository, LocationGroupStopMapper, LocationGroupStopImportDto>,
         ILocationGroupStopAppService
 {
 }

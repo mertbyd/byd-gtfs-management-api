@@ -29,7 +29,7 @@ public class CalendarDateManager(
         ArgumentNullException.ThrowIfNull(model);
         var service = await serviceManager.EnsureExistsInScopeAsync(model.ServiceId, cancellationToken);
         var entity = new CalendarDate(
-            GuidGenerator.Create(), service.TenantId, service.FeedId)
+            GuidGenerator.Create(), service.FeedId)
         {
             ServiceId = service.Id
         };

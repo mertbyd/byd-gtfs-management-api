@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS hat ag iliskisi EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IRouteNetworkRepository))]
 public class EfCoreRouteNetworkRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, RouteNetwork, Guid>(dbContextProvider), IRouteNetworkRepository
+    : EfGtfsRepository<RouteNetwork>(dbContextProvider), IRouteNetworkRepository
 {
 }

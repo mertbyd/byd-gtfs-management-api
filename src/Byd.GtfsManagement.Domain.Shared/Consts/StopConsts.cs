@@ -5,7 +5,7 @@ namespace Byd.GtfsManagement.Consts;
 public static class StopConsts
 {
     public const string TableName = "Stops";
-    public const string GtfsStopIdIndex = "IX_Stops_Tenant_Feed_GtfsStopId";
+    public const string GtfsStopIdIndex = "IX_Stops_Feed_GtfsStopId";
     public const string ParentStationIndex = "IX_Stops_ParentStationId";
 
     public const int MaxGtfsStopIdLength = 100;

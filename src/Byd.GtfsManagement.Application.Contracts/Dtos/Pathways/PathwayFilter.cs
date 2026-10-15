@@ -1,3 +1,4 @@
+using Byd.GtfsManagement.Interfaces;
 using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
@@ -7,7 +8,7 @@ namespace Byd.GtfsManagement.Dtos.Pathways;
 // islevi: Pathway liste filtrelerini DataTable motoruna tanitir.
 // sistemdeki gorevi: Yuruyus yolu sorgusunun izinli alanlarini belirler.
 /// <summary>GTFS yuruyus yolu filtrelerini tasir.</summary>
-public class PathwayFilter
+public class PathwayFilter : IFeedFilter
 {
     [DataTable(PathwayFilterFields.FeedId, PathwayFilterFields.PropertyPaths.FeedId)]
     public DataTableFilterItem? FeedId { get; set; }

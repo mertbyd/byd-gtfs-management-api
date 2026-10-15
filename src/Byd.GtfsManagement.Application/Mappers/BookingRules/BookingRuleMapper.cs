@@ -10,10 +10,16 @@ namespace Byd.GtfsManagement.Mappers.BookingRules;
 /// <summary>GTFS rezervasyon kurali DTO ve modellerini esler.</summary>
 [Mapper]
 public partial class BookingRuleMapper
-    : IGtfsCrudMapper<BookingRule, CreateBookingRuleDto, UpdateBookingRuleDto, BookingRuleDto,
+    : IGtfsArchiveMapper<BookingRuleImportDto, BookingRule>, IGtfsCrudMapper<BookingRule, CreateBookingRuleDto, UpdateBookingRuleDto, BookingRuleDto,
         BookingRuleCreateModel, BookingRuleUpdateModel>
 {
     public partial BookingRuleCreateModel Map(CreateBookingRuleDto input);
     public partial BookingRuleUpdateModel Map(UpdateBookingRuleDto input);
     public partial BookingRuleDto Map(BookingRule entity);
+
+    // CSV satirini entity'ye esler.
+    public partial BookingRule Map(BookingRuleImportDto input);
+
+    // Entity'yi disa aktarim icin CSV satirina esler.
+    public partial BookingRuleImportDto MapToImport(BookingRule entity);
 }

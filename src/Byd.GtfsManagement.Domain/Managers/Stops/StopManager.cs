@@ -49,7 +49,7 @@ public class StopManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new Stop(
-            GuidGenerator.Create(), feed.TenantId, feed.Id);
+            GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);
         return entity;
     }
@@ -65,9 +65,12 @@ public class StopManager(
 
     // Verilen ya da aktif Feed'in tum duraklarini harita icin ayrintilariyla getirir; aktif Feed yoksa bos liste doner.
     public virtual async Task<List<Stop>> GetMapAsync(Guid? feedId, CancellationToken cancellationToken = default)
-        => await ResolveReadFeedAsync(feedId, cancellationToken) is { } feed
-            ? await repository.GetListAsync(stop => stop.FeedId == feed.Id, true, cancellationToken)
-            : [];
+    {
+        if (feedId is not null)
+            await ResolveFeedAsync(feedId.Value, cancellationToken);
+        return await repository.GetListAsync(
+            stop => feedId == null || stop.FeedId == feedId, true, cancellationToken);
+    }
 
     // Duragi alt peronlari, ugrayan guzergahlari, pathway ve transfer kayitlariyla birlikte getirir.
     public virtual async Task<StopDetailModel> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)

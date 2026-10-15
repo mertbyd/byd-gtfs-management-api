@@ -1,4 +1,4 @@
-﻿namespace Byd.GtfsManagement.Consts;
+namespace Byd.GtfsManagement.Consts;
 
 // islevi: Pathway HTTP yollarini tanimlar.
 // sistemdeki gorevi: Controller rota sozlesmesini Domain.Shared uzerinden sunar.

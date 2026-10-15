@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS rezervasyon kurali EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IBookingRuleRepository))]
 public class EfCoreBookingRuleRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, BookingRule, Guid>(dbContextProvider), IBookingRuleRepository
+    : EfGtfsRepository<BookingRule>(dbContextProvider), IBookingRuleRepository
 {
 }

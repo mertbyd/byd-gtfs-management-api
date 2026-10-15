@@ -15,7 +15,7 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 // sistemdeki gorevi: Cevap DTO'sunun servis kimligi ve istisna adini tasiyabilmesi icin Include'u tek yerde tutar.
 [ExposeServices(typeof(ICalendarDateRepository))]
 public class EfCoreCalendarDateRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, CalendarDate, Guid>(dbContextProvider), ICalendarDateRepository
+    : EfGtfsRepository<CalendarDate>(dbContextProvider), ICalendarDateRepository
 {
     // Tekil okumalarda servis kimligi ve istisna adinin dolu gelmesini saglar.
     public override async Task<IQueryable<CalendarDate>> WithDetailsAsync()

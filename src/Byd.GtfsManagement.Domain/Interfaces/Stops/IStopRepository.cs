@@ -13,5 +13,5 @@ namespace Byd.GtfsManagement.Interfaces.Stops;
 public interface IStopRepository : IExtendedRepository<Stop>
 {
     // Feed'in tum duraklarini yolculuk planlayicisi icin hafif modelle getirir.
-    Task<List<StopPlaceModel>> GetPlacesAsync(Guid feedId, CancellationToken cancellationToken = default);
+    Task<List<StopPlaceModel>> GetPlacesAsync(Guid? feedId, CancellationToken cancellationToken = default);
 }

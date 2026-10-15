@@ -5,7 +5,7 @@ namespace Byd.GtfsManagement.Consts;
 public static class ServiceConsts
 {
     public const string TableName = "Services";
-    public const string GtfsServiceIdIndex = "IX_Services_Tenant_Feed_GtfsServiceId";
+    public const string GtfsServiceIdIndex = "IX_Services_Feed_GtfsServiceId";
 
     public const int MaxGtfsServiceIdLength = 100;
 }

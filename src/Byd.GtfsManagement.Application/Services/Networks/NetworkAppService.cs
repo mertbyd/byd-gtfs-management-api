@@ -7,13 +7,13 @@ using Byd.GtfsManagement.Models.Networks;
 
 namespace Byd.GtfsManagement.Services.Networks;
 
-// islevi: Network CRUD akisini ortak tabana baglar.
+// islevi: Network CRUD ve GTFS arsiv akisini ortak tabana baglar.
 // sistemdeki gorevi: Tipli Manager, repository ve Mapperly baglarini bildirir.
 /// <summary>GTFS ulasim agi CRUD servisini ortak tabana baglar.</summary>
 public class NetworkAppService
-    : GtfsCrudAppServiceBase<
+    : GtfsImportExportAppServiceBase<
         Network, CreateNetworkDto, UpdateNetworkDto, NetworkDto, NetworkFilter,
-        NetworkCreateModel, NetworkUpdateModel, NetworkManager, INetworkRepository, NetworkMapper>,
+        NetworkCreateModel, NetworkUpdateModel, NetworkManager, INetworkRepository, NetworkMapper, NetworkImportDto>,
         INetworkAppService
 {
 }

@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS konum grubu durak iliskisi EF sorgularini uygular.</summary>
 [ExposeServices(typeof(ILocationGroupStopRepository))]
 public class EfCoreLocationGroupStopRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, LocationGroupStop, Guid>(dbContextProvider), ILocationGroupStopRepository
+    : EfGtfsRepository<LocationGroupStop>(dbContextProvider), ILocationGroupStopRepository
 {
 }

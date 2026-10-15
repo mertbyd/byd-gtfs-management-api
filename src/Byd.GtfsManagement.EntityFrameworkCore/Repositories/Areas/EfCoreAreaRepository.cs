@@ -12,6 +12,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
 /// <summary>GTFS bolge EF sorgularini uygular.</summary>
 [ExposeServices(typeof(IAreaRepository))]
 public class EfCoreAreaRepository(IDbContextProvider<GtfsManagementDbContext> dbContextProvider)
-    : EfExtendedRepository<GtfsManagementDbContext, Area, Guid>(dbContextProvider), IAreaRepository
+    : EfGtfsRepository<Area>(dbContextProvider), IAreaRepository
 {
 }

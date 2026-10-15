@@ -24,7 +24,7 @@ public class LocationGroupStopManager(
         ArgumentNullException.ThrowIfNull(model);
         var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
         var entity = new LocationGroupStop(
-            GuidGenerator.Create(), feed.TenantId, feed.Id,
+            GuidGenerator.Create(), feed.Id,
             NormalizeRequiredText(model.GtfsLocationGroupId), NormalizeRequiredText(model.GtfsStopId));
         await CheckUniqueAsync(entity, cancellationToken);
         return entity;

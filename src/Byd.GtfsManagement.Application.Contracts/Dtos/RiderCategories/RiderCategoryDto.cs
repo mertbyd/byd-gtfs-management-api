@@ -7,8 +7,14 @@ namespace Byd.GtfsManagement.Dtos.RiderCategories;
 /// <summary>GTFS yolcu kategorisi cevap alanlarini tasir.</summary>
 public class RiderCategoryDto
 {
+    // Primary Key
     public Guid Id { get; set; }
+
+    // Foreign Keys
     public Guid FeedId { get; set; }
+
+    // Table Columns / Data
+    public string FeedName { get; set; } = default!;
     public string GtfsRiderCategoryId { get; set; } = default!;
     public string RiderCategoryName { get; set; } = default!;
     public int? IsDefaultFareCategory { get; set; }

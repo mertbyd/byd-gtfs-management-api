@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Byd.CoreExtensions.ExceptionCodes;
 using Byd.CoreExtensions.Interfaces;
 using Byd.CoreExtensions.Managers;
+using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Entities.Feeds;
 using Byd.GtfsManagement.Interfaces;
 using Byd.GtfsManagement.Managers.Feeds;
@@ -19,7 +20,7 @@ public abstract class GtfsFeedScopedManager<TEntity, TCreateModel, TUpdateModel>
     IExtendedRepository<TEntity> repository,
     FeedManager feedManager)
     : BaseManager<TEntity, Guid>(repository), IGtfsScopedManager<TEntity>
-    where TEntity : class, IEntity<Guid>, IHasFeed
+    where TEntity : class, IGtfsEntity
 {
     // Hedef Feed'i kapsamda dogrulayip kaydin GTFS alanlarini kuran alt sinif akisi.
     public abstract Task<TEntity> CreateAsync(TCreateModel model, CancellationToken cancellationToken = default);
@@ -37,6 +38,21 @@ public abstract class GtfsFeedScopedManager<TEntity, TCreateModel, TUpdateModel>
         return entity;
     }
 
+    // Yonetim kaydi acikca istenen surum disindaysa goruntulenemez.
+    public virtual void EnsureInFeed(TEntity entity, Guid feedId)
+    {
+        if (entity.FeedId != feedId)
+            throw new BusinessException(GeneralExceptionCodes.EntityNotFound);
+    }
+
+    // Liste filtresindeki surum alanini sunucunun dogruladigi kapsama kilitler.
+    public virtual void ScopeFilter(IFeedFilter filter, Guid feedId)
+        => filter.FeedId = new DataTableFilterItem
+        {
+            Operator = DataTableFilterOperator.Equal,
+            Value = feedId.ToString()
+        };
+
     // Baska GTFS kayitlari tarafindan kullanilan satirin silinmesini engeller.
     public virtual async Task EnsureCanDeleteAsync(
         TEntity entity, CancellationToken cancellationToken = default)
@@ -45,12 +61,6 @@ public abstract class GtfsFeedScopedManager<TEntity, TCreateModel, TUpdateModel>
         if (await Repository.IsDataUsedAsync(entity, ignoredEntityTypes: null, cancellationToken))
             throw new BusinessException(GeneralExceptionCodes.RelationalDataDelete);
     }
-
-    // Verilen Feed'i kapsamda, verilmezse tenant'in aktif Feed'ini getirir; aktif Feed yoksa null doner.
-    protected async Task<Feed?> ResolveReadFeedAsync(Guid? feedId, CancellationToken cancellationToken = default)
-        => feedId is null
-            ? await feedManager.FindActiveAsync(cancellationToken)
-            : await feedManager.EnsureExistsIncludingInactiveInScopeAsync(feedId.Value, cancellationToken);
 
     // Kaydin kapsamini devralacagi Feed'i getirir ve istegin kapsaminda oldugunu dogrular.
     protected Task<Feed> ResolveFeedAsync(Guid feedId, CancellationToken cancellationToken = default)
