@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -13,8 +14,10 @@ using Byd.CoreExtensions;
 using Byd.CoreExtensions.Extensions;
 using Byd.CoreExtensions.Options;
 using Byd.FileManagement;
+using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.EntityFrameworkCore;
 using Byd.GtfsManagement.MultiTenancy;
+using Byd.GtfsManagement.Options;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Authentication.JwtBearer;
 using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
@@ -58,7 +61,10 @@ public class GtfsManagementHttpApiHostModule : AbpModule
             options.ModuleName = Assembly.GetEntryAssembly()?.GetName().Name?
                 .Replace(".HttpApi.Host", string.Empty);
             options.EnvironmentName = hostingEnvironment.EnvironmentName;
+            options.ExcludePaths.Add("/" + FeedRoutes.Root);
         });
+        Configure<GtfsManagementModuleOptions>(options =>
+            options.ValidatorBaseUrl = configuration[GtfsValidationConsts.BaseUrlConfigurationKey]);
 
         Configure<AbpDbContextOptions>(options => { options.UseNpgsql(); });
 

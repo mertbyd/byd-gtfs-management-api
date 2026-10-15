@@ -47,6 +47,25 @@ public class FeedAppService : GtfsManagementAppService, IFeedAppService
     private ILocalEventBus LocalEventBus => LazyGetRequiredService<ILocalEventBus>();
     private ICurrentOrganization CurrentOrganization => LazyGetRequiredService<ICurrentOrganization>();
 
+    // Yuklenen ZIP'i yeni pasif surum olarak kaydeder; yayinlanan surumu degistirmez.
+    public virtual Task<FeedDetailDto> UploadAsync(
+        UploadFeedDto input, CancellationToken cancellationToken = default)
+        => UploadArchiveAsync(input, null, cancellationToken);
+
+    // Secilen Feed'in URL'sinden ZIP'i ceker; adresin o andaki degeri yeni surumde saklanir.
+    public virtual async Task<FeedDetailDto> ImportFromSourceAsync(
+        ImportFeedDto input, CancellationToken cancellationToken = default)
+    {
+        await ImportValidator.ValidateAndThrowAsync(input, cancellationToken);
+        var sourceUrl = input.Url!;
+        var archive = await FeedDownloader.DownloadAsync(sourceUrl, cancellationToken);
+        var fileName = Path.GetFileName(Uri.UnescapeDataString(new Uri(sourceUrl).Segments[^1]).Replace('\\', '/'));
+        if (fileName.Length > FeedConsts.MaxStoredFileNameLength ||
+            !fileName.EndsWith(GtfsValidationConsts.ArchiveExtension, StringComparison.OrdinalIgnoreCase))
+            fileName = GtfsFileNames.Archive;
+        return await UploadArchiveAsync(Mapper.Map(input, fileName, archive), sourceUrl, cancellationToken);
+    }
+
     // Aktif Feed'i kapsam kuralindan gecirerek okur.
     public virtual async Task<FeedDetailDto> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => Mapper.MapToDetail(await Manager.EnsureExistsInScopeAsync(id, cancellationToken));
@@ -81,4 +100,33 @@ public class FeedAppService : GtfsManagementAppService, IFeedAppService
         return Mapper.Map(feed);
     }
 
+    // Kayitli Feed'in verisini yeniden dogrulayip raporunu gunceller.
+    public virtual Task<FeedValidationReportDto> ValidateAsync(Guid id, CancellationToken cancellationToken = default)
+        => GtfsValidator.ValidateAsync(() => Task.FromResult(id), feedId => feedId, cancellationToken);
+
+    // Ortak arsiv akisi once dosyayi kalici saklar; dogrulayici erisilemese bile yukleme gecmisi kaybolmaz.
+    private async Task<FeedDetailDto> UploadArchiveAsync(
+        UploadFeedDto input, string? sourceUrl, CancellationToken cancellationToken = default)
+    {
+        await UploadValidator.ValidateAndThrowAsync(input, cancellationToken);
+        var id = await StoreArchiveAsync(input, sourceUrl, cancellationToken);
+        await GtfsValidator.ValidateAsync(() => Task.FromResult(id), feedId => feedId, cancellationToken);
+        return Mapper.MapToDetail(await Manager.EnsureExistsIncludingInactiveInScopeAsync(id, cancellationToken));
+    }
+
+    // Surumu ve ZIP dosyasini ayni arsiv isleminde saklar; ust Feed ayni EF kapsaminda yuklenir.
+    private async Task<Guid> StoreArchiveAsync(
+        UploadFeedDto input, string? sourceUrl, CancellationToken cancellationToken = default)
+    {
+        using var archiveUnitOfWork = UnitOfWorkManager.Begin(requiresNew: true, isTransactional: true);
+        var model = Mapper.Map(input, sourceUrl);
+        model.SourceType = sourceUrl is null ? FeedSourceType.Upload : FeedSourceType.Url;
+        var version = await Manager.CreateAsync(model, cancellationToken);
+        var category = await Manager.GetArchiveCategoryAsync(cancellationToken);
+        var file = await StoredFiles.UploadAsync(Mapper.Map(input, version.Id, category.Id), cancellationToken);
+        Manager.AttachStoredFile(version, file.Id, file.OriginalFileName);
+        await Repository.InsertAsync(version, cancellationToken: cancellationToken);
+        await archiveUnitOfWork.CompleteAsync(cancellationToken);
+        return version.Id;
+    }
 }
