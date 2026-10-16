@@ -24,13 +24,12 @@ public class ServiceController : GtfsManagementController
 {
     private IServiceAppService AppService => LazyGetRequiredService<IServiceAppService>();
 
-    /// <summary>Yeni servis kaydi ekler.</summary>
-    /// <param name="input">Kaydin bagli oldugu ust kayit ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni servis kaydi ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
-    /// Response value kayit kimligini, Feed kimligini, bagli kayitlarin kimlik ve okunabilir karsiliklarini,
-    /// GTFS alanlarini ve audit zamanlarini tasir. Ust kayit istegin tenant kapsaminda degilse
-    /// kayit olusturulmaz.
+    /// Response value kayit kimligini, Feed kimligini, bagli kayitlarin kimlik ve okunabilir karsiliklarini, GTFS
+    /// alanlarini ve audit zamanlarini tasir. Organizasyonun aktif Feed'i yoksa kayit olusturulmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.Services.Manage)]

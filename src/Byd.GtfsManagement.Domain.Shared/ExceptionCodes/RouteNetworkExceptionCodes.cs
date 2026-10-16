@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS hat ag iliskisi hata kodlarini tanimlar.</summary>
 public static class RouteNetworkExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.RouteNetworkGroup + "0001";
     public const string RouteNetworkAlreadyExists = GtfsManagementErrorCodes.RouteNetworkGroup + "0002";
     public const string GtfsNetworkIdRequired = GtfsManagementErrorCodes.RouteNetworkGroup + "0003";
     public const string GtfsNetworkIdTooLong = GtfsManagementErrorCodes.RouteNetworkGroup + "0004";

@@ -17,12 +17,12 @@ public class TranslationManager(
     : GtfsFeedScopedManager<Translation, TranslationCreateModel, TranslationUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni ceviri kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni ceviri kaydini kurar.
     public override async Task<Translation> CreateAsync(
         TranslationCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Translation(
             GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.TableName), NormalizeRequiredText(model.FieldName),
             NormalizeRequiredText(model.Language), NormalizeRequiredText(model.TranslationText));

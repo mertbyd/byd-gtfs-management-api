@@ -1,10 +1,7 @@
-using System;
-
 namespace Byd.GtfsManagement.Dtos.Trips;
 
 // mirastan gelen: trips.txt kaydinin tum duzenlenebilir alanlari.
-// burada yazilan: yalnizca kaydin yazilacagi Feed.
+// burada yazilan: yok; Feed istekten alinmaz, kayit organizasyonun aktif Feed'ine yazilir.
 public sealed class CreateTripDto : TripInputDto
 {
-    public Guid FeedId { get; set; }
 }

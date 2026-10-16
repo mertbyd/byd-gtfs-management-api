@@ -25,8 +25,8 @@ public class TransferController : GtfsManagementController
 {
     private ITransferAppService AppService => LazyGetRequiredService<ITransferAppService>();
 
-    /// <summary>Yeni bir aktarma kurali ekler.</summary>
-    /// <param name="input">Feed, aktarma baglari ve davranis kodu.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir aktarma kurali ekler.</summary>
+    /// <param name="input">Aktarma baglari ve davranis kodu.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, FromStopId ile FromStopName, ToStopId ile ToStopName,

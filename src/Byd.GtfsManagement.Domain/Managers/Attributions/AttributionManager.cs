@@ -25,12 +25,12 @@ public class AttributionManager(
     : GtfsFeedScopedManager<Attribution, AttributionCreateModel, AttributionUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni atif kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni atif kaydini kurar.
     public override async Task<Attribution> CreateAsync(
         AttributionCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Attribution(
             GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.OrganizationName));
         await ApplyAsync(entity, model, cancellationToken);

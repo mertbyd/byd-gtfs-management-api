@@ -26,8 +26,8 @@ public class StopController : GtfsManagementController
 {
     private IStopAppService AppService => LazyGetRequiredService<IStopAppService>();
 
-    /// <summary>Hedef GTFS Feed'e yeni durak kaydi ekler.</summary>
-    /// <param name="input">Duragin yazilacagi Feed ve stops.txt alanlari.</param>
+    /// <summary>Organizasyonun aktif GTFS Feed'ine yeni durak kaydi ekler.</summary>
+    /// <param name="input">stops.txt alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value durak kimligini, Feed kimligini, konum turu ve erisim lookup kimlikleri ile adlarini,

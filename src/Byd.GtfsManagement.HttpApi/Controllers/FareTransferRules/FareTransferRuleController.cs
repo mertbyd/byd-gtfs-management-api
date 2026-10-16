@@ -25,13 +25,13 @@ public class FareTransferRuleController : GtfsManagementController
 {
     private IFareTransferRuleAppService AppService => LazyGetRequiredService<IFareTransferRuleAppService>();
 
-    /// <summary>Bir Feed'e yeni bir ucret aktarma kurali ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir ucret aktarma kurali ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
-    /// Response value olusturulan kaydin Id, FeedId, FromLegGroupId, ToLegGroupId, GtfsFareProductId,
-    /// TransferCount, DurationLimit, DurationLimitType, FareTransferType ve audit zamanlari alanlarini tasir. Feed
-    /// istegin tenant kapsaminda degilse kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
+    /// Response value olusturulan kaydin Id, FeedId, FromLegGroupId, ToLegGroupId, GtfsFareProductId, TransferCount,
+    /// DurationLimit, DurationLimitType, FareTransferType ve audit zamanlari alanlarini tasir. Organizasyonun aktif
+    /// Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.FareTransferRules.Manage)]

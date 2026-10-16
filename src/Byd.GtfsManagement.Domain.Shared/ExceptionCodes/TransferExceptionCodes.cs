@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS aktarma hata kodlarini tanimlar.</summary>
 public static class TransferExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.TransferGroup + "0001";
     public const string FromStopRequired = GtfsManagementErrorCodes.TransferGroup + "0002";
     public const string ToStopRequired = GtfsManagementErrorCodes.TransferGroup + "0003";
     public const string FromTripRequired = GtfsManagementErrorCodes.TransferGroup + "0004";

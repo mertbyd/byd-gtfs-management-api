@@ -24,8 +24,8 @@ public class AgencyController : GtfsManagementController
 {
     private IAgencyAppService AppService => LazyGetRequiredService<IAgencyAppService>();
 
-    /// <summary>Hedef GTFS Feed'e yeni ajans kaydi ekler.</summary>
-    /// <param name="input">Ajansin yazilacagi Feed ve agency.txt alanlari.</param>
+    /// <summary>Organizasyonun aktif GTFS Feed'ine yeni ajans kaydi ekler.</summary>
+    /// <param name="input">agency.txt alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value ajans kimligini, Feed kimligini, cEMV lookup kimligi ile adini, GTFS alanlarini ve audit
@@ -82,8 +82,8 @@ public class AgencyController : GtfsManagementController
     /// <param name="input">Ajansin yeni agency.txt alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
-    /// Response value guncel ajans alanlarini tasir. Kaydin bagli oldugu Feed degistirilemez; Feed degisikligi
-    /// icin kayit hedef Feed'de yeniden olusturulur.
+    /// Response value guncel ajans alanlarini tasir. Yalniz organizasyonun aktif Feed'indeki kayit guncellenir;
+    /// kaydin bagli oldugu Feed degistirilemez.
     /// </remarks>
     [HttpPut(AgencyRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Agencies.Manage)]

@@ -1,20 +1,12 @@
-using FluentValidation;
 using Byd.GtfsManagement.Dtos.FareRules;
-using Byd.GtfsManagement.ExceptionCodes;
 
 namespace Byd.GtfsManagement.Validators.FareRules;
 
 // mirastan gelen: ortak fare_rules.txt alan kurallari.
-// burada yazilan: Feed zorunlulugu.
-// islevi: Yeni ucret kurali isteginin kapsam anahtarini dogrular.
-// sistemdeki gorevi: Manager'a Feedsuz kayit ulasmasini engeller.
+// burada yazilan: yok; Feed istekten alinmaz, olusturma ek alan tasimaz.
+// islevi: Yeni ucret kurali istegini dogrular.
+// sistemdeki gorevi: Olusturma istegini ortak girdi dogrulamasindan gecirir.
 /// <summary>Yeni ucret kurali olusturma dogrulayicisini tanimlar.</summary>
 public sealed class CreateFareRuleDtoValidator : FareRuleInputDtoValidatorBase<CreateFareRuleDto>
 {
-    // Yeni kaydin Feed bagini zorunlu tutar.
-    public CreateFareRuleDtoValidator()
-    {
-        RuleFor(input => input.FeedId)
-            .NotEmpty().WithErrorCode(FareRuleExceptionCodes.FeedRequired);
-    }
 }

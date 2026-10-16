@@ -25,8 +25,8 @@ public class ShapeController : GtfsManagementController
 {
     private IShapeAppService AppService => LazyGetRequiredService<IShapeAppService>();
 
-    /// <summary>Bir sekle yeni bir koordinat noktasi ekler.</summary>
-    /// <param name="input">Feed, sekil dis kimligi, koordinat, sira ve mesafe alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'indeki bir sekle yeni bir koordinat noktasi ekler.</summary>
+    /// <param name="input">Sekil dis kimligi, koordinat, sira ve mesafe alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsShapeId, Latitude, Longitude, Sequence, DistTraveled ve

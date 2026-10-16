@@ -12,7 +12,6 @@ public static class AttributionExceptionCodes
     public const string AttributionEmailTooLong = GtfsManagementErrorCodes.AttributionGroup + "0005";
     public const string AttributionPhoneTooLong = GtfsManagementErrorCodes.AttributionGroup + "0006";
     public const string AttributionAlreadyExists = GtfsManagementErrorCodes.AttributionGroup + "0007";
-    public const string FeedRequired = GtfsManagementErrorCodes.AttributionGroup + "0008";
     public const string AgencyOutOfFeed = GtfsManagementErrorCodes.AttributionGroup + "0009";
     public const string RouteOutOfFeed = GtfsManagementErrorCodes.AttributionGroup + "0010";
     public const string TripOutOfFeed = GtfsManagementErrorCodes.AttributionGroup + "0011";

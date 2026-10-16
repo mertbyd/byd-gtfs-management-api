@@ -17,12 +17,12 @@ public class NetworkManager(
     : GtfsFeedScopedManager<Network, NetworkCreateModel, NetworkUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni ulasim agi kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni ulasim agi kaydini kurar.
     public override async Task<Network> CreateAsync(
         NetworkCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Network(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsNetworkId));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);

@@ -25,8 +25,8 @@ public class FareRuleController : GtfsManagementController
 {
     private IFareRuleAppService AppService => LazyGetRequiredService<IFareRuleAppService>();
 
-    /// <summary>Bir Feed'e yeni bir ucret kurali eslemesi ekler.</summary>
-    /// <param name="input">Feed, ucret tanimi, guzergah ve bolge alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir ucret kurali eslemesi ekler.</summary>
+    /// <param name="input">Ucret tanimi, guzergah ve bolge alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, FareAttributeId ile FareAttributeName, RouteId ile RouteName,

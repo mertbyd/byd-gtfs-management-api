@@ -25,8 +25,8 @@ public class FeedInfoController : GtfsManagementController
 {
     private IFeedInfoAppService AppService => LazyGetRequiredService<IFeedInfoAppService>();
 
-    /// <summary>Bir Feed'e ait yayimci bilgisini olusturur.</summary>
-    /// <param name="input">Feed, yayimci adi, web adresi, dil ve tarih alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yayimci bilgisini olusturur.</summary>
+    /// <param name="input">Yayimci adi, web adresi, dil ve tarih alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, PublisherName, PublisherUrl, Language, DefaultLanguage,

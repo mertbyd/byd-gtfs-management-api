@@ -25,15 +25,15 @@ public class BookingRuleController : GtfsManagementController
 {
     private IBookingRuleAppService AppService => LazyGetRequiredService<IBookingRuleAppService>();
 
-    /// <summary>Bir Feed'e yeni bir rezervasyon kurali ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir rezervasyon kurali ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsBookingRuleId, PriorNoticeServiceId, BookingType,
-    /// PriorNoticeDurationMin, PriorNoticeDurationMax, PriorNoticeLastDay, PriorNoticeLastTime,
-    /// PriorNoticeStartDay, PriorNoticeStartTime, Message, PickupMessage, DropOffMessage, PhoneNumber, InfoUrl,
-    /// BookingUrl ve audit zamanlari alanlarini tasir. Feed istegin tenant kapsaminda degilse kayit olusturulmaz.
-    /// Bu uc baska bir GTFS kaydi olusturmaz.
+    /// PriorNoticeDurationMin, PriorNoticeDurationMax, PriorNoticeLastDay, PriorNoticeLastTime, PriorNoticeStartDay,
+    /// PriorNoticeStartTime, Message, PickupMessage, DropOffMessage, PhoneNumber, InfoUrl, BookingUrl ve audit
+    /// zamanlari alanlarini tasir. Organizasyonun aktif Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi
+    /// olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.BookingRules.Manage)]

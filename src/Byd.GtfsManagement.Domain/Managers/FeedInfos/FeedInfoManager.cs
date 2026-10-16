@@ -19,12 +19,12 @@ public class FeedInfoManager(
     : GtfsFeedScopedManager<FeedInfo, FeedInfoCreateModel, FeedInfoUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni yayimci kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni yayimci kaydini kurar.
     public override async Task<FeedInfo> CreateAsync(
         FeedInfoCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new FeedInfo(
             GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);

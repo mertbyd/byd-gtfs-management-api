@@ -25,8 +25,8 @@ public class AttributionController : GtfsManagementController
 {
     private IAttributionAppService AppService => LazyGetRequiredService<IAttributionAppService>();
 
-    /// <summary>Bir Feed'e yeni bir atif ekler.</summary>
-    /// <param name="input">Feed, kurum, rol, guzergah, sefer ve iletisim alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir atif ekler.</summary>
+    /// <param name="input">Kurum, rol, guzergah, sefer ve iletisim alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, AgencyId ile AgencyName, RouteId ile RouteName, TripId ile

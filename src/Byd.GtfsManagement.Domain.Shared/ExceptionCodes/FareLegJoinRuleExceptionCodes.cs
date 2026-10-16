@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS ucret etap birlestirme kurali hata kodlarini tanimlar.</summary>
 public static class FareLegJoinRuleExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.FareLegJoinRuleGroup + "0001";
     public const string FareLegJoinRuleAlreadyExists = GtfsManagementErrorCodes.FareLegJoinRuleGroup + "0002";
     public const string FromNetworkIdTooLong = GtfsManagementErrorCodes.FareLegJoinRuleGroup + "0003";
     public const string ToNetworkIdTooLong = GtfsManagementErrorCodes.FareLegJoinRuleGroup + "0004";

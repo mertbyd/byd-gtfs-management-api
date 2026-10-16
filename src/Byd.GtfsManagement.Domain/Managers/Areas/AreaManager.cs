@@ -17,12 +17,12 @@ public class AreaManager(
     : GtfsFeedScopedManager<Area, AreaCreateModel, AreaUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni bolge kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni bolge kaydini kurar.
     public override async Task<Area> CreateAsync(
         AreaCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Area(
             GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsAreaId));
         Apply(entity, model);

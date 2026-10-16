@@ -25,8 +25,8 @@ public class AreaController : GtfsManagementController
 {
     private IAreaAppService AppService => LazyGetRequiredService<IAreaAppService>();
 
-    /// <summary>Bir Feed'e yeni bir bolge ekler.</summary>
-    /// <param name="input">Feed ve bolge alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir bolge ekler.</summary>
+    /// <param name="input">Bolge alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsAreaId, AreaName ve audit zamanlari alanlarini tasir. Ayni

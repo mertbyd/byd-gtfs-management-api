@@ -4,7 +4,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 // sistemdeki gorevi: GTFS guzergah sozlesmesinin ihlallerini lokalize edilebilir kodlara baglar.
 public static class RouteExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.RouteGroup + "0001";
     public const string RouteTypeRequired = GtfsManagementErrorCodes.RouteGroup + "0002";
     public const string GtfsRouteIdRequired = GtfsManagementErrorCodes.RouteGroup + "0003";
     public const string GtfsRouteIdTooLong = GtfsManagementErrorCodes.RouteGroup + "0004";

@@ -25,12 +25,12 @@ public class StopAreaController : GtfsManagementController
 {
     private IStopAreaAppService AppService => LazyGetRequiredService<IStopAreaAppService>();
 
-    /// <summary>Bir Feed'e yeni bir durak bolge iliskisi ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir durak bolge iliskisi ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsAreaId, GtfsStopId ve audit zamanlari alanlarini tasir.
-    /// Feed istegin tenant kapsaminda degilse kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
+    /// Organizasyonun aktif Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.StopAreas.Manage)]

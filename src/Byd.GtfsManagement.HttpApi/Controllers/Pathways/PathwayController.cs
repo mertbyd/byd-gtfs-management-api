@@ -25,8 +25,8 @@ public class PathwayController : GtfsManagementController
 {
     private IPathwayAppService AppService => LazyGetRequiredService<IPathwayAppService>();
 
-    /// <summary>Bir Feed'e yeni bir istasyon yuruyus yolu ekler.</summary>
-    /// <param name="input">Feed, yuruyus yolu dis kimligi, durak ve olcu alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir istasyon yuruyus yolu ekler.</summary>
+    /// <param name="input">Yuruyus yolu dis kimligi, durak ve olcu alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, FromStopId ile FromStopName, ToStopId ile ToStopName,

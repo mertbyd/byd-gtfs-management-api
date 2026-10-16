@@ -67,14 +67,22 @@ public class FeedManager(
         return feed.IsActive ? feed : null;
     }
 
+    // Organizasyonun aktif Feed'ini getirir; yeni GTFS kayitlari istekten Feed almadan bu Feed'e yazilir.
+    public virtual async Task<Feed> GetActiveInScopeAsync(CancellationToken cancellationToken = default)
+    {
+        EnsureScopeAvailable();
+        return await Repository.FindAsync(feed => feed.TenantId == CurrentTenant.Id
+                && feed.OrganizationId == currentOrganization.Id && feed.IsActive, cancellationToken: cancellationToken)
+            ?? throw new BusinessException(FeedExceptionCodes.ActiveFeedRequired);
+    }
+
+    // GTFS kayitlari yalniz organizasyonun aktif ve tablolari aktarilmis Feed'inde eklenir, guncellenir ve silinir.
     public virtual async Task<Feed> EnsureEditableAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var feed = await EnsureExistsIncludingInactiveInScopeAsync(id, cancellationToken);
-        if (feed.IsActive)
-            throw new BusinessException(FeedExceptionCodes.ActiveFeedRequiresDraft);
-        if (feed.Status != FeedStatus.Integrated)
-            throw new BusinessException(FeedExceptionCodes.NotIntegrated);
-        return feed;
+        return !feed.IsActive ? throw new BusinessException(FeedExceptionCodes.InactiveFeedNotEditable)
+            : feed.Status != FeedStatus.Integrated ? throw new BusinessException(FeedExceptionCodes.NotIntegrated)
+            : feed;
     }
 
     public virtual async Task<Feed> EnsureDraftSourceAsync(Guid id,

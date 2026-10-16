@@ -14,6 +14,5 @@ public static class FareAttributeExceptionCodes
     public const string TransfersInvalid = GtfsManagementErrorCodes.FareAttributeGroup + "0007";
     public const string TransferDurationInvalid = GtfsManagementErrorCodes.FareAttributeGroup + "0008";
     public const string FareAlreadyExists = GtfsManagementErrorCodes.FareAttributeGroup + "0009";
-    public const string FeedRequired = GtfsManagementErrorCodes.FareAttributeGroup + "0010";
     public const string AgencyOutOfFeed = GtfsManagementErrorCodes.FareAttributeGroup + "0011";
 }

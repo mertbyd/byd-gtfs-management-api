@@ -24,8 +24,8 @@ public class RouteController : GtfsManagementController
 {
     private IRouteAppService AppService => LazyGetRequiredService<IRouteAppService>();
 
-    /// <summary>Hedef GTFS Feed'e yeni guzergah kaydi ekler.</summary>
-    /// <param name="input">Guzergahin yazilacagi Feed ve routes.txt alanlari.</param>
+    /// <summary>Organizasyonun aktif GTFS Feed'ine yeni guzergah kaydi ekler.</summary>
+    /// <param name="input">routes.txt alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value guzergah kimligini, Feed kimligini, ajans, ucret agi ve lookup kimlikleri ile adlarini, GTFS

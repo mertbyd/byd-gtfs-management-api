@@ -1,20 +1,12 @@
-using FluentValidation;
 using Byd.GtfsManagement.Dtos.Levels;
-using Byd.GtfsManagement.ExceptionCodes;
 
 namespace Byd.GtfsManagement.Validators.Levels;
 
 // mirastan gelen: ortak levels.txt alan kurallari.
-// burada yazilan: Feed zorunlulugu.
-// islevi: Yeni kat isteginin kapsam anahtarini dogrular.
-// sistemdeki gorevi: Manager'a Feedsuz kayit ulasmasini engeller.
+// burada yazilan: yok; Feed istekten alinmaz, olusturma ek alan tasimaz.
+// islevi: Yeni kat istegini dogrular.
+// sistemdeki gorevi: Olusturma istegini ortak girdi dogrulamasindan gecirir.
 /// <summary>Yeni kat olusturma dogrulayicisini tanimlar.</summary>
 public sealed class CreateLevelDtoValidator : LevelInputDtoValidatorBase<CreateLevelDto>
 {
-    // Yeni kaydin Feed bagini zorunlu tutar.
-    public CreateLevelDtoValidator()
-    {
-        RuleFor(input => input.FeedId)
-            .NotEmpty().WithErrorCode(LevelExceptionCodes.FeedRequired);
-    }
 }

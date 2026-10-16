@@ -25,8 +25,8 @@ public class FareAttributeController : GtfsManagementController
 {
     private IFareAttributeAppService AppService => LazyGetRequiredService<IFareAttributeAppService>();
 
-    /// <summary>Bir Feed'e yeni bir ucret sinifi tanimi ekler.</summary>
-    /// <param name="input">Feed, ucret kimligi, fiyat, para birimi ve transfer kurallari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir ucret sinifi tanimi ekler.</summary>
+    /// <param name="input">Ucret kimligi, fiyat, para birimi ve transfer kurallari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, AgencyId ile AgencyName, GtfsFareId, Price, CurrencyType,

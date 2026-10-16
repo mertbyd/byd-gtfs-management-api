@@ -25,8 +25,8 @@ public class LevelController : GtfsManagementController
 {
     private ILevelAppService AppService => LazyGetRequiredService<ILevelAppService>();
 
-    /// <summary>Bir Feed'e yeni bir istasyon kati ekler.</summary>
-    /// <param name="input">Feed, kat dis kimligi, dizin ve ad alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir istasyon kati ekler.</summary>
+    /// <param name="input">Kat dis kimligi, dizin ve ad alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsLevelId, LevelIndex, Name ve audit zamanlari alanlarini

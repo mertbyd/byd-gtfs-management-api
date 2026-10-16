@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS ulasim agi hata kodlarini tanimlar.</summary>
 public static class NetworkExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.NetworkGroup + "0001";
     public const string NetworkAlreadyExists = GtfsManagementErrorCodes.NetworkGroup + "0002";
     public const string GtfsNetworkIdRequired = GtfsManagementErrorCodes.NetworkGroup + "0003";
     public const string GtfsNetworkIdTooLong = GtfsManagementErrorCodes.NetworkGroup + "0004";

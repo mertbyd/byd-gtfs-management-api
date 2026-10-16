@@ -25,8 +25,8 @@ public class TranslationController : GtfsManagementController
 {
     private ITranslationAppService AppService => LazyGetRequiredService<ITranslationAppService>();
 
-    /// <summary>Bir Feed'e yeni bir ceviri ekler.</summary>
-    /// <param name="input">Feed, tablo, alan, dil ve hedef/deger alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir ceviri ekler.</summary>
+    /// <param name="input">Tablo, alan, dil ve hedef/deger alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, RecordId, RecordSubId, TableName, FieldName, Language,

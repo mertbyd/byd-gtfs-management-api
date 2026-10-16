@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS ucret medyasi hata kodlarini tanimlar.</summary>
 public static class FareMediaExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.FareMediaGroup + "0001";
     public const string FareMediaAlreadyExists = GtfsManagementErrorCodes.FareMediaGroup + "0002";
     public const string GtfsFareMediaIdRequired = GtfsManagementErrorCodes.FareMediaGroup + "0003";
     public const string GtfsFareMediaIdTooLong = GtfsManagementErrorCodes.FareMediaGroup + "0004";

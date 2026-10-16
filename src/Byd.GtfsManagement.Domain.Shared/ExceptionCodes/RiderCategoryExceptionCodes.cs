@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS yolcu kategorisi hata kodlarini tanimlar.</summary>
 public static class RiderCategoryExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.RiderCategoryGroup + "0001";
     public const string RiderCategoryAlreadyExists = GtfsManagementErrorCodes.RiderCategoryGroup + "0002";
     public const string GtfsRiderCategoryIdRequired = GtfsManagementErrorCodes.RiderCategoryGroup + "0003";
     public const string GtfsRiderCategoryIdTooLong = GtfsManagementErrorCodes.RiderCategoryGroup + "0004";

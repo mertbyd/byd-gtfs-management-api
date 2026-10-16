@@ -22,12 +22,12 @@ public class AgencyManager(
     IRepository<CemvSupport, int> cemvSupportRepository)
     : GtfsFeedScopedManager<Agency, AgencyCreateModel, AgencyUpdateModel>(repository, feedManager)
 {
-    // Hedef Feed'i kapsamda dogrulayip yeni ajansi kurar.
+    // Yeni ajansi organizasyonun aktif Feed'inde kurar.
     public override async Task<Agency> CreateAsync(
         AgencyCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Agency(
             GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);

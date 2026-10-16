@@ -22,12 +22,12 @@ public class PathwayManager(
     : GtfsFeedScopedManager<Pathway, PathwayCreateModel, PathwayUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni yuruyus yolu kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni yuruyus yolu kaydini kurar.
     public override async Task<Pathway> CreateAsync(
         PathwayCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Pathway(
             GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsPathwayId));
         await ApplyAsync(entity, model, cancellationToken);

@@ -17,12 +17,12 @@ public class RiderCategoryManager(
     : GtfsFeedScopedManager<RiderCategory, RiderCategoryCreateModel, RiderCategoryUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni yolcu kategorisi kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni yolcu kategorisi kaydini kurar.
     public override async Task<RiderCategory> CreateAsync(
         RiderCategoryCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new RiderCategory(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsRiderCategoryId));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);

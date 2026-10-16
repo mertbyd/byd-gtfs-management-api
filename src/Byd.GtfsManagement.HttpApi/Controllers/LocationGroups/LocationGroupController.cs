@@ -25,13 +25,12 @@ public class LocationGroupController : GtfsManagementController
 {
     private ILocationGroupAppService AppService => LazyGetRequiredService<ILocationGroupAppService>();
 
-    /// <summary>Bir Feed'e yeni bir konum grubu ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir konum grubu ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsLocationGroupId, LocationGroupName ve audit zamanlari
-    /// alanlarini tasir. Feed istegin tenant kapsaminda degilse kayit olusturulmaz. Bu uc baska bir GTFS kaydi
-    /// olusturmaz.
+    /// alanlarini tasir. Organizasyonun aktif Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.LocationGroups.Manage)]

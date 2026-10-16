@@ -17,12 +17,12 @@ public class BookingRuleManager(
     : GtfsFeedScopedManager<BookingRule, BookingRuleCreateModel, BookingRuleUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni rezervasyon kurali kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni rezervasyon kurali kaydini kurar.
     public override async Task<BookingRule> CreateAsync(
         BookingRuleCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new BookingRule(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsBookingRuleId), model.BookingType);
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);

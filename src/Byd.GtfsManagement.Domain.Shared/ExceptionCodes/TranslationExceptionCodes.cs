@@ -18,5 +18,4 @@ public static class TranslationExceptionCodes
     public const string RecordSubIdTooLong = GtfsManagementErrorCodes.TranslationGroup + "0011";
     public const string FieldValueTooLong = GtfsManagementErrorCodes.TranslationGroup + "0012";
     public const string TranslationAlreadyExists = GtfsManagementErrorCodes.TranslationGroup + "0013";
-    public const string FeedRequired = GtfsManagementErrorCodes.TranslationGroup + "0014";
 }

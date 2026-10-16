@@ -17,12 +17,12 @@ public class FareLegRuleManager(
     : GtfsFeedScopedManager<FareLegRule, FareLegRuleCreateModel, FareLegRuleUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni ucret etap kurali kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni ucret etap kurali kaydini kurar.
     public override async Task<FareLegRule> CreateAsync(
         FareLegRuleCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new FareLegRule(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsFareProductId));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);

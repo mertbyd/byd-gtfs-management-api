@@ -24,8 +24,8 @@ public class TripController : GtfsManagementController
 {
     private ITripAppService AppService => LazyGetRequiredService<ITripAppService>();
 
-    /// <summary>Hedef GTFS Feed'e yeni sefer kaydi ekler.</summary>
-    /// <param name="input">Seferin yazilacagi Feed ve trips.txt alanlari.</param>
+    /// <summary>Organizasyonun aktif GTFS Feed'ine yeni sefer kaydi ekler.</summary>
+    /// <param name="input">trips.txt alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value sefer kimligini, Feed kimligini, guzergah ve servis kimlikleri ile GTFS kimliklerini,

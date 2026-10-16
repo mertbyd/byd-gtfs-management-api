@@ -25,12 +25,12 @@ public class LocationGroupStopController : GtfsManagementController
 {
     private ILocationGroupStopAppService AppService => LazyGetRequiredService<ILocationGroupStopAppService>();
 
-    /// <summary>Bir Feed'e yeni bir konum grubu durak iliskisi ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir konum grubu durak iliskisi ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsLocationGroupId, GtfsStopId ve audit zamanlari alanlarini
-    /// tasir. Feed istegin tenant kapsaminda degilse kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
+    /// tasir. Organizasyonun aktif Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.LocationGroupStops.Manage)]
