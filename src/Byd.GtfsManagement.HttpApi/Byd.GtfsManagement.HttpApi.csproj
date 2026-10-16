@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="10.3.0" />
-    <PackageReference Include="Byd.FileManagement.HttpApi" Version="0.1.4" />
+    <PackageReference Include="Byd.CoreExtensions.HttpApi" Version="0.3.11" />
     <ProjectReference Include="..\Byd.GtfsManagement.Application.Contracts\Byd.GtfsManagement.Application.Contracts.csproj" />
   </ItemGroup>
 

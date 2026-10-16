@@ -4,15 +4,16 @@ using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.Localization;
 using Volo.Abp.Modularity;
 using Microsoft.Extensions.DependencyInjection;
-using Byd.FileManagement;
+using Byd.CoreExtensions;
 
 namespace Byd.GtfsManagement;
 
 // islevi: GTFS HTTP katmaninin controller'larini ve lokalizasyon tabanini kaydeder.
-// sistemdeki gorevi: Modulun uclarini core ve file modullerinin HTTP katmanlariyla birlikte yayinlar.
+// sistemdeki gorevi: Modulun uclarini core'un HTTP katmani (sonuc zarfi ve hata cevirisi) uzerinde yayinlar; diger modullerin
+// uclari kendi host'larinda kalir.
 [DependsOn(
+    typeof(CoreExtensionsHttpApiModule),
     typeof(GtfsManagementApplicationContractsModule),
-    typeof(FileManagementHttpApiModule),
     typeof(AbpAspNetCoreMvcModule))]
 public class GtfsManagementHttpApiModule : AbpModule
 {
