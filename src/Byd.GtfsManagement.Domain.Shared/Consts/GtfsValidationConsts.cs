@@ -7,24 +7,38 @@ namespace Byd.GtfsManagement.Consts;
 public static class GtfsValidationConsts
 {
     public const string ArchiveExtension = ".zip";
-    public const string BaseUrlConfigurationKey = "GtfsValidator:BaseUrl";
-    public const string HttpClientName = "GtfsValidator";
-    public const string ValidateUploadPath = "validate-upload";
-    public const string UploadFieldName = "file";
+    // CLI host'un calistigi klasordeki bu alt klasorde, surum ekine bagli olmayan bu adla durur.
+    public const string CliDirectoryName = "gtfs-validator";
+    public const string CliFileName = "gtfs-validator-cli.jar";
+    public const string JavaHomeVariable = "JAVA_HOME";
+    public const string JavaBinDirectoryName = "bin";
+    public const string JavaExecutable = "java";
+    public const string WorkDirectoryPrefix = "gtfs-validation-";
+    public const string OutputDirectoryName = "output";
+    public const string ReportJsonFileName = "report.json";
+    public const string SystemErrorsJsonFileName = "system_errors.json";
     public const string ProviderName = "MobilityData GTFS Schedule Validator";
-    public const string MethodName = "ValidateUpload";
+    public const string MethodName = "ValidateArchive";
     public const string RequestType = "GTFS ZIP";
     public const string ErrorSeverity = "ERROR";
     public const string WarningSeverity = "WARNING";
     public const string InfoSeverity = "INFO";
-    public const string UnprocessableFeedCode = "unprocessable_feed";
     public const string ZipMediaType = "application/zip";
     public const string JsonMediaType = "application/json";
     // Disa aktarilan raporun dosya adi: ad, zaman damgasi ve uzanti.
     public const string ReportFileName = "gtfs-validation-report-";
     public const string ReportTimestampFormat = "yyyyMMddHHmmss";
     public const string ReportFileExtension = ".json";
-    public static readonly TimeSpan RequestTimeout = TimeSpan.FromMinutes(30);
+    public static readonly TimeSpan ValidationTimeout = TimeSpan.FromMinutes(30);
+
+    // MobilityData CLI'inin kullanilan secenekleri.
+    public static class Cli
+    {
+        public const string Jar = "-jar";
+        public const string Input = "-i";
+        public const string Output = "-o";
+        public const string SkipValidatorUpdate = "-svu";
+    }
 
     public static class Json
     {

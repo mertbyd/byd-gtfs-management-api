@@ -11,3 +11,6 @@
 *.user
 TestResults/
 .codex/local/
+
+# MobilityData GTFS validator CLI host'un yanina elle ya da Docker imajinda konur
+**/gtfs-validator/*.jar
