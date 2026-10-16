@@ -21,7 +21,7 @@ using Volo.Abp.Uow;
 
 namespace Byd.GtfsManagement.Services.Feeds;
 
-// islevi: Feed'e ZIP veya URL ile surum ekleme, surum okuma, taslak, rapor ve yayin secimi akislarini orkestre
+// islevi: Feed'e ZIP veya URL ile surum ekleme, surum okuma, rapor ve yayin secimi akislarini orkestre
 // eder.
 // sistemdeki gorevi: Validator, Mapperly, Manager, repository, file modulu ve dogrulayiciyi birlestirir. Dogrulamayi gecen Feed
 // Validated durumunda kaydedilir; handler hemen, periyodik isci yedek olarak tablolara yazmayi dener.
@@ -36,8 +36,6 @@ public class FeedAppService : GtfsManagementAppService, IFeedAppService
         => LazyGetRequiredService<IValidator<UploadFeedDto>>();
     private IValidator<ImportFeedDto> ImportValidator
         => LazyGetRequiredService<IValidator<ImportFeedDto>>();
-    private IValidator<CreateDraftFeedDto> DraftValidator
-        => LazyGetRequiredService<IValidator<CreateDraftFeedDto>>();
     private IValidator<DataTableListInput<FeedFilter>> ListValidator
         => LazyGetRequiredService<IValidator<DataTableListInput<FeedFilter>>>();
     private IDataFilter ActiveFilter => LazyGetRequiredService<IDataFilter>();
@@ -64,16 +62,6 @@ public class FeedAppService : GtfsManagementAppService, IFeedAppService
             !fileName.EndsWith(GtfsValidationConsts.ArchiveExtension, StringComparison.OrdinalIgnoreCase))
             fileName = GtfsFileNames.Archive;
         return await UploadArchiveAsync(Mapper.Map(input, fileName, archive), sourceUrl, cancellationToken);
-    }
-
-    // Aktif Feed'in guncel tablolarini yeni adli pasif Feed olarak dogrulama ve entegrasyon akisina verir.
-    public virtual async Task<FeedDetailDto> CreateDraftAsync(
-        Guid id, CreateDraftFeedDto input, CancellationToken cancellationToken = default)
-    {
-        await DraftValidator.ValidateAndThrowAsync(input, cancellationToken);
-        await Manager.EnsureDraftSourceAsync(id, cancellationToken);
-        var archive = await GtfsValidator.ExportArchiveAsync(id, cancellationToken);
-        return await UploadAsync(Mapper.Map(input, archive.FileName, archive.Data), cancellationToken);
     }
 
     // Aktif Feed'i kapsam kuralindan gecirerek okur.

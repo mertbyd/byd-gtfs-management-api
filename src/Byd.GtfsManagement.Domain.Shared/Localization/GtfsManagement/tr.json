@@ -421,7 +421,6 @@
     "GtfsManagement:350012": "Seçilen sürüm bu kaynağa ait değil.",
     "GtfsManagement:350013": "Sürümü bulunan bir kaynak silinemez.",
     "GtfsManagement:010022": "Bir GTFS kaynağı seçilmelidir.",
-    "GtfsManagement:010023": "Taslak kaynak sürümle aynı Feed altında oluşturulmalıdır.",
     "ActivityLog:Agencies.Updated": "{0}, {1} kimlikli ajansı güncelledi.",
     "ActivityLog:Agencies.Deleted": "{0}, {1} kimlikli ajansı sildi.",
     "ActivityLog:Stops.Updated": "{0}, {1} kimlikli durağı güncelledi.",

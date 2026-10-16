@@ -15,7 +15,6 @@ namespace Byd.GtfsManagement.Mappers.Feeds;
 public partial class FeedMapper
 {
     public partial UploadFeedDto Map(ImportFeedDto input, string fileName, byte[] data);
-    public partial UploadFeedDto Map(CreateDraftFeedDto input, string fileName, byte[] data);
     [MapperIgnoreTarget(nameof(FeedCreateModel.SourceType))]
     public partial FeedCreateModel Map(UploadFeedDto input, string? sourceUrl);
     public partial UploadStoredFileDto Map(UploadFeedDto input, Guid externalId, Guid categoryId);

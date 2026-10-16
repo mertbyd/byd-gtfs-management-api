@@ -14,7 +14,6 @@ public interface IFeedAppService : IApplicationService
 {
     Task<FeedDetailDto> UploadAsync(UploadFeedDto input, CancellationToken cancellationToken = default);
     Task<FeedDetailDto> ImportFromSourceAsync(ImportFeedDto input, CancellationToken cancellationToken = default);
-    Task<FeedDetailDto> CreateDraftAsync(Guid id, CreateDraftFeedDto input, CancellationToken cancellationToken = default);
     Task<FeedDetailDto> GetAsync(Guid id, CancellationToken cancellationToken = default);
     Task<FeedDetailDto> GetIncludingInactiveAsync(Guid id, CancellationToken cancellationToken = default);
     Task<PagedResultDto<FeedDto>> GetFilteredListAsync(

@@ -85,15 +85,6 @@ public class FeedManager(
             : feed;
     }
 
-    public virtual async Task<Feed> EnsureDraftSourceAsync(Guid id,
-        CancellationToken cancellationToken = default)
-    {
-        var feed = await EnsureExistsIncludingInactiveInScopeAsync(id, cancellationToken);
-        if (!feed.IsActive || feed.Status != FeedStatus.Integrated)
-            throw new BusinessException(FeedExceptionCodes.StatusTransitionInvalid);
-        return feed;
-    }
-
     public virtual async Task<string> GetSourceUrlAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var feed = await EnsureExistsIncludingInactiveInScopeAsync(id, cancellationToken);

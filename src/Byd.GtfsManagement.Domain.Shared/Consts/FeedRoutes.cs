@@ -14,5 +14,4 @@ public static class FeedRoutes
     public const string ValidationReport = "{id:guid}/validation-report";
     public const string Summary = "{id:guid}/summary";
     public const string ExportGtfs = "{id:guid}/export";
-    public const string Draft = "{id:guid}/draft";
 }

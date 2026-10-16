@@ -41,24 +41,16 @@ public class FeedInputValidationTests
         Assert.True(valid.IsValid);
     }
 
-    [Fact]
-    public void Draft_UsesNameRuleWithoutRequiringUrl()
-    {
-        var validator = new CreateDraftFeedDtoValidator();
-        var invalid = validator.Validate(new CreateDraftFeedDto { Name = "fnvkdfnbjsdnbbjksndkb" });
-        var unnamed = validator.Validate(new CreateDraftFeedDto());
-
-        Assert.Contains(invalid.Errors, error => error.ErrorCode == FeedExceptionCodes.NameInvalid);
-        Assert.True(unnamed.IsValid);
-    }
-
     [Theory]
     [InlineData("İzmir Büyükşehir Belediyesi")]
     [InlineData("TCDD 2026 - Marmaray")]
     [InlineData("GTFS")]
     public void Name_AllowsNormalTransitNames(string name)
     {
-        var result = new CreateDraftFeedDtoValidator().Validate(new CreateDraftFeedDto { Name = name });
+        var result = new UploadFeedDtoValidator().Validate(new UploadFeedDto
+        {
+            Name = name, FileName = "schedule.zip", Data = [1]
+        });
 
         Assert.True(result.IsValid);
     }
@@ -69,7 +61,10 @@ public class FeedInputValidationTests
     [InlineData("ab😀")]
     public void Name_RejectsInvalidCharactersOrMissingLetters(string name)
     {
-        var result = new CreateDraftFeedDtoValidator().Validate(new CreateDraftFeedDto { Name = name });
+        var result = new UploadFeedDtoValidator().Validate(new UploadFeedDto
+        {
+            Name = name, FileName = "schedule.zip", Data = [1]
+        });
 
         Assert.Contains(result.Errors, error => error.ErrorCode == FeedExceptionCodes.NameInvalid);
     }

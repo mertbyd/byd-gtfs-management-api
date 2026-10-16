@@ -26,7 +26,7 @@ using Xunit;
 
 namespace Byd.GtfsManagement.Managers.Feeds;
 
-// islevi: Yayin seciminin surum duzenleme ve taslak kurallarini korudugunu sinar.
+// islevi: Yayin seciminin surum duzenleme ve dogrulama kurallarini korudugunu sinar.
 // sistemdeki gorevi: Aktiflik satirlardan kaldirildiginda eski surumun yanlislikla degistirilmesini engelleyen regresyonlari yakalar.
 public class FeedManagerTests
 {
@@ -105,19 +105,6 @@ public class FeedManagerTests
         var exception = await Assert.ThrowsAsync<BusinessException>(() => manager.EnsureEditableAsync(version.Id));
 
         Assert.Equal(FeedExceptionCodes.NotIntegrated, exception.Code);
-    }
-
-    // Taslak yalniz Feed'in secili ve entegre surumunden kopyalanir.
-    [Fact]
-    public async Task EnsureDraftSourceAsync_RejectsUnselectedVersion()
-    {
-        var version = CreateVersion(FeedStatus.Integrated, selected: false);
-        var manager = CreateManager(version);
-
-        var exception = await Assert.ThrowsAsync<BusinessException>(() =>
-            manager.EnsureDraftSourceAsync(version.Id));
-
-        Assert.Equal(FeedExceptionCodes.StatusTransitionInvalid, exception.Code);
     }
 
     // Basarili dogrulama entegrasyonu kuyruga alir ve eski hata kodunu temizler.

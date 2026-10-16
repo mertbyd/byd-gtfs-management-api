@@ -56,17 +56,6 @@ public class FeedController : GtfsManagementController
         [FromBody] ImportFeedDto input, CancellationToken cancellationToken = default)
         => await AppService.ImportFromSourceAsync(input, cancellationToken);
 
-    /// <summary>Aktif Feed'in guncel verilerinden pasif bir taslak olusturur.</summary>
-    /// <param name="id">Kopyalanacak aktif Feed kimligi.</param>
-    /// <param name="input">Yeni taslagin opsiyonel adi.</param>
-    /// <param name="cancellationToken">Istek iptal belirteci.</param>
-    /// <remarks>Response value yeni Feed kimligini, durumunu ve dogrulama raporunu tasir. Taslak arka planda entegre edilir ve ayrica aktifleştirilir.</remarks>
-    [HttpPost(FeedRoutes.Draft)]
-    [Authorize(GtfsManagementPermissions.Feeds.Manage)]
-    public virtual async Task<Result<FeedDetailDto>> CreateDraftAsync(
-        Guid id, [FromBody] CreateDraftFeedDto input, CancellationToken cancellationToken = default)
-        => await AppService.CreateDraftAsync(id, input, cancellationToken);
-
     /// <summary>Aktif Feed'i istegin kapsaminda getirir.</summary>
     /// <param name="id">Okunacak Feed kimligi.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>

@@ -56,10 +56,11 @@ public abstract class GtfsCrudAppServiceBase<
     {
         await Validator<TCreateDto>().ValidateAndThrowAsync(input, cancellationToken);
         var entity = await Manager.CreateAsync(Mapper.Map(input), cancellationToken);
-        await FeedManager.EnsureEditableAsync(entity.FeedId, cancellationToken);
+        var feed = await FeedManager.EnsureEditableAsync(entity.FeedId, cancellationToken);
         await FeedValidator.ValidateAsync(
             () => Repository.InsertAsync(entity, autoSave: true, cancellationToken: cancellationToken),
             saved => saved.FeedId, cancellationToken);
+        await PublishFeedChangedAsync(feed);
         return Mapper.Map(entity);
     }
 

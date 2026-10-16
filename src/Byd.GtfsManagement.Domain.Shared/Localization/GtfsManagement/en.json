@@ -421,7 +421,6 @@
     "GtfsManagement:350012": "The selected version does not belong to this feed.",
     "GtfsManagement:350013": "A feed with versions cannot be deleted.",
     "GtfsManagement:010022": "Select a GTFS feed.",
-    "GtfsManagement:010023": "A draft must belong to the source version's feed.",
     "ActivityLog:Agencies.Updated": "{0} updated the agency {1}.",
     "ActivityLog:Agencies.Deleted": "{0} deleted the agency {1}.",
     "ActivityLog:Stops.Updated": "{0} updated the stop {1}.",
