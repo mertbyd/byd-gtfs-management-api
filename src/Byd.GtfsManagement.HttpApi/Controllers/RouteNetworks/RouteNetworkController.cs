@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.RouteNetworks;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.RouteNetworks;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -81,6 +84,9 @@ public class RouteNetworkController : GtfsManagementController
     /// </remarks>
     [HttpPut(RouteNetworkRoutes.ById)]
     [Authorize(GtfsManagementPermissions.RouteNetworks.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.RouteNetworksUpdated,
+        ActivityKind.Updated, nameof(RouteNetworkDto.Id))]
     public virtual async Task<Result<RouteNetworkDto>> UpdateAsync(
         Guid id, [FromBody] UpdateRouteNetworkDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -91,6 +97,9 @@ public class RouteNetworkController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(RouteNetworkRoutes.ById)]
     [Authorize(GtfsManagementPermissions.RouteNetworks.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.RouteNetworksDeleted,
+        ActivityKind.Deleted, nameof(RouteNetworkDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

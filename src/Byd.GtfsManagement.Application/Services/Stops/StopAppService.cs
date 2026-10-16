@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Byd.CoreExtensions.Attributes;
+using Byd.CoreExtensions.Querying;
+using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Interfaces;
 using FluentValidation;
 using Byd.GtfsManagement.Dtos.StopTimes;
@@ -11,6 +15,7 @@ using Byd.GtfsManagement.Interfaces.Stops;
 using Byd.GtfsManagement.Managers.Stops;
 using Byd.GtfsManagement.Mappers.Stops;
 using Byd.GtfsManagement.Models.Stops;
+using Volo.Abp.Application.Dtos;
 
 namespace Byd.GtfsManagement.Services.Stops;
 
@@ -21,15 +26,29 @@ public class StopAppService
         Stop, CreateStopDto, UpdateStopDto, StopDto, StopFilter,
         StopCreateModel, StopUpdateModel, StopManager, IStopRepository, StopMapper, StopImportDto>, IStopAppService
 {
+    private IStopRepository StopRepository => LazyGetRequiredService<IStopRepository>();
+
+    // Liste girdisini dogrular ve filtreyi organizasyonun aktif Feed durak indeksinde calistirir.
+    public virtual async Task<PagedResultDto<StopDto>> SearchAsync(
+        DataTableListInput<StopFilter> input, CancellationToken cancellationToken = default)
+    {
+        await Validator<DataTableListInput<StopFilter>>().ValidateAndThrowAsync(input, cancellationToken);
+        var result = await StopRepository.SearchAsync(input, cancellationToken);
+        return new PagedResultDto<StopDto>(result.TotalCount, result.Items.Select(Mapper.Map).ToList());
+    }
+
     // Verilen ya da aktif Feed'in duraklarini harita icin getirir.
+    [CachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<List<StopDto>> GetMapAsync(Guid? feedId, CancellationToken cancellationToken = default)
         => Mapper.Map(await Manager.GetMapAsync(feedId, cancellationToken));
 
     // Duragi alt peronlari, ugrayan guzergahlari, pathway ve transfer kayitlariyla getirir.
+    [CachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<StopDetailDto> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
         => Mapper.Map(await Manager.GetDetailAsync(id, cancellationToken));
 
     // Kalkis girdisini dogrular ve duraktan servis gunundeki kalkislari getirir.
+    [CachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<List<StopDepartureDto>> GetDeparturesAsync(
         Guid id, StopDepartureInputDto input, CancellationToken cancellationToken = default)
     {

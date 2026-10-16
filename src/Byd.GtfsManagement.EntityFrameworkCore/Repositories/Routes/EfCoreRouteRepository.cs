@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Byd.CoreExtensions.Models.Elasticsearch;
 using Byd.CoreExtensions.Querying;
 using Byd.CoreExtensions.Repositories;
+using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Entities.Routes;
 using Byd.GtfsManagement.Entities.StopTimes;
 using Byd.GtfsManagement.Interfaces.Routes;
@@ -52,4 +54,15 @@ public class EfCoreRouteRepository(IDbContextProvider<GtfsManagementDbContext> d
             .OrderBy(route => route.SortOrder).ThenBy(route => route.ShortName).ThenBy(route => route.LongName)
             .ToListAsync(cancellationToken);
     }
+
+    // Guzergah aramasini organizasyonun guzergah indeksinde calistirir.
+    public virtual Task<ElasticsearchSearchResult<Route>> SearchAsync<TFiltering>(
+        IDataTablePagingProperty<TFiltering> pagingProperty,
+        CancellationToken cancellationToken = default)
+        where TFiltering : class
+        => SearchInIndexAsync(RouteConsts.SearchIndexName, pagingProperty, cancellationToken);
+
+    // Organizasyonun guzergah indeksini Feed'in guzergahlariyla yeniden doldurur.
+    public virtual Task ReplaceSearchIndexAsync(Guid feedId, CancellationToken cancellationToken = default)
+        => ReplaceIndexAsync(RouteConsts.SearchIndexName, feedId, cancellationToken);
 }

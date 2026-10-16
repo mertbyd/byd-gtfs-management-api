@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.FareAttributes;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.FareAttributes;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -88,6 +91,9 @@ public class FareAttributeController : GtfsManagementController
     /// </remarks>
     [HttpPut(FareAttributeRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareAttributes.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareAttributesUpdated,
+        ActivityKind.Updated, nameof(FareAttributeDto.Id))]
     public virtual async Task<Result<FareAttributeDto>> UpdateAsync(
         Guid id, [FromBody] UpdateFareAttributeDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -98,6 +104,9 @@ public class FareAttributeController : GtfsManagementController
     /// <remarks>Govde dondurmez; ucret kaydi kalici olarak silinir.</remarks>
     [HttpDelete(FareAttributeRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareAttributes.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareAttributesDeleted,
+        ActivityKind.Deleted, nameof(FareAttributeDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

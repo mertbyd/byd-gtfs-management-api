@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Byd.CoreExtensions.Models.Elasticsearch;
 using Byd.CoreExtensions.Querying;
 using Byd.CoreExtensions.Repositories;
 using Byd.GtfsManagement.Consts;
@@ -52,4 +53,15 @@ public class EfCoreStopRepository(IDbContextProvider<GtfsManagementDbContext> db
                 Longitude = stop.Longitude
             })
             .ToListAsync(cancellationToken);
+
+    // Durak aramasini organizasyonun durak indeksinde calistirir.
+    public virtual Task<ElasticsearchSearchResult<Stop>> SearchAsync<TFiltering>(
+        IDataTablePagingProperty<TFiltering> pagingProperty,
+        CancellationToken cancellationToken = default)
+        where TFiltering : class
+        => SearchInIndexAsync(StopConsts.SearchIndexName, pagingProperty, cancellationToken);
+
+    // Organizasyonun durak indeksini Feed'in duraklariyla yeniden doldurur.
+    public virtual Task ReplaceSearchIndexAsync(Guid feedId, CancellationToken cancellationToken = default)
+        => ReplaceIndexAsync(StopConsts.SearchIndexName, feedId, cancellationToken);
 }

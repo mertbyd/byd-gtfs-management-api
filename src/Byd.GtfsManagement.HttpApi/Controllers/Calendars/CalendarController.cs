@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Calendars;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Calendars;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -73,6 +76,9 @@ public class CalendarController : GtfsManagementController
     /// </remarks>
     [HttpPut(CalendarRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Calendars.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.CalendarsUpdated,
+        ActivityKind.Updated, nameof(CalendarDto.Id))]
     public virtual async Task<Result<CalendarDto>> UpdateAsync(
         Guid id, [FromBody] UpdateCalendarDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -85,6 +91,9 @@ public class CalendarController : GtfsManagementController
     /// </remarks>
     [HttpDelete(CalendarRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Calendars.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.CalendarsDeleted,
+        ActivityKind.Deleted, nameof(CalendarDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

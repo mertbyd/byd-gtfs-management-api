@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.LocationGroupStops;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.LocationGroupStops;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -81,6 +84,9 @@ public class LocationGroupStopController : GtfsManagementController
     /// </remarks>
     [HttpPut(LocationGroupStopRoutes.ById)]
     [Authorize(GtfsManagementPermissions.LocationGroupStops.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.LocationGroupStopsUpdated,
+        ActivityKind.Updated, nameof(LocationGroupStopDto.Id))]
     public virtual async Task<Result<LocationGroupStopDto>> UpdateAsync(
         Guid id, [FromBody] UpdateLocationGroupStopDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -91,6 +97,9 @@ public class LocationGroupStopController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(LocationGroupStopRoutes.ById)]
     [Authorize(GtfsManagementPermissions.LocationGroupStops.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.LocationGroupStopsDeleted,
+        ActivityKind.Deleted, nameof(LocationGroupStopDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

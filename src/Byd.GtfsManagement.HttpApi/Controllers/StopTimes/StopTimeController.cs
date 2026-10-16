@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.StopTimes;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.StopTimes;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -96,6 +99,9 @@ public class StopTimeController : GtfsManagementController
     /// </remarks>
     [HttpPut(StopTimeRoutes.ById)]
     [Authorize(GtfsManagementPermissions.StopTimes.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.StopTimesUpdated,
+        ActivityKind.Updated, nameof(StopTimeDto.Id))]
     public virtual async Task<Result<StopTimeDto>> UpdateAsync(
         Guid id, [FromBody] UpdateStopTimeDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -106,6 +112,9 @@ public class StopTimeController : GtfsManagementController
     /// <remarks>Govde dondurmez; kayit kalici olarak silinir.</remarks>
     [HttpDelete(StopTimeRoutes.ById)]
     [Authorize(GtfsManagementPermissions.StopTimes.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.StopTimesDeleted,
+        ActivityKind.Deleted, nameof(StopTimeDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.BookingRules;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.BookingRules;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -102,6 +105,9 @@ public class BookingRuleController : GtfsManagementController
     /// </remarks>
     [HttpPut(BookingRuleRoutes.ById)]
     [Authorize(GtfsManagementPermissions.BookingRules.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.BookingRulesUpdated,
+        ActivityKind.Updated, nameof(BookingRuleDto.Id))]
     public virtual async Task<Result<BookingRuleDto>> UpdateAsync(
         Guid id, [FromBody] UpdateBookingRuleDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -112,6 +118,9 @@ public class BookingRuleController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(BookingRuleRoutes.ById)]
     [Authorize(GtfsManagementPermissions.BookingRules.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.BookingRulesDeleted,
+        ActivityKind.Deleted, nameof(BookingRuleDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

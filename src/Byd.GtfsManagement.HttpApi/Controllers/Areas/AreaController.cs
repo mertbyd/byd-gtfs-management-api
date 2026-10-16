@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Areas;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Areas;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -81,6 +84,9 @@ public class AreaController : GtfsManagementController
     /// </remarks>
     [HttpPut(AreaRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Areas.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.AreasUpdated,
+        ActivityKind.Updated, nameof(AreaDto.Id))]
     public virtual async Task<Result<AreaDto>> UpdateAsync(
         Guid id, [FromBody] UpdateAreaDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -91,6 +97,9 @@ public class AreaController : GtfsManagementController
     /// <remarks>Govde dondurmez; bolge kaydi kalici olarak silinir.</remarks>
     [HttpDelete(AreaRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Areas.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.AreasDeleted,
+        ActivityKind.Deleted, nameof(AreaDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

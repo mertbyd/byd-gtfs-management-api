@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Pathways;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Pathways;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -91,6 +94,9 @@ public class PathwayController : GtfsManagementController
     /// </remarks>
     [HttpPut(PathwayRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Pathways.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.PathwaysUpdated,
+        ActivityKind.Updated, nameof(PathwayDto.Id))]
     public virtual async Task<Result<PathwayDto>> UpdateAsync(
         Guid id, [FromBody] UpdatePathwayDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -101,6 +107,9 @@ public class PathwayController : GtfsManagementController
     /// <remarks>Govde dondurmez; yuruyus yolu kaydi kalici olarak silinir.</remarks>
     [HttpDelete(PathwayRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Pathways.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.PathwaysDeleted,
+        ActivityKind.Deleted, nameof(PathwayDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

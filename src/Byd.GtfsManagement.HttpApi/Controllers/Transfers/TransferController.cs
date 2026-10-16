@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Transfers;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Transfers;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -90,6 +93,9 @@ public class TransferController : GtfsManagementController
     /// </remarks>
     [HttpPut(TransferRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Transfers.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.TransfersUpdated,
+        ActivityKind.Updated, nameof(TransferDto.Id))]
     public virtual async Task<Result<TransferDto>> UpdateAsync(
         Guid id, [FromBody] UpdateTransferDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -100,6 +106,9 @@ public class TransferController : GtfsManagementController
     /// <remarks>Govde dondurmez; aktarma kaydi kalici olarak silinir.</remarks>
     [HttpDelete(TransferRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Transfers.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.TransfersDeleted,
+        ActivityKind.Deleted, nameof(TransferDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

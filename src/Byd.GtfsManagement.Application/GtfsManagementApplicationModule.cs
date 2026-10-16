@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Byd.FileManagement;
 using Byd.GtfsManagement.Workers.Feeds;
 using Byd.LogManagement;
 using Volo.Abp;
@@ -19,7 +18,6 @@ namespace Byd.GtfsManagement;
     typeof(GtfsManagementApplicationContractsModule),
     typeof(AbpDddApplicationModule),
     typeof(AbpMapperlyModule),
-    typeof(FileManagementApplicationModule),
     typeof(LogManagementApplicationModule)
     )]
 public class GtfsManagementApplicationModule : AbpModule

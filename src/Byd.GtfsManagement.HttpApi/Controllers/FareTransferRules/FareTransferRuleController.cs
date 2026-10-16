@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.FareTransferRules;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.FareTransferRules;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -89,6 +92,9 @@ public class FareTransferRuleController : GtfsManagementController
     /// </remarks>
     [HttpPut(FareTransferRuleRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareTransferRules.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareTransferRulesUpdated,
+        ActivityKind.Updated, nameof(FareTransferRuleDto.Id))]
     public virtual async Task<Result<FareTransferRuleDto>> UpdateAsync(
         Guid id, [FromBody] UpdateFareTransferRuleDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -99,6 +105,9 @@ public class FareTransferRuleController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(FareTransferRuleRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareTransferRules.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareTransferRulesDeleted,
+        ActivityKind.Deleted, nameof(FareTransferRuleDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

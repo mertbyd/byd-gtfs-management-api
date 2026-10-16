@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Agencies;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Agencies;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -84,6 +87,9 @@ public class AgencyController : GtfsManagementController
     /// </remarks>
     [HttpPut(AgencyRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Agencies.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.AgenciesUpdated,
+        ActivityKind.Updated, nameof(AgencyDto.Id))]
     public virtual async Task<Result<AgencyDto>> UpdateAsync(
         Guid id, [FromBody] UpdateAgencyDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -96,6 +102,9 @@ public class AgencyController : GtfsManagementController
     /// </remarks>
     [HttpDelete(AgencyRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Agencies.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.AgenciesDeleted,
+        ActivityKind.Deleted, nameof(AgencyDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

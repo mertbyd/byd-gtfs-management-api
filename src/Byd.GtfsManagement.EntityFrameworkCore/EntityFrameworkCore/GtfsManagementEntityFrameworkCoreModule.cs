@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Byd.AuthManagement.EntityFrameworkCore;
-using Byd.FileManagement.EntityFrameworkCore;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.GtfsDownloader;
 using Byd.GtfsManagement.Interfaces.Feeds;
@@ -16,7 +15,6 @@ namespace Byd.GtfsManagement.EntityFrameworkCore;
     typeof(GtfsManagementDomainModule),
     typeof(AbpEntityFrameworkCoreModule),
     typeof(AuthManagementEntityFrameworkCoreModule),
-    typeof(FileManagementEntityFrameworkCoreModule),
     typeof(LogManagementApplicationModule)
 )]
 public class GtfsManagementEntityFrameworkCoreModule : AbpModule

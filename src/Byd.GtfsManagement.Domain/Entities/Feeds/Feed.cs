@@ -8,8 +8,9 @@ using Volo.Abp.MultiTenancy;
 namespace Byd.GtfsManagement.Entities.Feeds;
 
 // islevi: Bir organizasyonun GTFS arsivini, kaynagini ve islem durumunu saklar.
-// sistemdeki gorevi: GTFS satirlarinin kapsam ve surum kokudur; is kurallari FeedManager'dadir.
-public class Feed : AuditedAggregateRoot<Guid>, IMultiTenant, IMultiOrganization
+// sistemdeki gorevi: GTFS satirlarinin kapsam ve surum kokudur; is kurallari FeedManager'dadir. Degistiginde yayindaki
+// veriyi okuyan uclarin onbellegi temizlenir.
+public class Feed : AuditedAggregateRoot<Guid>, IMultiTenant, IMultiOrganization, ICachedResponseSource
 {
     // Arsivin ait oldugu tenant.
     public Guid? TenantId { get; internal set; }

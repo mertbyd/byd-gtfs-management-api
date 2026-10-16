@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.FareMedias;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.FareMedias;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -83,6 +86,9 @@ public class FareMediaController : GtfsManagementController
     /// </remarks>
     [HttpPut(FareMediaRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareMedias.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareMediasUpdated,
+        ActivityKind.Updated, nameof(FareMediaDto.Id))]
     public virtual async Task<Result<FareMediaDto>> UpdateAsync(
         Guid id, [FromBody] UpdateFareMediaDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -93,6 +99,9 @@ public class FareMediaController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(FareMediaRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareMedias.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareMediasDeleted,
+        ActivityKind.Deleted, nameof(FareMediaDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

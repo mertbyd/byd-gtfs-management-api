@@ -7,6 +7,9 @@ public static class FeedConsts
     public const int MaxNameLength = 200;
     public const int MaxNameWordLength = 20;
     public const string TableName = "Feeds";
+    // Yayindaki Feed verisini okuyan uclarin yanit onbellegi grubu; Feed entity'sinin tip adidir, Feed degisince bu gruptaki
+    // yanitlar silinir.
+    public const string ResponseCacheGroup = "Feed";
     public const string ScopeNameIndex = "IX_Feeds_Tenant_Organization_Name";
     public const string ActiveOrganizationIndex = "IX_Feeds_Tenant_Organization_Active";
     public const string ValidationReportColumnType = "jsonb";

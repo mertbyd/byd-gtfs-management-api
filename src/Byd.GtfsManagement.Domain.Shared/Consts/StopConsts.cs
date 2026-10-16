@@ -8,6 +8,9 @@ public static class StopConsts
     public const string GtfsStopIdIndex = "IX_Stops_Feed_GtfsStopId";
     public const string ParentStationIndex = "IX_Stops_ParentStationId";
 
+    // Aktif Feed duraklarinin arama indeksi; tablonun sema ve adini izler.
+    public const string SearchIndexName = "gtfs_management_stops";
+
     public const int MaxGtfsStopIdLength = 100;
     public const int MaxCodeLength = 100;
     public const int MaxNameLength = 200;

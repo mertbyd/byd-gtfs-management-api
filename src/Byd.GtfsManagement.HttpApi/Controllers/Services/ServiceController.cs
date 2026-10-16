@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Services;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Services;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -73,6 +76,9 @@ public class ServiceController : GtfsManagementController
     /// </remarks>
     [HttpPut(ServiceRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Services.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.ServicesUpdated,
+        ActivityKind.Updated, nameof(ServiceDto.Id))]
     public virtual async Task<Result<ServiceDto>> UpdateAsync(
         Guid id, [FromBody] UpdateServiceDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -85,6 +91,9 @@ public class ServiceController : GtfsManagementController
     /// </remarks>
     [HttpDelete(ServiceRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Services.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.ServicesDeleted,
+        ActivityKind.Deleted, nameof(ServiceDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

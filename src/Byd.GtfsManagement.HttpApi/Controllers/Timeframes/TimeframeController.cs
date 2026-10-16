@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Timeframes;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Timeframes;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -84,6 +87,9 @@ public class TimeframeController : GtfsManagementController
     /// </remarks>
     [HttpPut(TimeframeRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Timeframes.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.TimeframesUpdated,
+        ActivityKind.Updated, nameof(TimeframeDto.Id))]
     public virtual async Task<Result<TimeframeDto>> UpdateAsync(
         Guid id, [FromBody] UpdateTimeframeDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -94,6 +100,9 @@ public class TimeframeController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(TimeframeRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Timeframes.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.TimeframesDeleted,
+        ActivityKind.Deleted, nameof(TimeframeDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

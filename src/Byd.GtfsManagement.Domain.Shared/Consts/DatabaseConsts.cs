@@ -6,4 +6,7 @@ public static class DatabaseConsts
 {
     // GTFS modulunun kendi tablolarinin yazildigi sema.
     public const string ModuleSchema = "gtfs_management";
+
+    // Arama indeksi adini organizasyon kimliginden ayiran karakter; her organizasyonun aktif Feed'i kendi indeksindedir.
+    public const char SearchIndexOrganizationSeparator = '-';
 }

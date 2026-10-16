@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Routes;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Routes;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -75,6 +78,24 @@ public class RouteController : GtfsManagementController
         [FromQuery] DataTableListInput<RouteFilter> input, CancellationToken cancellationToken = default)
         => await AppService.GetFilteredListAsync(input, cancellationToken);
 
+    /// <summary>Organizasyonun aktif GTFS Feed'indeki guzergahlari arama indeksinden getirir.</summary>
+    /// <param name="input">Guzergah filtre, siralama ve sayfalama bilgileri.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>
+    /// Request filtreli liste ucuyla aynidir. Metin alanlarinda contains ve notContains buyuk/kucuk harf duyarsizdir;
+    /// match kelime bazli, fuzzy yazim hatasina toleransli arar (ornegin ShortName { Operator: "fuzzy", Value: "kizilay" }).
+    /// Siralama verilmezse sonuclar eslesme skoruna gore gelir.
+    /// Response { TotalCount (long) → Eslesen toplam guzergah; Items (RouteDto[]) → Sayfadaki guzergahlar ajans ve lookup
+    /// adlariyla }
+    /// Indeks Feed aktiflestiginde yeniden dolar; taslak ve gecmis surumler aranmaz. Organizasyonun henuz aktif Feed'i
+    /// yoksa toplam sayi sifir ve liste bos doner. Bu endpoint kayit yazmaz.
+    /// </remarks>
+    [HttpGet(RouteRoutes.Search)]
+    [Authorize(GtfsManagementPermissions.Routes.View)]
+    public virtual async Task<Result<PagedResultDto<RouteDto>>> SearchAsync(
+        [FromQuery] DataTableListInput<RouteFilter> input, CancellationToken cancellationToken = default)
+        => await AppService.SearchAsync(input, cancellationToken);
+
     /// <summary>Kimligi verilen guzergahin GTFS alanlarini gunceller.</summary>
     /// <param name="id">Guncellenecek Route kaydinin kimligi.</param>
     /// <param name="input">Guzergahin yeni routes.txt alanlari.</param>
@@ -85,6 +106,9 @@ public class RouteController : GtfsManagementController
     /// </remarks>
     [HttpPut(RouteRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Routes.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.RoutesUpdated,
+        ActivityKind.Updated, nameof(RouteDto.Id))]
     public virtual async Task<Result<RouteDto>> UpdateAsync(
         Guid id, [FromBody] UpdateRouteDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -97,6 +121,9 @@ public class RouteController : GtfsManagementController
     /// </remarks>
     [HttpDelete(RouteRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Routes.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.RoutesDeleted,
+        ActivityKind.Deleted, nameof(RouteDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);
