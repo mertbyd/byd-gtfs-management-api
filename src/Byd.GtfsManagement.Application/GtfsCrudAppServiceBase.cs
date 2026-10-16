@@ -54,7 +54,6 @@ public abstract class GtfsCrudAppServiceBase<
     public virtual async Task<TDto> CreateAsync(TCreateDto input, CancellationToken cancellationToken = default)
     {
         await Validator<TCreateDto>().ValidateAndThrowAsync(input, cancellationToken);
-        using var draftWrite = DataFilter.Disable<ActiveFeedFilter>();
         var entity = await Manager.CreateAsync(Mapper.Map(input), cancellationToken);
         await FeedManager.EnsureEditableAsync(entity.FeedId, cancellationToken);
         await FeedValidator.ValidateAsync(
@@ -107,7 +106,6 @@ public abstract class GtfsCrudAppServiceBase<
         Guid id, TUpdateDto input, CancellationToken cancellationToken = default)
     {
         await Validator<TUpdateDto>().ValidateAndThrowAsync(input, cancellationToken);
-        using var draftWrite = DataFilter.Disable<ActiveFeedFilter>();
         var entity = await Manager.EnsureExistsInScopeAsync(id, cancellationToken);
         var feed = await FeedManager.EnsureEditableAsync(entity.FeedId, cancellationToken);
         await FeedValidator.ValidateAsync(async () =>
@@ -124,7 +122,6 @@ public abstract class GtfsCrudAppServiceBase<
     // onbellegini temizler.
     public virtual async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        using var draftWrite = DataFilter.Disable<ActiveFeedFilter>();
         var entity = await Manager.EnsureExistsInScopeAsync(id, cancellationToken);
         var feed = await FeedManager.EnsureEditableAsync(entity.FeedId, cancellationToken);
         await Manager.EnsureCanDeleteAsync(entity, cancellationToken);
