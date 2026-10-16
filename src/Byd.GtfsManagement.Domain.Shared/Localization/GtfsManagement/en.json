@@ -126,6 +126,7 @@
     "GtfsManagement:010020": "This GTFS feed has validation errors and cannot be activated.",
     "GtfsManagement:010021": "Only the active GTFS feed can be edited.",
     "GtfsManagement:010028": "The organization has no active GTFS feed; activate a feed before adding records.",
+    "GtfsManagement:010029": "The change was not saved because GTFS validation reported {errorCount} errors.",
     "GtfsManagement:020002": "Agency id is too long.",
     "GtfsManagement:020003": "Agency name is required.",
     "GtfsManagement:020004": "Agency name is too long.",

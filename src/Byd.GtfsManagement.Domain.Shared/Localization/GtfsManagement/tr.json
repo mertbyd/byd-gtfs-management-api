@@ -126,6 +126,7 @@
     "GtfsManagement:010020": "Bu GTFS veri setinde doğrulama hataları var; aktifleştirilemez.",
     "GtfsManagement:010021": "Yalnızca aktif GTFS veri seti düzenlenebilir.",
     "GtfsManagement:010028": "Organizasyonun aktif GTFS veri seti yok; kayıt eklemek için önce bir veri setini aktifleştirin.",
+    "GtfsManagement:010029": "Değişiklik GTFS doğrulamasında {errorCount} hata ürettiği için kaydedilmedi.",
     "GtfsManagement:020002": "Ajans kimliği çok uzun.",
     "GtfsManagement:020003": "Ajans adı gerekli.",
     "GtfsManagement:020004": "Ajans adı çok uzun.",

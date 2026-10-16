@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -7,6 +8,7 @@ using NSubstitute;
 using NSubstitute.Extensions;
 using Byd.CoreExtensions.Interfaces;
 using Byd.FileManagement.Managers.FileCategories;
+using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Entities.Feeds;
 using Byd.GtfsManagement.ExceptionCodes;
 using Byd.GtfsManagement.Extensions.Feeds;
@@ -158,6 +160,22 @@ public class FeedManagerTests
         manager.SetValidationReport(version, new FeedValidationReportModel());
 
         Assert.Equal(FeedStatus.Integrated, version.Status);
+    }
+
+    // Aktarilmis Feed'de dogrulamada hata cikaran degisiklik reddedilir; eski rapor yerinde kalir ve hatalar istemciye doner.
+    [Fact]
+    public void SetValidationReport_RejectsIntegratedChangeWithErrors()
+    {
+        var version = CreateVersion(FeedStatus.Integrated, selected: true);
+        var manager = CreateManager(version);
+        var errors = new List<FeedValidationNoticeModel> { new() { Code = "foreign_key_violation", TotalNotices = 2 } };
+
+        var exception = Assert.Throws<BusinessException>(() =>
+            manager.SetValidationReport(version, new FeedValidationReportModel { Errors = errors }));
+
+        Assert.Equal(FeedExceptionCodes.ChangeRejectedByValidation, exception.Code);
+        Assert.Same(errors, exception.Data[FeedConsts.ErrorsDataKey]);
+        Assert.Null(version.ValidationReport);
     }
 
     // Her durumdan Integrated atamaya izin verilmez; hatali olay sirasi gorunur kalir.

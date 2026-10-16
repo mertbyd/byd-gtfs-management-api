@@ -33,6 +33,9 @@ public static class FeedConsts
     public const string FieldDataKey = "field";
     public const string LookupDataKey = "lookup";
     public const string CodeDataKey = "code";
+    // Dogrulamada hata urettigi icin kaydedilmeyen degisikligin hata sayisini ve hata kayitlarini tasiyan anahtarlar.
+    public const string ErrorCountDataKey = "errorCount";
+    public const string ErrorsDataKey = "errors";
     // GTFS CSV'lerinde mantiksal degerlerin yazimi.
     public const string BooleanTrueValue = "1";
     public const string BooleanFalseValue = "0";

@@ -32,4 +32,5 @@ public static class FeedExceptionCodes
     public const string NameInvalid = GtfsManagementErrorCodes.FeedGroup + "0026";
     public const string SourceUrlInvalid = GtfsManagementErrorCodes.FeedGroup + "0027";
     public const string ActiveFeedRequired = GtfsManagementErrorCodes.FeedGroup + "0028";
+    public const string ChangeRejectedByValidation = GtfsManagementErrorCodes.FeedGroup + "0029";
 }

@@ -25,7 +25,8 @@ namespace Byd.GtfsManagement;
 // islevi: Feed kapsamli GTFS kayitlarinin olustur, oku, listele, guncelle ve sil akisini tek yerde yurutur; kalici her
 // degisiklikten sonra Feed'in GTFS verisini yeniden dogrulatir.
 // sistemdeki gorevi: Ortak CRUD sozlesmesini uygular; tipli repository, Manager ve Mapperly baglarini da merkezde cozerek
-// yaprak servisleri bos tutar. Degisiklik ve rapor ayni islemde yazilir; dogrulayiciya ulasilamazsa degisiklik geri alinir.
+// yaprak servisleri bos tutar. Degisiklik ve rapor ayni islemde yazilir; dogrulama hata bulursa ya da dogrulayiciya
+// ulasilamazsa degisiklik geri alinir.
 public abstract class GtfsCrudAppServiceBase<
     TEntity, TCreateDto, TUpdateDto, TDto, TFilter,
     TCreateModel, TUpdateModel, TManager, TRepository, TMapper>

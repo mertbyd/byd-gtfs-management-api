@@ -134,6 +134,7 @@ public class FeedManager(
     public virtual void SetValidationReport(Feed feed, FeedValidationReportModel report)
     {
         ArgumentNullException.ThrowIfNull(report);
+        EnsureIntegratedDataValid(feed, report);
         feed.ValidationReport = report;
         if (feed.Status != FeedStatus.Integrated)
         {
@@ -182,6 +183,16 @@ public class FeedManager(
     {
         if (CurrentTenant.Id is null || currentOrganization.Id is null)
             throw new BusinessException(FeedExceptionCodes.ScopeRequired);
+    }
+
+    // Aktarilmis Feed'in tablolari yayindaki veridir; dogrulamada hata cikaran degisiklik yazilmaz. Hatalar istemciye doner ve
+    // degisiklik raporla birlikte geri alinir.
+    private static void EnsureIntegratedDataValid(Feed feed, FeedValidationReportModel report)
+    {
+        if (feed.Status == FeedStatus.Integrated && report.Errors.Count > 0)
+            throw new BusinessException(FeedExceptionCodes.ChangeRejectedByValidation)
+                .WithData(FeedConsts.ErrorCountDataKey, report.Errors.Count)
+                .WithData(FeedConsts.ErrorsDataKey, report.Errors);
     }
 
     private static void EnsureStatus(Feed feed, FeedStatus expected)
