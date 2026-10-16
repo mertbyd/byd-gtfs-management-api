@@ -46,10 +46,11 @@ public abstract class GtfsCrudAppServiceBase<
 
     private IGtfsFeedValidator FeedValidator => LazyGetRequiredService<IGtfsFeedValidator>();
     private IDistributedEventBus DistributedEventBus => LazyGetRequiredService<IDistributedEventBus>();
+    private ICachedResponseStore CachedResponseStore => LazyGetRequiredService<ICachedResponseStore>();
     // Girdi tipinin FluentValidation dogrulayicisini kullanim aninda cozer.
     protected IValidator<TInput> Validator<TInput>() => LazyGetRequiredService<IValidator<TInput>>();
 
-    // Girdiyi dogrulayip yeni kaydi olusturur, kalici hale getirir ve Feed'i yeniden dogrulatir.
+    // Girdiyi dogrulayip yeni kaydi olusturur, kalici hale getirir, Feed'i yeniden dogrulatir ve okuma onbellegini temizler.
     public virtual async Task<TDto> CreateAsync(TCreateDto input, CancellationToken cancellationToken = default)
     {
         await Validator<TCreateDto>().ValidateAndThrowAsync(input, cancellationToken);
@@ -59,6 +60,7 @@ public abstract class GtfsCrudAppServiceBase<
         await FeedValidator.ValidateAsync(
             () => Repository.InsertAsync(entity, autoSave: true, cancellationToken: cancellationToken),
             saved => saved.FeedId, cancellationToken);
+        await CachedResponseStore.RemoveGroupAsync(FeedConsts.ResponseCacheGroup, cancellationToken);
         return Mapper.Map(entity);
     }
 
@@ -100,7 +102,7 @@ public abstract class GtfsCrudAppServiceBase<
         return new PagedResultDto<TDto>(totalCount, items);
     }
 
-    // Kapsamdaki kaydin duzenlenebilir alanlarini gunceller ve Feed'i yeniden dogrulatir.
+    // Kapsamdaki kaydin duzenlenebilir alanlarini gunceller, Feed'i yeniden dogrulatir ve okuma onbellegini temizler.
     public virtual async Task<TDto> UpdateAsync(
         Guid id, TUpdateDto input, CancellationToken cancellationToken = default)
     {
@@ -114,10 +116,12 @@ public abstract class GtfsCrudAppServiceBase<
             return await Repository.UpdateAsync(entity, autoSave: true, cancellationToken: cancellationToken);
         }, saved => saved.FeedId, cancellationToken);
         await PublishFeedChangedAsync(feed);
+        await CachedResponseStore.RemoveGroupAsync(FeedConsts.ResponseCacheGroup, cancellationToken);
         return Mapper.Map(entity);
     }
 
-    // Kapsamdaki kaydi, baska GTFS satirlarinca kullanilmiyorsa kalici olarak siler ve Feed'i yeniden dogrulatir.
+    // Kapsamdaki kaydi, baska GTFS satirlarinca kullanilmiyorsa kalici olarak siler, Feed'i yeniden dogrulatir ve okuma
+    // onbellegini temizler.
     public virtual async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         using var draftWrite = DataFilter.Disable<ActiveFeedFilter>();
@@ -130,6 +134,7 @@ public abstract class GtfsCrudAppServiceBase<
             return entity;
         }, deleted => deleted.FeedId, cancellationToken);
         await PublishFeedChangedAsync(feed);
+        await CachedResponseStore.RemoveGroupAsync(FeedConsts.ResponseCacheGroup, cancellationToken);
     }
 
     // Basarili satir degisikligini ayni unit of work icinde diger modullere bildirir.
