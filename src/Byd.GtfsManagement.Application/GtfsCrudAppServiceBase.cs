@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
+using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Interfaces;
 using Byd.CoreExtensions.Querying;
+using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Interfaces;
 using Byd.GtfsManagement.Managers;
 using Byd.GtfsManagement.Mappers;
@@ -61,6 +63,7 @@ public abstract class GtfsCrudAppServiceBase<
     }
 
     // Kaydi kapsam kuralindan gecirerek okur.
+    [CachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<TDto> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => Mapper.Map(await Manager.EnsureExistsInScopeAsync(id, cancellationToken));
 
@@ -86,6 +89,7 @@ public abstract class GtfsCrudAppServiceBase<
     }
 
     // Liste girdisini dogrular, filtreli sayfayi ve toplam sayiyi tek sonuc olarak getirir.
+    [CachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<PagedResultDto<TDto>> GetFilteredListAsync(
         DataTableListInput<TFilter> input, CancellationToken cancellationToken = default)
     {
