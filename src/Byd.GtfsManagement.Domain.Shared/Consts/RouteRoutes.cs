@@ -7,5 +7,6 @@ public static class RouteRoutes
     public const string Root = "api/gtfs-management/routes";
     public const string ById = "{id:guid}";
     public const string FilteredList = "filtered-list";
+    public const string Search = "search";
     public const string Detail = "{id:guid}/detail";
 }

@@ -12,5 +12,4 @@ public static class FareRuleExceptionCodes
     public const string DestinationIdTooLong = GtfsManagementErrorCodes.FareRuleGroup + "0005";
     public const string ContainsIdTooLong = GtfsManagementErrorCodes.FareRuleGroup + "0006";
     public const string RuleAlreadyExists = GtfsManagementErrorCodes.FareRuleGroup + "0007";
-    public const string FeedRequired = GtfsManagementErrorCodes.FareRuleGroup + "0008";
 }

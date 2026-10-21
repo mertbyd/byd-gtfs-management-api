@@ -23,12 +23,12 @@ public class FareRuleManager(
     : GtfsFeedScopedManager<FareRule, FareRuleCreateModel, FareRuleUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni ucret kurali kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni ucret kurali kaydini kurar.
     public override async Task<FareRule> CreateAsync(
         FareRuleCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new FareRule(
             GuidGenerator.Create(), feed.Id, model.FareAttributeId);
         await ApplyAsync(entity, model, cancellationToken);

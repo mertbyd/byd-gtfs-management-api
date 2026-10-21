@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS ucret urunu hata kodlarini tanimlar.</summary>
 public static class FareProductExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.FareProductGroup + "0001";
     public const string FareProductAlreadyExists = GtfsManagementErrorCodes.FareProductGroup + "0002";
     public const string GtfsFareProductIdRequired = GtfsManagementErrorCodes.FareProductGroup + "0003";
     public const string GtfsFareProductIdTooLong = GtfsManagementErrorCodes.FareProductGroup + "0004";

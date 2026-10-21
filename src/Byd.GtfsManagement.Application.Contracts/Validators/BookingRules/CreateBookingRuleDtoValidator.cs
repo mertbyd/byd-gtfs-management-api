@@ -1,17 +1,9 @@
-using FluentValidation;
 using Byd.GtfsManagement.Dtos.BookingRules;
-using Byd.GtfsManagement.ExceptionCodes;
 
 namespace Byd.GtfsManagement.Validators.BookingRules;
 
 // mirastan gelen: booking_rules.txt alanlarinin zorunluluk ve uzunluk kurallari.
-// burada yazilan: yalnizca kaydin yazilacagi Feed'in zorunlulugu.
+// burada yazilan: yok; Feed istekten alinmaz, olusturma ek alan tasimaz.
 public sealed class CreateBookingRuleDtoValidator : BookingRuleInputDtoValidatorBase<CreateBookingRuleDto>
 {
-    // Hedef Feed'in istekte bulunmasini kaydeder.
-    public CreateBookingRuleDtoValidator()
-    {
-        RuleFor(input => input.FeedId)
-            .NotEmpty().WithErrorCode(BookingRuleExceptionCodes.FeedRequired);
-    }
 }

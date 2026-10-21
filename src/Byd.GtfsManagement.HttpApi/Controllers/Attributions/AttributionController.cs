@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Attributions;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Attributions;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,8 +25,8 @@ public class AttributionController : GtfsManagementController
 {
     private IAttributionAppService AppService => LazyGetRequiredService<IAttributionAppService>();
 
-    /// <summary>Bir Feed'e yeni bir atif ekler.</summary>
-    /// <param name="input">Feed, kurum, rol, guzergah, sefer ve iletisim alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir atif ekler.</summary>
+    /// <param name="input">Kurum, rol, guzergah, sefer ve iletisim alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, AgencyId ile AgencyName, RouteId ile RouteName, TripId ile
@@ -89,6 +92,9 @@ public class AttributionController : GtfsManagementController
     /// </remarks>
     [HttpPut(AttributionRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Attributions.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.AttributionsUpdated,
+        ActivityKind.Updated, nameof(AttributionDto.Id))]
     public virtual async Task<Result<AttributionDto>> UpdateAsync(
         Guid id, [FromBody] UpdateAttributionDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -99,6 +105,9 @@ public class AttributionController : GtfsManagementController
     /// <remarks>Govde dondurmez; atif kaydi kalici olarak silinir.</remarks>
     [HttpDelete(AttributionRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Attributions.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.AttributionsDeleted,
+        ActivityKind.Deleted, nameof(AttributionDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

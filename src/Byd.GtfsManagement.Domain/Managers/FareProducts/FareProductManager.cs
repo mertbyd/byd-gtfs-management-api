@@ -17,12 +17,12 @@ public class FareProductManager(
     : GtfsFeedScopedManager<FareProduct, FareProductCreateModel, FareProductUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni ucret urunu kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni ucret urunu kaydini kurar.
     public override async Task<FareProduct> CreateAsync(
         FareProductCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new FareProduct(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsFareProductId), model.Amount, NormalizeRequiredText(model.Currency));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);

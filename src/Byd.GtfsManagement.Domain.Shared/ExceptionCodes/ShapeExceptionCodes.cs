@@ -12,5 +12,4 @@ public static class ShapeExceptionCodes
     public const string SequenceInvalid = GtfsManagementErrorCodes.ShapeGroup + "0005";
     public const string DistTraveledInvalid = GtfsManagementErrorCodes.ShapeGroup + "0006";
     public const string PointAlreadyExists = GtfsManagementErrorCodes.ShapeGroup + "0007";
-    public const string FeedRequired = GtfsManagementErrorCodes.ShapeGroup + "0008";
 }

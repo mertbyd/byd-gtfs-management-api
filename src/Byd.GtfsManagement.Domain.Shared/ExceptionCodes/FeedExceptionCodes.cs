@@ -25,10 +25,12 @@ public static class FeedExceptionCodes
     public const string NotIntegrated = GtfsManagementErrorCodes.FeedGroup + "0018";
     public const string AlreadyActive = GtfsManagementErrorCodes.FeedGroup + "0019";
     public const string ValidationErrorsPresent = GtfsManagementErrorCodes.FeedGroup + "0020";
-    public const string ActiveFeedRequiresDraft = GtfsManagementErrorCodes.FeedGroup + "0021";
+    public const string InactiveFeedNotEditable = GtfsManagementErrorCodes.FeedGroup + "0021";
     public const string FeedRequired = GtfsManagementErrorCodes.FeedGroup + "0022";
     public const string IntegrationUnavailable = GtfsManagementErrorCodes.FeedGroup + "0024";
     public const string ExportUnavailable = GtfsManagementErrorCodes.FeedGroup + "0025";
     public const string NameInvalid = GtfsManagementErrorCodes.FeedGroup + "0026";
     public const string SourceUrlInvalid = GtfsManagementErrorCodes.FeedGroup + "0027";
+    public const string ActiveFeedRequired = GtfsManagementErrorCodes.FeedGroup + "0028";
+    public const string ChangeRejectedByValidation = GtfsManagementErrorCodes.FeedGroup + "0029";
 }

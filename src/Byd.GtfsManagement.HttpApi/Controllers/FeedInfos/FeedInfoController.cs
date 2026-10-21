@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.FeedInfos;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.FeedInfos;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,8 +25,8 @@ public class FeedInfoController : GtfsManagementController
 {
     private IFeedInfoAppService AppService => LazyGetRequiredService<IFeedInfoAppService>();
 
-    /// <summary>Bir Feed'e ait yayimci bilgisini olusturur.</summary>
-    /// <param name="input">Feed, yayimci adi, web adresi, dil ve tarih alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yayimci bilgisini olusturur.</summary>
+    /// <param name="input">Yayimci adi, web adresi, dil ve tarih alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, PublisherName, PublisherUrl, Language, DefaultLanguage,
@@ -87,6 +90,9 @@ public class FeedInfoController : GtfsManagementController
     /// </remarks>
     [HttpPut(FeedInfoRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FeedInfos.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FeedInfosUpdated,
+        ActivityKind.Updated, nameof(FeedInfoDto.Id))]
     public virtual async Task<Result<FeedInfoDto>> UpdateAsync(
         Guid id, [FromBody] UpdateFeedInfoDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -97,6 +103,9 @@ public class FeedInfoController : GtfsManagementController
     /// <remarks>Govde dondurmez; yayimci bilgisi kalici olarak silinir.</remarks>
     [HttpDelete(FeedInfoRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FeedInfos.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FeedInfosDeleted,
+        ActivityKind.Deleted, nameof(FeedInfoDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

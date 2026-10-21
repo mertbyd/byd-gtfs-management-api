@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.RiderCategories;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.RiderCategories;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,13 +25,13 @@ public class RiderCategoryController : GtfsManagementController
 {
     private IRiderCategoryAppService AppService => LazyGetRequiredService<IRiderCategoryAppService>();
 
-    /// <summary>Bir Feed'e yeni bir yolcu kategorisi ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir yolcu kategorisi ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsRiderCategoryId, RiderCategoryName, IsDefaultFareCategory,
-    /// EligibilityUrl ve audit zamanlari alanlarini tasir. Feed istegin tenant kapsaminda degilse kayit
-    /// olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
+    /// EligibilityUrl ve audit zamanlari alanlarini tasir. Organizasyonun aktif Feed'i yoksa kayit olusturulmaz. Bu uc
+    /// baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.RiderCategories.Manage)]
@@ -85,6 +88,9 @@ public class RiderCategoryController : GtfsManagementController
     /// </remarks>
     [HttpPut(RiderCategoryRoutes.ById)]
     [Authorize(GtfsManagementPermissions.RiderCategories.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.RiderCategoriesUpdated,
+        ActivityKind.Updated, nameof(RiderCategoryDto.Id))]
     public virtual async Task<Result<RiderCategoryDto>> UpdateAsync(
         Guid id, [FromBody] UpdateRiderCategoryDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -95,6 +101,9 @@ public class RiderCategoryController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(RiderCategoryRoutes.ById)]
     [Authorize(GtfsManagementPermissions.RiderCategories.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.RiderCategoriesDeleted,
+        ActivityKind.Deleted, nameof(RiderCategoryDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

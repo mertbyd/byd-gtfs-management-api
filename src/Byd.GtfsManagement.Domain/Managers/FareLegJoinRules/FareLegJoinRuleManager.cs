@@ -17,12 +17,12 @@ public class FareLegJoinRuleManager(
     : GtfsFeedScopedManager<FareLegJoinRule, FareLegJoinRuleCreateModel, FareLegJoinRuleUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni ucret etap birlestirme kurali kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni ucret etap birlestirme kurali kaydini kurar.
     public override async Task<FareLegJoinRule> CreateAsync(
         FareLegJoinRuleCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new FareLegJoinRule(GuidGenerator.Create(), feed.Id);
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);

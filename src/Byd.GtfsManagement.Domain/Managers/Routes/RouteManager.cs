@@ -36,12 +36,12 @@ public class RouteManager(
     IShapeRepository shapeRepository)
     : GtfsFeedScopedManager<Route, RouteCreateModel, RouteUpdateModel>(repository, feedManager)
 {
-    // Hedef Feed'i kapsamda dogrulayip yeni guzergahi kurar.
+    // Yeni guzergahi organizasyonun aktif Feed'inde kurar.
     public override async Task<Route> CreateAsync(
         RouteCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Route(
             GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);

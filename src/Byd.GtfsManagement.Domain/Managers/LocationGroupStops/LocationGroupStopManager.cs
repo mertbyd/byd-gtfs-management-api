@@ -17,12 +17,12 @@ public class LocationGroupStopManager(
     : GtfsFeedScopedManager<LocationGroupStop, LocationGroupStopCreateModel, LocationGroupStopUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni konum grubu durak iliskisi kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni konum grubu durak iliskisi kaydini kurar.
     public override async Task<LocationGroupStop> CreateAsync(
         LocationGroupStopCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new LocationGroupStop(
             GuidGenerator.Create(), feed.Id,
             NormalizeRequiredText(model.GtfsLocationGroupId), NormalizeRequiredText(model.GtfsStopId));

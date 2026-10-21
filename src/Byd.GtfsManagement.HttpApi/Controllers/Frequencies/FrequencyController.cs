@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Frequencies;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Frequencies;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -84,6 +87,9 @@ public class FrequencyController : GtfsManagementController
     /// </remarks>
     [HttpPut(FrequencyRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Frequencies.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FrequenciesUpdated,
+        ActivityKind.Updated, nameof(FrequencyDto.Id))]
     public virtual async Task<Result<FrequencyDto>> UpdateAsync(
         Guid id, [FromBody] UpdateFrequencyDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -94,6 +100,9 @@ public class FrequencyController : GtfsManagementController
     /// <remarks>Govde dondurmez; siklik kaydi kalici olarak silinir.</remarks>
     [HttpDelete(FrequencyRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Frequencies.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FrequenciesDeleted,
+        ActivityKind.Deleted, nameof(FrequencyDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

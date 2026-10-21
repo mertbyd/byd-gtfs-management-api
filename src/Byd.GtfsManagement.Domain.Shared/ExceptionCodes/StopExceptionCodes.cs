@@ -4,7 +4,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 // sistemdeki gorevi: GTFS durak sozlesmesinin ihlallerini lokalize edilebilir kodlara baglar.
 public static class StopExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.StopGroup + "0001";
     public const string GtfsStopIdRequired = GtfsManagementErrorCodes.StopGroup + "0002";
     public const string GtfsStopIdTooLong = GtfsManagementErrorCodes.StopGroup + "0003";
     public const string CodeTooLong = GtfsManagementErrorCodes.StopGroup + "0004";

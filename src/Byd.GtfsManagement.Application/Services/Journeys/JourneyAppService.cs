@@ -1,6 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
+using Byd.CoreExtensions.Attributes;
+using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Journeys;
 using Byd.GtfsManagement.Managers.Journeys;
 using Byd.GtfsManagement.Mappers.Journeys;
@@ -18,6 +20,7 @@ public class JourneyAppService : GtfsManagementAppService, IJourneyAppService
     private IValidator<JourneyPlanInputDto> Validator => LazyGetRequiredService<IValidator<JourneyPlanInputDto>>();
 
     // Girdiyi dogrular ve verilen gun ve saatten sonra en erken varan yolculuk seceneklerini getirir.
+    [CachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<JourneyPlanDto> PlanAsync(JourneyPlanInputDto input, CancellationToken cancellationToken = default)
     {
         await Validator.ValidateAndThrowAsync(input, cancellationToken);

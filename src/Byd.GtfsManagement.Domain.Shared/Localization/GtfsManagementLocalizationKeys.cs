@@ -1,7 +1,7 @@
 namespace Byd.GtfsManagement.Localization;
 
-// islevi: Permission gorunen adlarinin lokalizasyon anahtarlarini tanimlar.
-// sistemdeki gorevi: EN/TR permission metinlerini ayni sozlesmeye baglar.
+// islevi: Permission gorunen adlarinin ve etkinlik kaydi kaliplarinin lokalizasyon anahtarlarini tanimlar.
+// sistemdeki gorevi: EN/TR permission ve etkinlik metinlerini ayni sozlesmeye baglar.
 public static class GtfsManagementLocalizationKeys
 {
     public static class Permissions
@@ -109,5 +109,73 @@ public static class GtfsManagementLocalizationKeys
         public const string BookingRulesManage = "Permission:BookingRules.Manage";
         public const string Journeys = "Permission:Journeys";
         public const string JourneysView = "Permission:Journeys.View";
+    }
+    // Guncelleme ve silme uclarinin etkinlik kaydi kaliplari; {0} islemi yapan kullanici, {1} kaydin kimligidir.
+    public static class ActivityLogs
+    {
+        public const string AgenciesUpdated = "ActivityLog:Agencies.Updated";
+        public const string AgenciesDeleted = "ActivityLog:Agencies.Deleted";
+        public const string StopsUpdated = "ActivityLog:Stops.Updated";
+        public const string StopsDeleted = "ActivityLog:Stops.Deleted";
+        public const string RoutesUpdated = "ActivityLog:Routes.Updated";
+        public const string RoutesDeleted = "ActivityLog:Routes.Deleted";
+        public const string ServicesUpdated = "ActivityLog:Services.Updated";
+        public const string ServicesDeleted = "ActivityLog:Services.Deleted";
+        public const string CalendarsUpdated = "ActivityLog:Calendars.Updated";
+        public const string CalendarsDeleted = "ActivityLog:Calendars.Deleted";
+        public const string CalendarDatesUpdated = "ActivityLog:CalendarDates.Updated";
+        public const string CalendarDatesDeleted = "ActivityLog:CalendarDates.Deleted";
+        public const string TripsUpdated = "ActivityLog:Trips.Updated";
+        public const string TripsDeleted = "ActivityLog:Trips.Deleted";
+        public const string StopTimesUpdated = "ActivityLog:StopTimes.Updated";
+        public const string StopTimesDeleted = "ActivityLog:StopTimes.Deleted";
+        public const string FrequenciesUpdated = "ActivityLog:Frequencies.Updated";
+        public const string FrequenciesDeleted = "ActivityLog:Frequencies.Deleted";
+        public const string TransfersUpdated = "ActivityLog:Transfers.Updated";
+        public const string TransfersDeleted = "ActivityLog:Transfers.Deleted";
+        public const string ShapesUpdated = "ActivityLog:Shapes.Updated";
+        public const string ShapesDeleted = "ActivityLog:Shapes.Deleted";
+        public const string FeedInfosUpdated = "ActivityLog:FeedInfos.Updated";
+        public const string FeedInfosDeleted = "ActivityLog:FeedInfos.Deleted";
+        public const string LevelsUpdated = "ActivityLog:Levels.Updated";
+        public const string LevelsDeleted = "ActivityLog:Levels.Deleted";
+        public const string PathwaysUpdated = "ActivityLog:Pathways.Updated";
+        public const string PathwaysDeleted = "ActivityLog:Pathways.Deleted";
+        public const string FareAttributesUpdated = "ActivityLog:FareAttributes.Updated";
+        public const string FareAttributesDeleted = "ActivityLog:FareAttributes.Deleted";
+        public const string FareRulesUpdated = "ActivityLog:FareRules.Updated";
+        public const string FareRulesDeleted = "ActivityLog:FareRules.Deleted";
+        public const string TranslationsUpdated = "ActivityLog:Translations.Updated";
+        public const string TranslationsDeleted = "ActivityLog:Translations.Deleted";
+        public const string AttributionsUpdated = "ActivityLog:Attributions.Updated";
+        public const string AttributionsDeleted = "ActivityLog:Attributions.Deleted";
+        public const string AreasUpdated = "ActivityLog:Areas.Updated";
+        public const string AreasDeleted = "ActivityLog:Areas.Deleted";
+        public const string TimeframesUpdated = "ActivityLog:Timeframes.Updated";
+        public const string TimeframesDeleted = "ActivityLog:Timeframes.Deleted";
+        public const string RiderCategoriesUpdated = "ActivityLog:RiderCategories.Updated";
+        public const string RiderCategoriesDeleted = "ActivityLog:RiderCategories.Deleted";
+        public const string FareMediasUpdated = "ActivityLog:FareMedias.Updated";
+        public const string FareMediasDeleted = "ActivityLog:FareMedias.Deleted";
+        public const string FareProductsUpdated = "ActivityLog:FareProducts.Updated";
+        public const string FareProductsDeleted = "ActivityLog:FareProducts.Deleted";
+        public const string FareLegRulesUpdated = "ActivityLog:FareLegRules.Updated";
+        public const string FareLegRulesDeleted = "ActivityLog:FareLegRules.Deleted";
+        public const string FareLegJoinRulesUpdated = "ActivityLog:FareLegJoinRules.Updated";
+        public const string FareLegJoinRulesDeleted = "ActivityLog:FareLegJoinRules.Deleted";
+        public const string FareTransferRulesUpdated = "ActivityLog:FareTransferRules.Updated";
+        public const string FareTransferRulesDeleted = "ActivityLog:FareTransferRules.Deleted";
+        public const string StopAreasUpdated = "ActivityLog:StopAreas.Updated";
+        public const string StopAreasDeleted = "ActivityLog:StopAreas.Deleted";
+        public const string NetworksUpdated = "ActivityLog:Networks.Updated";
+        public const string NetworksDeleted = "ActivityLog:Networks.Deleted";
+        public const string RouteNetworksUpdated = "ActivityLog:RouteNetworks.Updated";
+        public const string RouteNetworksDeleted = "ActivityLog:RouteNetworks.Deleted";
+        public const string LocationGroupsUpdated = "ActivityLog:LocationGroups.Updated";
+        public const string LocationGroupsDeleted = "ActivityLog:LocationGroups.Deleted";
+        public const string LocationGroupStopsUpdated = "ActivityLog:LocationGroupStops.Updated";
+        public const string LocationGroupStopsDeleted = "ActivityLog:LocationGroupStops.Deleted";
+        public const string BookingRulesUpdated = "ActivityLog:BookingRules.Updated";
+        public const string BookingRulesDeleted = "ActivityLog:BookingRules.Deleted";
     }
 }

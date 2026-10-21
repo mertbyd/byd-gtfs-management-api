@@ -33,12 +33,12 @@ public class TransferManager(
     : GtfsFeedScopedManager<Transfer, TransferCreateModel, TransferUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni aktarma kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni aktarma kaydini kurar.
     public override async Task<Transfer> CreateAsync(
         TransferCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Transfer(
             GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);

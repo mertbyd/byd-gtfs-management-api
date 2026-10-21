@@ -1,5 +1,4 @@
 using Byd.AuthManagement;
-using Byd.FileManagement;
 using Byd.GtfsManagement.Interfaces;
 using Volo.Abp.Data;
 using Volo.Abp.Domain;
@@ -12,8 +11,8 @@ namespace Byd.GtfsManagement;
 [DependsOn(
     typeof(AbpDddDomainModule),
     typeof(GtfsManagementDomainSharedModule),
-    typeof(AuthManagementDomainModule),
-    typeof(FileManagementDomainModule)
+    typeof(AuthManagementDomainModule)
+
 )]
 public class GtfsManagementDomainModule : AbpModule
 {

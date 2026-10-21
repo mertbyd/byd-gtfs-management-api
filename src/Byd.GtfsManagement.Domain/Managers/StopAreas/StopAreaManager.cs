@@ -17,12 +17,12 @@ public class StopAreaManager(
     : GtfsFeedScopedManager<StopArea, StopAreaCreateModel, StopAreaUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni durak bolge iliskisi kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni durak bolge iliskisi kaydini kurar.
     public override async Task<StopArea> CreateAsync(
         StopAreaCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new StopArea(
             GuidGenerator.Create(), feed.Id,
             NormalizeRequiredText(model.GtfsAreaId), NormalizeRequiredText(model.GtfsStopId));

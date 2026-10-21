@@ -15,6 +15,5 @@ public static class FeedInfoExceptionCodes
     public const string ContactEmailInvalid = GtfsManagementErrorCodes.FeedInfoGroup + "0008";
     public const string ContactUrlInvalid = GtfsManagementErrorCodes.FeedInfoGroup + "0009";
     public const string FeedInfoAlreadyExists = GtfsManagementErrorCodes.FeedInfoGroup + "0010";
-    public const string FeedRequired = GtfsManagementErrorCodes.FeedInfoGroup + "0011";
     public const string DateFormatInvalid = GtfsManagementErrorCodes.FeedInfoGroup + "0012";
 }

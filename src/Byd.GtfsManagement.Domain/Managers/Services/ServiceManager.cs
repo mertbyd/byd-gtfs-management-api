@@ -15,12 +15,12 @@ public class ServiceManager(
     FeedManager feedManager)
     : GtfsFeedScopedManager<Service, ServiceCreateModel, ServiceUpdateModel>(repository, feedManager)
 {
-    // Hedef Feed'i kapsamda dogrulayip yeni servisi kurar.
+    // Yeni servisi organizasyonun aktif Feed'inde kurar.
     public override async Task<Service> CreateAsync(
         ServiceCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Service(
             GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);

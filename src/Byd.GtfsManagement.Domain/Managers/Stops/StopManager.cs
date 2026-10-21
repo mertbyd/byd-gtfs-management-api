@@ -42,12 +42,12 @@ public class StopManager(
     ITransferRepository transferRepository)
     : GtfsFeedScopedManager<Stop, StopCreateModel, StopUpdateModel>(repository, feedManager)
 {
-    // Hedef Feed'i kapsamda dogrulayip yeni duragi kurar.
+    // Yeni duragi organizasyonun aktif Feed'inde kurar.
     public override async Task<Stop> CreateAsync(
         StopCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Stop(
             GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);

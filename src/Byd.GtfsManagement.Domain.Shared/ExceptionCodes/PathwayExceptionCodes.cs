@@ -17,6 +17,5 @@ public static class PathwayExceptionCodes
     public const string MinWidthInvalid = GtfsManagementErrorCodes.PathwayGroup + "0010";
     public const string SignpostedTooLong = GtfsManagementErrorCodes.PathwayGroup + "0011";
     public const string PathwayAlreadyExists = GtfsManagementErrorCodes.PathwayGroup + "0012";
-    public const string FeedRequired = GtfsManagementErrorCodes.PathwayGroup + "0013";
     public const string StopOutOfFeed = GtfsManagementErrorCodes.PathwayGroup + "0014";
 }

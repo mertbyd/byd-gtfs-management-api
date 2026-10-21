@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS konum grubu durak iliskisi hata kodlarini tanimlar.</summary>
 public static class LocationGroupStopExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.LocationGroupStopGroup + "0001";
     public const string LocationGroupStopAlreadyExists = GtfsManagementErrorCodes.LocationGroupStopGroup + "0002";
     public const string GtfsLocationGroupIdRequired = GtfsManagementErrorCodes.LocationGroupStopGroup + "0003";
     public const string GtfsLocationGroupIdTooLong = GtfsManagementErrorCodes.LocationGroupStopGroup + "0004";

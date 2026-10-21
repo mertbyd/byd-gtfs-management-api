@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Trips;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Trips;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -21,8 +24,8 @@ public class TripController : GtfsManagementController
 {
     private ITripAppService AppService => LazyGetRequiredService<ITripAppService>();
 
-    /// <summary>Hedef GTFS Feed'e yeni sefer kaydi ekler.</summary>
-    /// <param name="input">Seferin yazilacagi Feed ve trips.txt alanlari.</param>
+    /// <summary>Organizasyonun aktif GTFS Feed'ine yeni sefer kaydi ekler.</summary>
+    /// <param name="input">trips.txt alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value sefer kimligini, Feed kimligini, guzergah ve servis kimlikleri ile GTFS kimliklerini,
@@ -86,6 +89,9 @@ public class TripController : GtfsManagementController
     /// </remarks>
     [HttpPut(TripRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Trips.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.TripsUpdated,
+        ActivityKind.Updated, nameof(TripDto.Id))]
     public virtual async Task<Result<TripDto>> UpdateAsync(
         Guid id, [FromBody] UpdateTripDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -98,6 +104,9 @@ public class TripController : GtfsManagementController
     /// </remarks>
     [HttpDelete(TripRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Trips.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.TripsDeleted,
+        ActivityKind.Deleted, nameof(TripDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

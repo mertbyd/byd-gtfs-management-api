@@ -1,10 +1,7 @@
-using System;
-
 namespace Byd.GtfsManagement.Models.Services;
 
 // mirastan gelen: GtfsServiceId.
-// burada yazilan: yalnizca kaydin yazilacagi Feed.
+// burada yazilan: yok; Feed istekten alinmaz, kayit organizasyonun aktif Feed'ine yazilir.
 public sealed class ServiceCreateModel : ServiceInputModel
 {
-    public Guid FeedId { get; set; }
 }

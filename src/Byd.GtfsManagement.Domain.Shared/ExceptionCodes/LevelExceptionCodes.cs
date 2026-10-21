@@ -10,5 +10,4 @@ public static class LevelExceptionCodes
     public const string IndexInvalid = GtfsManagementErrorCodes.LevelGroup + "0003";
     public const string NameTooLong = GtfsManagementErrorCodes.LevelGroup + "0004";
     public const string LevelAlreadyExists = GtfsManagementErrorCodes.LevelGroup + "0005";
-    public const string FeedRequired = GtfsManagementErrorCodes.LevelGroup + "0006";
 }

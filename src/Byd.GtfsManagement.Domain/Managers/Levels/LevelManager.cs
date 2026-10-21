@@ -17,12 +17,12 @@ public class LevelManager(
     : GtfsFeedScopedManager<Level, LevelCreateModel, LevelUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni kat kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni kat kaydini kurar.
     public override async Task<Level> CreateAsync(
         LevelCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Level(
             GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsLevelId));
         await ApplyAsync(entity, model, cancellationToken);

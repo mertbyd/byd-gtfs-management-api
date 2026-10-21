@@ -4,7 +4,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 // sistemdeki gorevi: GTFS sefer sozlesmesinin ihlallerini lokalize edilebilir kodlara baglar.
 public static class TripExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.TripGroup + "0001";
     public const string RouteRequired = GtfsManagementErrorCodes.TripGroup + "0002";
     public const string ServiceRequired = GtfsManagementErrorCodes.TripGroup + "0003";
     public const string GtfsTripIdRequired = GtfsManagementErrorCodes.TripGroup + "0004";

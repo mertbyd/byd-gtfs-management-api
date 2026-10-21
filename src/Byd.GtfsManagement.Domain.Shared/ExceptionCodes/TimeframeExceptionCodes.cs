@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS zaman araligi hata kodlarini tanimlar.</summary>
 public static class TimeframeExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.TimeframeGroup + "0001";
     public const string TimeframeAlreadyExists = GtfsManagementErrorCodes.TimeframeGroup + "0002";
     public const string TimeframeGroupIdRequired = GtfsManagementErrorCodes.TimeframeGroup + "0003";
     public const string TimeframeGroupIdTooLong = GtfsManagementErrorCodes.TimeframeGroup + "0004";

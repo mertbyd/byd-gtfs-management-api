@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.FareLegJoinRules;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.FareLegJoinRules;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,13 +25,13 @@ public class FareLegJoinRuleController : GtfsManagementController
 {
     private IFareLegJoinRuleAppService AppService => LazyGetRequiredService<IFareLegJoinRuleAppService>();
 
-    /// <summary>Bir Feed'e yeni bir ucret etap birlestirme kurali ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir ucret etap birlestirme kurali ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, FromNetworkId, ToNetworkId, FromStopId, ToStopId ve audit
-    /// zamanlari alanlarini tasir. Feed istegin tenant kapsaminda degilse kayit olusturulmaz. Bu uc baska bir GTFS
-    /// kaydi olusturmaz.
+    /// zamanlari alanlarini tasir. Organizasyonun aktif Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi
+    /// olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.FareLegJoinRules.Manage)]
@@ -84,6 +87,9 @@ public class FareLegJoinRuleController : GtfsManagementController
     /// </remarks>
     [HttpPut(FareLegJoinRuleRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareLegJoinRules.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareLegJoinRulesUpdated,
+        ActivityKind.Updated, nameof(FareLegJoinRuleDto.Id))]
     public virtual async Task<Result<FareLegJoinRuleDto>> UpdateAsync(
         Guid id, [FromBody] UpdateFareLegJoinRuleDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -94,6 +100,9 @@ public class FareLegJoinRuleController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(FareLegJoinRuleRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareLegJoinRules.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareLegJoinRulesDeleted,
+        ActivityKind.Deleted, nameof(FareLegJoinRuleDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

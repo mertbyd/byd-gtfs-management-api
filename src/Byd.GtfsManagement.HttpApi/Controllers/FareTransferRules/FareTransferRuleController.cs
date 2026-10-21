@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.FareTransferRules;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.FareTransferRules;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,13 +25,13 @@ public class FareTransferRuleController : GtfsManagementController
 {
     private IFareTransferRuleAppService AppService => LazyGetRequiredService<IFareTransferRuleAppService>();
 
-    /// <summary>Bir Feed'e yeni bir ucret aktarma kurali ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir ucret aktarma kurali ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
-    /// Response value olusturulan kaydin Id, FeedId, FromLegGroupId, ToLegGroupId, GtfsFareProductId,
-    /// TransferCount, DurationLimit, DurationLimitType, FareTransferType ve audit zamanlari alanlarini tasir. Feed
-    /// istegin tenant kapsaminda degilse kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
+    /// Response value olusturulan kaydin Id, FeedId, FromLegGroupId, ToLegGroupId, GtfsFareProductId, TransferCount,
+    /// DurationLimit, DurationLimitType, FareTransferType ve audit zamanlari alanlarini tasir. Organizasyonun aktif
+    /// Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.FareTransferRules.Manage)]
@@ -89,6 +92,9 @@ public class FareTransferRuleController : GtfsManagementController
     /// </remarks>
     [HttpPut(FareTransferRuleRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareTransferRules.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareTransferRulesUpdated,
+        ActivityKind.Updated, nameof(FareTransferRuleDto.Id))]
     public virtual async Task<Result<FareTransferRuleDto>> UpdateAsync(
         Guid id, [FromBody] UpdateFareTransferRuleDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -99,6 +105,9 @@ public class FareTransferRuleController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(FareTransferRuleRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareTransferRules.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareTransferRulesDeleted,
+        ActivityKind.Deleted, nameof(FareTransferRuleDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

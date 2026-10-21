@@ -21,12 +21,12 @@ public class FareAttributeManager(
     : GtfsFeedScopedManager<FareAttribute, FareAttributeCreateModel, FareAttributeUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni ucret ozelligi kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni ucret ozelligi kaydini kurar.
     public override async Task<FareAttribute> CreateAsync(
         FareAttributeCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new FareAttribute(
             GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsFareId));
         await ApplyAsync(entity, model, cancellationToken);

@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Shapes;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Shapes;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,8 +25,8 @@ public class ShapeController : GtfsManagementController
 {
     private IShapeAppService AppService => LazyGetRequiredService<IShapeAppService>();
 
-    /// <summary>Bir sekle yeni bir koordinat noktasi ekler.</summary>
-    /// <param name="input">Feed, sekil dis kimligi, koordinat, sira ve mesafe alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'indeki bir sekle yeni bir koordinat noktasi ekler.</summary>
+    /// <param name="input">Sekil dis kimligi, koordinat, sira ve mesafe alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsShapeId, Latitude, Longitude, Sequence, DistTraveled ve
@@ -85,6 +88,9 @@ public class ShapeController : GtfsManagementController
     /// </remarks>
     [HttpPut(ShapeRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Shapes.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.ShapesUpdated,
+        ActivityKind.Updated, nameof(ShapeDto.Id))]
     public virtual async Task<Result<ShapeDto>> UpdateAsync(
         Guid id, [FromBody] UpdateShapeDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -95,6 +101,9 @@ public class ShapeController : GtfsManagementController
     /// <remarks>Govde dondurmez; sekil noktasi kalici olarak silinir.</remarks>
     [HttpDelete(ShapeRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Shapes.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.ShapesDeleted,
+        ActivityKind.Deleted, nameof(ShapeDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

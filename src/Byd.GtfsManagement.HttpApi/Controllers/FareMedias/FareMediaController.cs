@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.FareMedias;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.FareMedias;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,13 +25,12 @@ public class FareMediaController : GtfsManagementController
 {
     private IFareMediaAppService AppService => LazyGetRequiredService<IFareMediaAppService>();
 
-    /// <summary>Bir Feed'e yeni bir ucret medyasi ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir ucret medyasi ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
-    /// Response value olusturulan kaydin Id, FeedId, GtfsFareMediaId, FareMediaName, FareMediaType ve audit
-    /// zamanlari alanlarini tasir. Feed istegin tenant kapsaminda degilse kayit olusturulmaz. Bu uc baska bir GTFS
-    /// kaydi olusturmaz.
+    /// Response value olusturulan kaydin Id, FeedId, GtfsFareMediaId, FareMediaName, FareMediaType ve audit zamanlari
+    /// alanlarini tasir. Organizasyonun aktif Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.FareMedias.Manage)]
@@ -83,6 +85,9 @@ public class FareMediaController : GtfsManagementController
     /// </remarks>
     [HttpPut(FareMediaRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareMedias.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareMediasUpdated,
+        ActivityKind.Updated, nameof(FareMediaDto.Id))]
     public virtual async Task<Result<FareMediaDto>> UpdateAsync(
         Guid id, [FromBody] UpdateFareMediaDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -93,6 +98,9 @@ public class FareMediaController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(FareMediaRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareMedias.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareMediasDeleted,
+        ActivityKind.Deleted, nameof(FareMediaDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

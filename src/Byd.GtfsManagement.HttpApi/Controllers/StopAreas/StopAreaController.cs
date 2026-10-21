@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.StopAreas;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.StopAreas;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,12 +25,12 @@ public class StopAreaController : GtfsManagementController
 {
     private IStopAreaAppService AppService => LazyGetRequiredService<IStopAreaAppService>();
 
-    /// <summary>Bir Feed'e yeni bir durak bolge iliskisi ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir durak bolge iliskisi ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsAreaId, GtfsStopId ve audit zamanlari alanlarini tasir.
-    /// Feed istegin tenant kapsaminda degilse kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
+    /// Organizasyonun aktif Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.StopAreas.Manage)]
@@ -81,6 +84,9 @@ public class StopAreaController : GtfsManagementController
     /// </remarks>
     [HttpPut(StopAreaRoutes.ById)]
     [Authorize(GtfsManagementPermissions.StopAreas.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.StopAreasUpdated,
+        ActivityKind.Updated, nameof(StopAreaDto.Id))]
     public virtual async Task<Result<StopAreaDto>> UpdateAsync(
         Guid id, [FromBody] UpdateStopAreaDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -91,6 +97,9 @@ public class StopAreaController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(StopAreaRoutes.ById)]
     [Authorize(GtfsManagementPermissions.StopAreas.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.StopAreasDeleted,
+        ActivityKind.Deleted, nameof(StopAreaDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

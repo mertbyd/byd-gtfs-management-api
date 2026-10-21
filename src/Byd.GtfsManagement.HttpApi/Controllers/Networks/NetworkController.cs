@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Networks;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Networks;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,12 +25,12 @@ public class NetworkController : GtfsManagementController
 {
     private INetworkAppService AppService => LazyGetRequiredService<INetworkAppService>();
 
-    /// <summary>Bir Feed'e yeni bir ulasim agi ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir ulasim agi ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
-    /// Response value olusturulan kaydin Id, FeedId, GtfsNetworkId, NetworkName ve audit zamanlari alanlarini
-    /// tasir. Feed istegin tenant kapsaminda degilse kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
+    /// Response value olusturulan kaydin Id, FeedId, GtfsNetworkId, NetworkName ve audit zamanlari alanlarini tasir.
+    /// Organizasyonun aktif Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.Networks.Manage)]
@@ -81,6 +84,9 @@ public class NetworkController : GtfsManagementController
     /// </remarks>
     [HttpPut(NetworkRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Networks.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.NetworksUpdated,
+        ActivityKind.Updated, nameof(NetworkDto.Id))]
     public virtual async Task<Result<NetworkDto>> UpdateAsync(
         Guid id, [FromBody] UpdateNetworkDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -91,6 +97,9 @@ public class NetworkController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(NetworkRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Networks.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.NetworksDeleted,
+        ActivityKind.Deleted, nameof(NetworkDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

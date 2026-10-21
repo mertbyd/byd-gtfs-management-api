@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Translations;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Translations;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,8 +25,8 @@ public class TranslationController : GtfsManagementController
 {
     private ITranslationAppService AppService => LazyGetRequiredService<ITranslationAppService>();
 
-    /// <summary>Bir Feed'e yeni bir ceviri ekler.</summary>
-    /// <param name="input">Feed, tablo, alan, dil ve hedef/deger alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir ceviri ekler.</summary>
+    /// <param name="input">Tablo, alan, dil ve hedef/deger alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, RecordId, RecordSubId, TableName, FieldName, Language,
@@ -88,6 +91,9 @@ public class TranslationController : GtfsManagementController
     /// </remarks>
     [HttpPut(TranslationRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Translations.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.TranslationsUpdated,
+        ActivityKind.Updated, nameof(TranslationDto.Id))]
     public virtual async Task<Result<TranslationDto>> UpdateAsync(
         Guid id, [FromBody] UpdateTranslationDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -98,6 +104,9 @@ public class TranslationController : GtfsManagementController
     /// <remarks>Govde dondurmez; ceviri kaydi kalici olarak silinir.</remarks>
     [HttpDelete(TranslationRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Translations.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.TranslationsDeleted,
+        ActivityKind.Deleted, nameof(TranslationDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

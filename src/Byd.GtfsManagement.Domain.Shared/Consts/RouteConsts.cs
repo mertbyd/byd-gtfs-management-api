@@ -8,6 +8,9 @@ public static class RouteConsts
     public const string GtfsRouteIdIndex = "IX_Routes_Feed_GtfsRouteId";
     public const string AgencyIndex = "IX_Routes_AgencyId";
 
+    // Aktif Feed guzergahlarinin arama indeksi; tablonun sema ve adini izler.
+    public const string SearchIndexName = "gtfs_management_routes";
+
     public const int MaxGtfsRouteIdLength = 100;
     public const int MaxShortNameLength = 50;
     public const int MaxLongNameLength = 200;

@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS rezervasyon kurali hata kodlarini tanimlar.</summary>
 public static class BookingRuleExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.BookingRuleGroup + "0001";
     public const string BookingRuleAlreadyExists = GtfsManagementErrorCodes.BookingRuleGroup + "0002";
     public const string GtfsBookingRuleIdRequired = GtfsManagementErrorCodes.BookingRuleGroup + "0003";
     public const string GtfsBookingRuleIdTooLong = GtfsManagementErrorCodes.BookingRuleGroup + "0004";

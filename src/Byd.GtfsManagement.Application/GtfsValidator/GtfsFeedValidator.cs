@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO.Compression;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using Byd.FileManagement.Services.StoredFiles;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Feeds;
@@ -19,7 +17,6 @@ using Byd.GtfsManagement.Interfaces.Feeds;
 using Byd.GtfsManagement.Interfaces;
 using Byd.GtfsManagement.Managers.Feeds;
 using Byd.GtfsManagement.Mappers.Feeds;
-using Byd.GtfsManagement.Options;
 using Byd.GtfsManagement.Entities.Feeds;
 using Byd.GtfsManagement.Etos.Feeds;
 using Byd.GtfsManagement.Feeds;
@@ -30,20 +27,19 @@ using Byd.LogManagement.Interfaces.ExternalServiceLogs;
 using Volo.Abp;
 using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.Data;
+using Volo.Abp.DependencyInjection;
 using Volo.Abp.Timing;
 
 namespace Byd.GtfsManagement.GtfsValidator;
 
-// islevi: Feed'i degistiren islemi calistirir; Feed'in guncel GTFS arsivini yerel kanonik dogrulayiciya gonderir, cevabi rapora
-// cevirir, raporu Feed'e yazar ve dondurur. Kayitli raporu JSON dosyasi olarak verir.
+// islevi: Feed'i degistiren islemi calistirir; Feed'in guncel GTFS arsivini MobilityData dogrulayicisinin CLI'ina dogrulatir,
+// urettigi raporu okur, raporu Feed'e yazar ve dondurur. Kayitli raporu JSON dosyasi olarak verir.
 // sistemdeki gorevi: Dogrulamanin tek giris noktasidir. Feed'in guncel verisi veritabanina aktarilmadan once yuklenen ZIP, aktarildiktan
-// sonra tablolarin kendisidir; tablolar ice aktarimla ayni DTO ve mapper'larla geri GTFS arsivine yazilir. Arsiv yerel dogrulayicidan
-// disari cikmaz; cagri log modulunun dis servis loguna yazilir.
+// sonra tablolarin kendisidir; tablolar ice aktarimla ayni DTO ve mapper'larla geri GTFS arsivine yazilir. Arsiv makineden disari
+// cikmaz; CLI host'un yanindaki jar'dan calisir ve cagri log modulunun dis servis loguna yazilir.
 // NEDEN MAPPERLY DEGIL (rapor okuma): sampleNotices alanlari kurala gore degisir; burada domain eslemesi degil, saglayici JSON
 // protokolunun ayristirilmasi yapilir.
 public class GtfsFeedValidator(
-    IHttpClientFactory clientFactory,
-    IOptions<GtfsManagementModuleOptions> options,
     IExternalServiceLogger externalServiceLogger,
     IStoredFileAppService storedFiles,
     IEnumerable<IGtfsImportExportAppService<GtfsArchiveContext>> tables,
@@ -51,7 +47,7 @@ public class GtfsFeedValidator(
     FeedManager feedManager,
     IDataFilter dataFilter,
     IDistributedEventBus distributedEventBus,
-    IClock clock) : IGtfsFeedValidator
+    IClock clock) : IGtfsFeedValidator, ITransientDependency
 {
     private static readonly FeedMapper Mapper = new();
     private static readonly JsonSerializerOptions ReportFileOptions = new(JsonSerializerDefaults.Web) { WriteIndented = true };
@@ -110,10 +106,10 @@ public class GtfsFeedValidator(
         };
     }
 
-    // Dogrulama HTTP isteginin sonucu ayni cagrida doner; arka plan entegrasyonu dagitik olaya birakilir.
+    // CLI'in raporu ayni cagrida doner; arka plan entegrasyonu dagitik olaya birakilir.
     private async Task<FeedValidationReportDto> ValidateArchiveAsync(
         Feed feed, CancellationToken cancellationToken = default)
-        => await SendAsync(await GetArchiveAsync(feed, cancellationToken), feed.StoredFileName, cancellationToken);
+        => await RunValidatorAsync(await GetArchiveAsync(feed, cancellationToken), cancellationToken);
 
     // Feed'in guncel GTFS arsivini verir: aktarimdan once yuklenen ZIP, aktarimdan sonra tablolardan yazilan arsiv.
     private async Task<byte[]> GetArchiveAsync(Feed feed, CancellationToken cancellationToken = default)
@@ -133,80 +129,138 @@ public class GtfsFeedValidator(
         return archive.ToArray();
     }
 
-    // Arsivi yerel dogrulayiciya gonderir ve cagriyi rapor ozetiyle dis servis loguna yazar; erisilemeyen dogrulayiciyi lokalize
-    // hataya cevirir.
-    private async Task<FeedValidationReportDto> SendAsync(
-        byte[] archive, string fileName, CancellationToken cancellationToken = default)
+    // Arsivi CLI'a dogrulatir ve cagriyi rapor ozetiyle dis servis loguna yazar.
+    private async Task<FeedValidationReportDto> RunValidatorAsync(
+        byte[] archive, CancellationToken cancellationToken = default)
     {
-        var endpoint = ResolveLocalEndpoint();
         var report = new FeedValidationReportDto();
-        try
+        await externalServiceLogger.TrackAsync(ValidationCall, async () =>
         {
-            await externalServiceLogger.TrackAsync(ValidationCall, async () =>
+            report = await RunCliAsync(archive, cancellationToken);
+            return JsonSerializer.Serialize(new
             {
-                report = await PostAsync(endpoint, archive, fileName, cancellationToken);
-                return JsonSerializer.Serialize(new
-                {
-                    report.ValidatorVersion,
-                    ErrorCount = report.Errors.Sum(notice => notice.TotalNotices),
-                    WarningCount = report.Warnings.Sum(notice => notice.TotalNotices)
-                });
-            }, cancellationToken);
-            return report;
-        }
-        catch (HttpRequestException exception)
-        {
-            throw new BusinessException(FeedExceptionCodes.ValidatorUnavailable, innerException: exception);
-        }
-        catch (TaskCanceledException exception) when (!cancellationToken.IsCancellationRequested)
-        {
-            throw new BusinessException(FeedExceptionCodes.ValidatorUnavailable, innerException: exception);
-        }
+                report.ValidatorVersion,
+                ErrorCount = report.Errors.Sum(notice => notice.TotalNotices),
+                WarningCount = report.Warnings.Sum(notice => notice.TotalNotices)
+            });
+        }, cancellationToken);
+        return report;
     }
 
-    // ZIP'i resmi validate-upload ucunun multipart file alanina koyup gonderir; bozuk arsiv icin gelen 422 cevabi da rapordur.
-    private async Task<FeedValidationReportDto> PostAsync(
-        Uri endpoint, byte[] archive, string fileName, CancellationToken cancellationToken = default)
+    // Arsivi gecici bir klasore yazar, CLI'in o klasore urettigi raporu okur ve klasoru her durumda siler. CLI rapor
+    // uretmeden biterse (or: uyumsuz Java) dogrulayici erisilemez sayilir; hata ciktisi ic istisnada kalir.
+    private static async Task<FeedValidationReportDto> RunCliAsync(
+        byte[] archive, CancellationToken cancellationToken = default)
     {
-        using var client = clientFactory.CreateClient(GtfsValidationConsts.HttpClientName);
-        using var fileContent = new ByteArrayContent(archive);
-        fileContent.Headers.ContentType = new MediaTypeHeaderValue(GtfsValidationConsts.ZipMediaType);
-        using var form = new MultipartFormDataContent();
-        form.Add(fileContent, GtfsValidationConsts.UploadFieldName, Path.GetFileName(fileName));
-        using var request = new HttpRequestMessage(HttpMethod.Post, endpoint) { Content = form };
-        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(GtfsValidationConsts.JsonMediaType));
-        using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-        if (response.StatusCode != HttpStatusCode.UnprocessableEntity)
-            response.EnsureSuccessStatusCode();
-        return await ReadReportAsync(response, cancellationToken);
-    }
-
-    // Kullanici arsivinin gidecegi API hedefini loopback ile sinirlar.
-    private Uri ResolveLocalEndpoint()
-    {
-        var baseUrl = options.Value.ValidatorBaseUrl;
-        if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out var root) || !root.IsLoopback ||
-            root.Scheme != Uri.UriSchemeHttp && root.Scheme != Uri.UriSchemeHttps)
-            throw new BusinessException(FeedExceptionCodes.ValidatorNotConfigured);
-        return new Uri(root, GtfsValidationConsts.ValidateUploadPath);
-    }
-
-    // Cevabi rapora cevirir; beklenen bicimde olmayan cevabi lokalize hataya cevirir.
-    private static async Task<FeedValidationReportDto> ReadReportAsync(
-        HttpResponseMessage response, CancellationToken cancellationToken = default)
-    {
-        await using var content = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var workDirectory = Directory.CreateTempSubdirectory(GtfsValidationConsts.WorkDirectoryPrefix).FullName;
         try
         {
-            using var document = await JsonDocument.ParseAsync(content, cancellationToken: cancellationToken);
-            return response.StatusCode == HttpStatusCode.UnprocessableEntity
-                ? ToUnprocessableReport(document.RootElement)
-                : ToReport(document.RootElement);
+            var archivePath = Path.Combine(workDirectory, GtfsFileNames.Archive);
+            var outputDirectory = Path.Combine(workDirectory, GtfsValidationConsts.OutputDirectoryName);
+            await File.WriteAllBytesAsync(archivePath, archive, cancellationToken);
+            var errorOutput = await ExecuteAsync(CreateStartInfo(archivePath, outputDirectory), cancellationToken);
+            return File.Exists(Path.Combine(outputDirectory, GtfsValidationConsts.ReportJsonFileName))
+                ? await ReadReportAsync(outputDirectory, cancellationToken)
+                : throw new BusinessException(FeedExceptionCodes.ValidatorUnavailable,
+                    innerException: new InvalidOperationException(errorOutput));
         }
-        catch (Exception exception) when (exception is JsonException or InvalidOperationException or KeyNotFoundException)
+        finally
+        {
+            Directory.Delete(workDirectory, recursive: true);
+        }
+    }
+
+    // Java'yi JAVA_HOME'dan, yoksa PATH'ten bulur; CLI'i guncelleme kontrolu yapmadan calistirir. Host'un yaninda jar yoksa
+    // dogrulayici yapilandirilmamis sayilir.
+    private static ProcessStartInfo CreateStartInfo(string archivePath, string outputDirectory)
+    {
+        var cliPath = Path.Combine(AppContext.BaseDirectory, GtfsValidationConsts.CliDirectoryName,
+            GtfsValidationConsts.CliFileName);
+        if (!File.Exists(cliPath))
+            throw new BusinessException(FeedExceptionCodes.ValidatorNotConfigured);
+        var javaHome = Environment.GetEnvironmentVariable(GtfsValidationConsts.JavaHomeVariable);
+        var java = string.IsNullOrWhiteSpace(javaHome)
+            ? GtfsValidationConsts.JavaExecutable
+            : Path.Combine(javaHome, GtfsValidationConsts.JavaBinDirectoryName, GtfsValidationConsts.JavaExecutable);
+        return new ProcessStartInfo(java)
+        {
+            ArgumentList =
+            {
+                GtfsValidationConsts.Cli.Jar, cliPath,
+                GtfsValidationConsts.Cli.Input, archivePath,
+                GtfsValidationConsts.Cli.Output, outputDirectory,
+                GtfsValidationConsts.Cli.SkipValidatorUpdate
+            },
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+    }
+
+    // CLI'i calistirip bitmesini bekler ve hata ciktisini doner; Java baslatilamaz ya da sure dolarsa dogrulayiciyi erisilemez
+    // sayar. Iptal ve zaman asiminda surec agaciyla sonlandirilir.
+    private static async Task<string> ExecuteAsync(
+        ProcessStartInfo startInfo, CancellationToken cancellationToken = default)
+    {
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(GtfsValidationConsts.ValidationTimeout);
+        using var process = StartProcess(startInfo);
+        await using var kill = timeout.Token.Register(() => process.Kill(entireProcessTree: true));
+        try
+        {
+            var errorOutput = process.StandardError.ReadToEndAsync(timeout.Token);
+            await Task.WhenAll(process.StandardOutput.ReadToEndAsync(timeout.Token), errorOutput,
+                process.WaitForExitAsync(timeout.Token));
+            return await errorOutput;
+        }
+        catch (OperationCanceledException exception) when (!cancellationToken.IsCancellationRequested)
+        {
+            throw new BusinessException(FeedExceptionCodes.ValidatorUnavailable, innerException: exception);
+        }
+    }
+
+    // Java bulunamazsa dogrulayiciyi erisilemez sayar.
+    private static Process StartProcess(ProcessStartInfo startInfo)
+    {
+        try
+        {
+            return Process.Start(startInfo)!;
+        }
+        catch (Win32Exception exception)
+        {
+            throw new BusinessException(FeedExceptionCodes.ValidatorUnavailable, innerException: exception);
+        }
+    }
+
+    // CLI'in yazdigi raporu ve calisma hatalarini okur. Bozuk arsiv gibi dogrulamanin tamamlanamadigi durumlar calisma hatasi
+    // olarak gelir ve rapora hata olarak eklenir; beklenen bicimde olmayan cikti lokalize hataya cevrilir.
+    private static async Task<FeedValidationReportDto> ReadReportAsync(
+        string outputDirectory, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            using var report = await ParseAsync(
+                Path.Combine(outputDirectory, GtfsValidationConsts.ReportJsonFileName), cancellationToken);
+            using var systemErrors = await ParseAsync(
+                Path.Combine(outputDirectory, GtfsValidationConsts.SystemErrorsJsonFileName), cancellationToken);
+            var result = ToReport(report.RootElement);
+            result.Errors.AddRange(systemErrors.RootElement.GetProperty(GtfsValidationConsts.Json.Notices)
+                .EnumerateArray().Select(ToNotice));
+            return result;
+        }
+        catch (Exception exception) when (exception is IOException or JsonException or InvalidOperationException
+                                              or KeyNotFoundException)
         {
             throw new BusinessException(FeedExceptionCodes.ValidatorResponseInvalid, innerException: exception);
         }
+    }
+
+    // CLI'in yazdigi JSON dosyasini okur.
+    private static async Task<JsonDocument> ParseAsync(string path, CancellationToken cancellationToken = default)
+    {
+        await using var content = File.OpenRead(path);
+        return await JsonDocument.ParseAsync(content, cancellationToken: cancellationToken);
     }
 
     // Surumu, dogrulama zamanini ve siddetine gore ayrilmis notice'lari okur.
@@ -246,21 +300,6 @@ public class GtfsFeedValidator(
         FieldName = Find(sample, GtfsValidationConsts.Json.FieldNamePart, JsonValueKind.String)?.GetString(),
         CsvRowNumber = Find(sample, GtfsValidationConsts.Json.CsvRowNumberPart, JsonValueKind.Number)?.GetInt64(),
         Details = sample.Clone()
-    };
-
-    // Bozuk arsiv icin kanonik API'nin 422 cevabini tek hata notice'una cevirir.
-    private static FeedValidationReportDto ToUnprocessableReport(JsonElement root) => new()
-    {
-        Errors =
-        [
-            new FeedValidationNoticeDto
-            {
-                Code = GtfsValidationConsts.UnprocessableFeedCode,
-                Severity = GtfsValidationConsts.ErrorSeverity,
-                TotalNotices = 1,
-                Samples = [new FeedValidationOccurrenceDto { Details = root.Clone() }]
-            }
-        ]
     };
 
     // Adinda verilen parcayi buyuk-kucuk harf ayirmadan iceren ve beklenen turdeki ilk alani dondurur.

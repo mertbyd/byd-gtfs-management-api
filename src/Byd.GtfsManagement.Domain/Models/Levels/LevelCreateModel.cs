@@ -1,11 +1,8 @@
-using System;
-
 namespace Byd.GtfsManagement.Models.Levels;
 
 // islevi: Yeni kat olusturma alanlarini tasir.
-// sistemdeki gorevi: Feed kimligini girdi modeline ekler.
+// sistemdeki gorevi: Olusturma girdisini ortak model sozlesmesinde sunar.
 /// <summary>Yeni kat olusturma modelini tasir.</summary>
 public class LevelCreateModel : LevelInputModel
 {
-    public Guid FeedId { get; set; }
 }

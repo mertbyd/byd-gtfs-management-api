@@ -17,12 +17,12 @@ public class TimeframeManager(
     : GtfsFeedScopedManager<Timeframe, TimeframeCreateModel, TimeframeUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni zaman araligi kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni zaman araligi kaydini kurar.
     public override async Task<Timeframe> CreateAsync(
         TimeframeCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Timeframe(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.TimeframeGroupId), NormalizeRequiredText(model.GtfsServiceId));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);

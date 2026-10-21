@@ -17,12 +17,12 @@ public class RouteNetworkManager(
     : GtfsFeedScopedManager<RouteNetwork, RouteNetworkCreateModel, RouteNetworkUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni hat ag iliskisi kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni hat ag iliskisi kaydini kurar.
     public override async Task<RouteNetwork> CreateAsync(
         RouteNetworkCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new RouteNetwork(
             GuidGenerator.Create(), feed.Id,
             NormalizeRequiredText(model.GtfsNetworkId), NormalizeRequiredText(model.GtfsRouteId));

@@ -5,7 +5,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 /// <summary>GTFS ucret aktarma kurali hata kodlarini tanimlar.</summary>
 public static class FareTransferRuleExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.FareTransferRuleGroup + "0001";
     public const string FareTransferRuleAlreadyExists = GtfsManagementErrorCodes.FareTransferRuleGroup + "0002";
     public const string FromLegGroupIdTooLong = GtfsManagementErrorCodes.FareTransferRuleGroup + "0003";
     public const string ToLegGroupIdTooLong = GtfsManagementErrorCodes.FareTransferRuleGroup + "0004";

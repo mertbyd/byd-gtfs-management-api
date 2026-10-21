@@ -22,7 +22,7 @@ public abstract class GtfsFeedScopedManager<TEntity, TCreateModel, TUpdateModel>
     : BaseManager<TEntity, Guid>(repository), IGtfsScopedManager<TEntity>
     where TEntity : class, IGtfsEntity
 {
-    // Hedef Feed'i kapsamda dogrulayip kaydin GTFS alanlarini kuran alt sinif akisi.
+    // Kaydi organizasyonun aktif Feed'inde kurup GTFS alanlarini yazan alt sinif akisi.
     public abstract Task<TEntity> CreateAsync(TCreateModel model, CancellationToken cancellationToken = default);
 
     // Yuklenmis kaydin duzenlenebilir alanlarini ayni kurallardan geciren alt sinif akisi.
@@ -62,7 +62,11 @@ public abstract class GtfsFeedScopedManager<TEntity, TCreateModel, TUpdateModel>
             throw new BusinessException(GeneralExceptionCodes.RelationalDataDelete);
     }
 
-    // Kaydin kapsamini devralacagi Feed'i getirir ve istegin kapsaminda oldugunu dogrular.
+    // Acikca istenen Feed'i getirir ve istegin kapsaminda oldugunu dogrular.
     protected Task<Feed> ResolveFeedAsync(Guid feedId, CancellationToken cancellationToken = default)
         => feedManager.EnsureExistsIncludingInactiveInScopeAsync(feedId, cancellationToken);
+
+    // Yeni kaydin yazilacagi organizasyonun aktif Feed'ini getirir.
+    protected Task<Feed> ResolveActiveFeedAsync(CancellationToken cancellationToken = default)
+        => feedManager.GetActiveInScopeAsync(cancellationToken);
 }

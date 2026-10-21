@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.Levels;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Levels;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,8 +25,8 @@ public class LevelController : GtfsManagementController
 {
     private ILevelAppService AppService => LazyGetRequiredService<ILevelAppService>();
 
-    /// <summary>Bir Feed'e yeni bir istasyon kati ekler.</summary>
-    /// <param name="input">Feed, kat dis kimligi, dizin ve ad alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir istasyon kati ekler.</summary>
+    /// <param name="input">Kat dis kimligi, dizin ve ad alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsLevelId, LevelIndex, Name ve audit zamanlari alanlarini
@@ -82,6 +85,9 @@ public class LevelController : GtfsManagementController
     /// </remarks>
     [HttpPut(LevelRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Levels.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.LevelsUpdated,
+        ActivityKind.Updated, nameof(LevelDto.Id))]
     public virtual async Task<Result<LevelDto>> UpdateAsync(
         Guid id, [FromBody] UpdateLevelDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -92,6 +98,9 @@ public class LevelController : GtfsManagementController
     /// <remarks>Govde dondurmez; kat kaydi kalici olarak silinir.</remarks>
     [HttpDelete(LevelRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Levels.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.LevelsDeleted,
+        ActivityKind.Deleted, nameof(LevelDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

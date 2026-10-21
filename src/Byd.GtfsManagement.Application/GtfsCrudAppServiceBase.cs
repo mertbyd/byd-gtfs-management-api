@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
+using Byd.CoreExtensions.Attributes;
 using Byd.CoreExtensions.Interfaces;
 using Byd.CoreExtensions.Querying;
+using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Interfaces;
 using Byd.GtfsManagement.Managers;
 using Byd.GtfsManagement.Mappers;
@@ -23,7 +25,8 @@ namespace Byd.GtfsManagement;
 // islevi: Feed kapsamli GTFS kayitlarinin olustur, oku, listele, guncelle ve sil akisini tek yerde yurutur; kalici her
 // degisiklikten sonra Feed'in GTFS verisini yeniden dogrulatir.
 // sistemdeki gorevi: Ortak CRUD sozlesmesini uygular; tipli repository, Manager ve Mapperly baglarini da merkezde cozerek
-// yaprak servisleri bos tutar. Degisiklik ve rapor ayni islemde yazilir; dogrulayiciya ulasilamazsa degisiklik geri alinir.
+// yaprak servisleri bos tutar. Degisiklik ve rapor ayni islemde yazilir; dogrulama hata bulursa ya da dogrulayiciya
+// ulasilamazsa degisiklik geri alinir.
 public abstract class GtfsCrudAppServiceBase<
     TEntity, TCreateDto, TUpdateDto, TDto, TFilter,
     TCreateModel, TUpdateModel, TManager, TRepository, TMapper>
@@ -47,20 +50,22 @@ public abstract class GtfsCrudAppServiceBase<
     // Girdi tipinin FluentValidation dogrulayicisini kullanim aninda cozer.
     protected IValidator<TInput> Validator<TInput>() => LazyGetRequiredService<IValidator<TInput>>();
 
-    // Girdiyi dogrulayip yeni kaydi olusturur, kalici hale getirir ve Feed'i yeniden dogrulatir.
+    // Girdiyi dogrulayip yeni kaydi olusturur, kalici hale getirir, Feed'i yeniden dogrulatir ve okuma onbellegini temizler.
+    [ClearCachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<TDto> CreateAsync(TCreateDto input, CancellationToken cancellationToken = default)
     {
         await Validator<TCreateDto>().ValidateAndThrowAsync(input, cancellationToken);
-        using var draftWrite = DataFilter.Disable<ActiveFeedFilter>();
         var entity = await Manager.CreateAsync(Mapper.Map(input), cancellationToken);
-        await FeedManager.EnsureEditableAsync(entity.FeedId, cancellationToken);
+        var feed = await FeedManager.EnsureEditableAsync(entity.FeedId, cancellationToken);
         await FeedValidator.ValidateAsync(
             () => Repository.InsertAsync(entity, autoSave: true, cancellationToken: cancellationToken),
             saved => saved.FeedId, cancellationToken);
+        await PublishFeedChangedAsync(feed);
         return Mapper.Map(entity);
     }
 
     // Kaydi kapsam kuralindan gecirerek okur.
+    [CachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<TDto> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => Mapper.Map(await Manager.EnsureExistsInScopeAsync(id, cancellationToken));
 
@@ -86,6 +91,7 @@ public abstract class GtfsCrudAppServiceBase<
     }
 
     // Liste girdisini dogrular, filtreli sayfayi ve toplam sayiyi tek sonuc olarak getirir.
+    [CachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<PagedResultDto<TDto>> GetFilteredListAsync(
         DataTableListInput<TFilter> input, CancellationToken cancellationToken = default)
     {
@@ -96,12 +102,12 @@ public abstract class GtfsCrudAppServiceBase<
         return new PagedResultDto<TDto>(totalCount, items);
     }
 
-    // Kapsamdaki kaydin duzenlenebilir alanlarini gunceller ve Feed'i yeniden dogrulatir.
+    // Kapsamdaki kaydin duzenlenebilir alanlarini gunceller, Feed'i yeniden dogrulatir ve okuma onbellegini temizler.
+    [ClearCachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<TDto> UpdateAsync(
         Guid id, TUpdateDto input, CancellationToken cancellationToken = default)
     {
         await Validator<TUpdateDto>().ValidateAndThrowAsync(input, cancellationToken);
-        using var draftWrite = DataFilter.Disable<ActiveFeedFilter>();
         var entity = await Manager.EnsureExistsInScopeAsync(id, cancellationToken);
         var feed = await FeedManager.EnsureEditableAsync(entity.FeedId, cancellationToken);
         await FeedValidator.ValidateAsync(async () =>
@@ -113,10 +119,11 @@ public abstract class GtfsCrudAppServiceBase<
         return Mapper.Map(entity);
     }
 
-    // Kapsamdaki kaydi, baska GTFS satirlarinca kullanilmiyorsa kalici olarak siler ve Feed'i yeniden dogrulatir.
+    // Kapsamdaki kaydi, baska GTFS satirlarinca kullanilmiyorsa kalici olarak siler, Feed'i yeniden dogrulatir ve okuma
+    // onbellegini temizler.
+    [ClearCachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        using var draftWrite = DataFilter.Disable<ActiveFeedFilter>();
         var entity = await Manager.EnsureExistsInScopeAsync(id, cancellationToken);
         var feed = await FeedManager.EnsureEditableAsync(entity.FeedId, cancellationToken);
         await Manager.EnsureCanDeleteAsync(entity, cancellationToken);

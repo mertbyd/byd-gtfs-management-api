@@ -4,7 +4,6 @@ namespace Byd.GtfsManagement.ExceptionCodes;
 // sistemdeki gorevi: GTFS ajans sozlesmesinin ihlallerini lokalize edilebilir kodlara baglar.
 public static class AgencyExceptionCodes
 {
-    public const string FeedRequired = GtfsManagementErrorCodes.AgencyGroup + "0001";
     public const string GtfsAgencyIdTooLong = GtfsManagementErrorCodes.AgencyGroup + "0002";
     public const string NameRequired = GtfsManagementErrorCodes.AgencyGroup + "0003";
     public const string NameTooLong = GtfsManagementErrorCodes.AgencyGroup + "0004";

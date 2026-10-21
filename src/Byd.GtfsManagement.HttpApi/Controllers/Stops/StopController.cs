@@ -8,8 +8,11 @@ using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.StopTimes;
 using Byd.GtfsManagement.Dtos.Stops;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.Stops;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -23,8 +26,8 @@ public class StopController : GtfsManagementController
 {
     private IStopAppService AppService => LazyGetRequiredService<IStopAppService>();
 
-    /// <summary>Hedef GTFS Feed'e yeni durak kaydi ekler.</summary>
-    /// <param name="input">Duragin yazilacagi Feed ve stops.txt alanlari.</param>
+    /// <summary>Organizasyonun aktif GTFS Feed'ine yeni durak kaydi ekler.</summary>
+    /// <param name="input">stops.txt alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value durak kimligini, Feed kimligini, konum turu ve erisim lookup kimlikleri ile adlarini,
@@ -79,6 +82,24 @@ public class StopController : GtfsManagementController
         [FromQuery] DataTableListInput<StopFilter> input, CancellationToken cancellationToken = default)
         => await AppService.GetFilteredListAsync(input, cancellationToken);
 
+    /// <summary>Organizasyonun aktif GTFS Feed'indeki duraklari arama indeksinden getirir.</summary>
+    /// <param name="input">Durak filtre, siralama ve sayfalama bilgileri.</param>
+    /// <param name="cancellationToken">Istek iptal belirteci.</param>
+    /// <remarks>
+    /// Request filtreli liste ucuyla aynidir. Metin alanlarinda contains ve notContains buyuk/kucuk harf duyarsizdir;
+    /// match kelime bazli, fuzzy yazim hatasina toleransli arar (ornegin Name { Operator: "fuzzy", Value: "kizilay" }).
+    /// Siralama verilmezse sonuclar eslesme skoruna gore gelir.
+    /// Response { TotalCount (long) → Eslesen toplam durak; Items (StopDto[]) → Sayfadaki duraklar lookup ve istasyon
+    /// adlariyla }
+    /// Indeks Feed aktiflestiginde yeniden dolar; taslak ve gecmis surumler aranmaz. Organizasyonun henuz aktif Feed'i
+    /// yoksa toplam sayi sifir ve liste bos doner. Bu endpoint kayit yazmaz.
+    /// </remarks>
+    [HttpGet(StopRoutes.Search)]
+    [Authorize(GtfsManagementPermissions.Stops.View)]
+    public virtual async Task<Result<PagedResultDto<StopDto>>> SearchAsync(
+        [FromQuery] DataTableListInput<StopFilter> input, CancellationToken cancellationToken = default)
+        => await AppService.SearchAsync(input, cancellationToken);
+
     /// <summary>Kimligi verilen duragin GTFS alanlarini gunceller.</summary>
     /// <param name="id">Guncellenecek Stop kaydinin kimligi.</param>
     /// <param name="input">Duragin yeni stops.txt alanlari.</param>
@@ -89,6 +110,9 @@ public class StopController : GtfsManagementController
     /// </remarks>
     [HttpPut(StopRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Stops.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.StopsUpdated,
+        ActivityKind.Updated, nameof(StopDto.Id))]
     public virtual async Task<Result<StopDto>> UpdateAsync(
         Guid id, [FromBody] UpdateStopDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -102,6 +126,9 @@ public class StopController : GtfsManagementController
     /// </remarks>
     [HttpDelete(StopRoutes.ById)]
     [Authorize(GtfsManagementPermissions.Stops.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.StopsDeleted,
+        ActivityKind.Deleted, nameof(StopDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

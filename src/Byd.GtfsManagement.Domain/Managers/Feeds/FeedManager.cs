@@ -67,23 +67,22 @@ public class FeedManager(
         return feed.IsActive ? feed : null;
     }
 
+    // Organizasyonun aktif Feed'ini getirir; yeni GTFS kayitlari istekten Feed almadan bu Feed'e yazilir.
+    public virtual async Task<Feed> GetActiveInScopeAsync(CancellationToken cancellationToken = default)
+    {
+        EnsureScopeAvailable();
+        return await Repository.FindAsync(feed => feed.TenantId == CurrentTenant.Id
+                && feed.OrganizationId == currentOrganization.Id && feed.IsActive, cancellationToken: cancellationToken)
+            ?? throw new BusinessException(FeedExceptionCodes.ActiveFeedRequired);
+    }
+
+    // GTFS kayitlari yalniz organizasyonun aktif ve tablolari aktarilmis Feed'inde eklenir, guncellenir ve silinir.
     public virtual async Task<Feed> EnsureEditableAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var feed = await EnsureExistsIncludingInactiveInScopeAsync(id, cancellationToken);
-        if (feed.IsActive)
-            throw new BusinessException(FeedExceptionCodes.ActiveFeedRequiresDraft);
-        if (feed.Status != FeedStatus.Integrated)
-            throw new BusinessException(FeedExceptionCodes.NotIntegrated);
-        return feed;
-    }
-
-    public virtual async Task<Feed> EnsureDraftSourceAsync(Guid id,
-        CancellationToken cancellationToken = default)
-    {
-        var feed = await EnsureExistsIncludingInactiveInScopeAsync(id, cancellationToken);
-        if (!feed.IsActive || feed.Status != FeedStatus.Integrated)
-            throw new BusinessException(FeedExceptionCodes.StatusTransitionInvalid);
-        return feed;
+        return !feed.IsActive ? throw new BusinessException(FeedExceptionCodes.InactiveFeedNotEditable)
+            : feed.Status != FeedStatus.Integrated ? throw new BusinessException(FeedExceptionCodes.NotIntegrated)
+            : feed;
     }
 
     public virtual async Task<string> GetSourceUrlAsync(Guid id, CancellationToken cancellationToken = default)
@@ -126,6 +125,7 @@ public class FeedManager(
     public virtual void SetValidationReport(Feed feed, FeedValidationReportModel report)
     {
         ArgumentNullException.ThrowIfNull(report);
+        EnsureIntegratedDataValid(feed, report);
         feed.ValidationReport = report;
         if (feed.Status != FeedStatus.Integrated)
         {
@@ -174,6 +174,16 @@ public class FeedManager(
     {
         if (CurrentTenant.Id is null || currentOrganization.Id is null)
             throw new BusinessException(FeedExceptionCodes.ScopeRequired);
+    }
+
+    // Aktarilmis Feed'in tablolari yayindaki veridir; dogrulamada hata cikaran degisiklik yazilmaz. Hatalar istemciye doner ve
+    // degisiklik raporla birlikte geri alinir.
+    private static void EnsureIntegratedDataValid(Feed feed, FeedValidationReportModel report)
+    {
+        if (feed.Status == FeedStatus.Integrated && report.Errors.Count > 0)
+            throw new BusinessException(FeedExceptionCodes.ChangeRejectedByValidation)
+                .WithData(FeedConsts.ErrorCountDataKey, report.Errors.Count)
+                .WithData(FeedConsts.ErrorsDataKey, report.Errors);
     }
 
     private static void EnsureStatus(Feed feed, FeedStatus expected)

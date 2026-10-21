@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Byd.CoreExtensions.Attributes;
+using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Interfaces;
 using Byd.GtfsManagement.Dtos.Trips;
 using Byd.GtfsManagement.Entities.Trips;
@@ -20,6 +22,7 @@ public class TripAppService
         TripCreateModel, TripUpdateModel, TripManager, ITripRepository, TripMapper, TripImportDto>, ITripAppService
 {
     // Kaydi duraklari, sikliklari, sekli ve takvimiyle birlikte getirir.
+    [CachedResponse(FeedConsts.ResponseCacheGroup)]
     public virtual async Task<TripDetailDto> GetDetailAsync(Guid id, CancellationToken cancellationToken = default)
         => Mapper.Map(await Manager.GetDetailAsync(id, cancellationToken));
     // Taslak veya gecmis detayini yetkili surum kapsaminda okur.

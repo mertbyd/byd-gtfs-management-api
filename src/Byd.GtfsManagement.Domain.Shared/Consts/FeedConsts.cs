@@ -7,6 +7,9 @@ public static class FeedConsts
     public const int MaxNameLength = 200;
     public const int MaxNameWordLength = 20;
     public const string TableName = "Feeds";
+    // Yayindaki Feed verisini okuyan uclarin yanit onbellegi grubu; Feed entity'sinin tip adidir, Feed degisince bu gruptaki
+    // yanitlar silinir.
+    public const string ResponseCacheGroup = "Feed";
     public const string ScopeNameIndex = "IX_Feeds_Tenant_Organization_Name";
     public const string ActiveOrganizationIndex = "IX_Feeds_Tenant_Organization_Active";
     public const string ValidationReportColumnType = "jsonb";
@@ -30,6 +33,9 @@ public static class FeedConsts
     public const string FieldDataKey = "field";
     public const string LookupDataKey = "lookup";
     public const string CodeDataKey = "code";
+    // Dogrulamada hata urettigi icin kaydedilmeyen degisikligin hata sayisini ve hata kayitlarini tasiyan anahtarlar.
+    public const string ErrorCountDataKey = "errorCount";
+    public const string ErrorsDataKey = "errors";
     // GTFS CSV'lerinde mantiksal degerlerin yazimi.
     public const string BooleanTrueValue = "1";
     public const string BooleanFalseValue = "0";

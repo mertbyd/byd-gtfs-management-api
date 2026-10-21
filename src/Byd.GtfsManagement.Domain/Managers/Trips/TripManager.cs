@@ -61,12 +61,12 @@ public class TripManager(
         };
     }
 
-    // Hedef Feed'i kapsamda dogrulayip yeni seferi kurar.
+    // Yeni seferi organizasyonun aktif Feed'inde kurar.
     public override async Task<Trip> CreateAsync(
         TripCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Trip(
             GuidGenerator.Create(), feed.Id);
         await ApplyAsync(entity, model, cancellationToken);

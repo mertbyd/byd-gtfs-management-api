@@ -17,12 +17,12 @@ public class LocationGroupManager(
     : GtfsFeedScopedManager<LocationGroup, LocationGroupCreateModel, LocationGroupUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni konum grubu kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni konum grubu kaydini kurar.
     public override async Task<LocationGroup> CreateAsync(
         LocationGroupCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new LocationGroup(GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsLocationGroupId));
         Apply(entity, model);
         await CheckUniqueAsync(entity, cancellationToken);

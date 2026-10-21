@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.LocationGroupStops;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.LocationGroupStops;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,12 +25,12 @@ public class LocationGroupStopController : GtfsManagementController
 {
     private ILocationGroupStopAppService AppService => LazyGetRequiredService<ILocationGroupStopAppService>();
 
-    /// <summary>Bir Feed'e yeni bir konum grubu durak iliskisi ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir konum grubu durak iliskisi ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsLocationGroupId, GtfsStopId ve audit zamanlari alanlarini
-    /// tasir. Feed istegin tenant kapsaminda degilse kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
+    /// tasir. Organizasyonun aktif Feed'i yoksa kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.LocationGroupStops.Manage)]
@@ -81,6 +84,9 @@ public class LocationGroupStopController : GtfsManagementController
     /// </remarks>
     [HttpPut(LocationGroupStopRoutes.ById)]
     [Authorize(GtfsManagementPermissions.LocationGroupStops.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.LocationGroupStopsUpdated,
+        ActivityKind.Updated, nameof(LocationGroupStopDto.Id))]
     public virtual async Task<Result<LocationGroupStopDto>> UpdateAsync(
         Guid id, [FromBody] UpdateLocationGroupStopDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -91,6 +97,9 @@ public class LocationGroupStopController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(LocationGroupStopRoutes.ById)]
     [Authorize(GtfsManagementPermissions.LocationGroupStops.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.LocationGroupStopsDeleted,
+        ActivityKind.Deleted, nameof(LocationGroupStopDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

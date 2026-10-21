@@ -20,4 +20,7 @@ public interface IFeedAppService : IApplicationService
         DataTableListInput<FeedFilter> input, CancellationToken cancellationToken = default);
     Task<FeedDto> ActivateAsync(Guid id, CancellationToken cancellationToken = default);
     Task<FeedValidationReportDto> ValidateAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<FeedFileDto> ExportValidationReportAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<FeedSummaryDto> GetSummaryAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<FeedFileDto> ExportGtfsAsync(Guid id, CancellationToken cancellationToken = default);
 }

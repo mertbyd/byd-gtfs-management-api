@@ -9,5 +9,4 @@ public static class AreaExceptionCodes
     public const string AreaIdTooLong = GtfsManagementErrorCodes.AreaGroup + "0002";
     public const string AreaNameTooLong = GtfsManagementErrorCodes.AreaGroup + "0003";
     public const string AreaAlreadyExists = GtfsManagementErrorCodes.AreaGroup + "0004";
-    public const string FeedRequired = GtfsManagementErrorCodes.AreaGroup + "0005";
 }

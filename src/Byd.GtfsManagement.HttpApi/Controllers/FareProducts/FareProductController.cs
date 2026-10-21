@@ -6,8 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Byd.CoreExtensions.Querying;
 using Byd.GtfsManagement.Consts;
 using Byd.GtfsManagement.Dtos.FareProducts;
+using Byd.GtfsManagement.Localization;
 using Byd.GtfsManagement.Permissions;
 using Byd.GtfsManagement.Services.FareProducts;
+using Byd.LogManagement.ActivityLogs;
+using Byd.LogManagement.Attributes;
 using SystemStandards.Results;
 using Volo.Abp.Application.Dtos;
 
@@ -22,13 +25,13 @@ public class FareProductController : GtfsManagementController
 {
     private IFareProductAppService AppService => LazyGetRequiredService<IFareProductAppService>();
 
-    /// <summary>Bir Feed'e yeni bir ucret urunu ekler.</summary>
-    /// <param name="input">Kaydin yazilacagi Feed ve GTFS alanlari.</param>
+    /// <summary>Organizasyonun aktif Feed'ine yeni bir ucret urunu ekler.</summary>
+    /// <param name="input">Kaydin GTFS alanlari.</param>
     /// <param name="cancellationToken">Istek iptal belirteci.</param>
     /// <remarks>
     /// Response value olusturulan kaydin Id, FeedId, GtfsFareProductId, GtfsRiderCategoryId, GtfsFareMediaId,
-    /// FareProductName, Amount, Currency ve audit zamanlari alanlarini tasir. Feed istegin tenant kapsaminda
-    /// degilse kayit olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
+    /// FareProductName, Amount, Currency ve audit zamanlari alanlarini tasir. Organizasyonun aktif Feed'i yoksa kayit
+    /// olusturulmaz. Bu uc baska bir GTFS kaydi olusturmaz.
     /// </remarks>
     [HttpPost]
     [Authorize(GtfsManagementPermissions.FareProducts.Manage)]
@@ -87,6 +90,9 @@ public class FareProductController : GtfsManagementController
     /// </remarks>
     [HttpPut(FareProductRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareProducts.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareProductsUpdated,
+        ActivityKind.Updated, nameof(FareProductDto.Id))]
     public virtual async Task<Result<FareProductDto>> UpdateAsync(
         Guid id, [FromBody] UpdateFareProductDto input, CancellationToken cancellationToken = default)
         => await AppService.UpdateAsync(id, input, cancellationToken);
@@ -97,6 +103,9 @@ public class FareProductController : GtfsManagementController
     /// <remarks>Response govdesizdir; baska GTFS kayitlarinca kullanilan kayit silinmez.</remarks>
     [HttpDelete(FareProductRoutes.ById)]
     [Authorize(GtfsManagementPermissions.FareProducts.Manage)]
+    [TrackActivity<GtfsManagementResource>(
+        GtfsManagementLocalizationKeys.ActivityLogs.FareProductsDeleted,
+        ActivityKind.Deleted, nameof(FareProductDto.Id))]
     public virtual async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         await AppService.DeleteAsync(id, cancellationToken);

@@ -17,12 +17,12 @@ public class ShapeManager(
     : GtfsFeedScopedManager<Shape, ShapeCreateModel, ShapeUpdateModel>(
         repository, feedManager)
 {
-    // Feed kapsamindan yeni sekil noktasi kaydini kurar.
+    // Organizasyonun aktif Feed'inde yeni sekil noktasi kaydini kurar.
     public override async Task<Shape> CreateAsync(
         ShapeCreateModel model, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(model);
-        var feed = await ResolveFeedAsync(model.FeedId, cancellationToken);
+        var feed = await ResolveActiveFeedAsync(cancellationToken);
         var entity = new Shape(
             GuidGenerator.Create(), feed.Id, NormalizeRequiredText(model.GtfsShapeId));
         await ApplyAsync(entity, model, cancellationToken);
