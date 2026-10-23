@@ -5,6 +5,7 @@ using Byd.GtfsManagement.Interfaces.Feeds;
 using Byd.GtfsManagement.Managers.Feeds;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EventBus;
+using Volo.Abp.EventBus.Distributed;
 using Volo.Abp.MultiTenancy;
 using Volo.Abp.Uow;
 
@@ -14,11 +15,13 @@ namespace Byd.GtfsManagement.Handlers;
 /// Istenen Feed'i organizasyonun yayin secimi yapar.
 /// </summary>
 // islevi: Organizasyonun onceki aktif Feed'ini pasife alip secilen Feed'i aktife alir.
-// sistemdeki gorevi: Istegin transaction'inda yayin secimini degistirir; GTFS satirlari degismez.
+// sistemdeki gorevi: Istegin transaction'inda yayin secimini degistirir; GTFS satirlari degismez. Yayinlanan Feed degistigi icin
+// diger moduller FeedChanged olayiyla bilgilendirilir.
 public class FeedActivationRequestedEventHandler(
     FeedManager feedManager,
     ICurrentTenant currentTenant,
-    ICurrentOrganization currentOrganization)
+    ICurrentOrganization currentOrganization,
+    IDistributedEventBus distributedEventBus)
     : ILocalEventHandler<FeedActivationRequestedEto>, ITransientDependency
 {
     // Olayin kapsaminda surumu dogrular; Feed'in yayin secimini atomik olarak kaydeder.
@@ -29,5 +32,11 @@ public class FeedActivationRequestedEventHandler(
         using var organizationScope = currentOrganization.Change(eventData.OrganizationId);
         var feed = await feedManager.EnsureExistsIncludingInactiveInScopeAsync(eventData.FeedId);
         await feedManager.ActivateAsync(feed);
+        await distributedEventBus.PublishAsync(new FeedChangedEto
+        {
+            TenantId = eventData.TenantId,
+            OrganizationId = eventData.OrganizationId,
+            FeedId = feed.Id
+        });
     }
 }
