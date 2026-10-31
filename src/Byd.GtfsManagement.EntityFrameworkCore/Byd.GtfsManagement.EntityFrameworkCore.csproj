@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Byd.AuthManagement.EntityFrameworkCore" Version="0.1.6" />
-    <PackageReference Include="Byd.LogManagement.Application" Version="0.1.4" />
+    <PackageReference Include="Byd.AuthManagement.EntityFrameworkCore" Version="0.1.9" />
+    <PackageReference Include="Byd.LogManagement.Application" Version="0.1.6" />
     <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="10.3.0" />
     <ProjectReference Include="..\Byd.GtfsManagement.Application.Contracts\Byd.GtfsManagement.Application.Contracts.csproj" />
     <ProjectReference Include="..\Byd.GtfsManagement.Domain\Byd.GtfsManagement.Domain.csproj" />
